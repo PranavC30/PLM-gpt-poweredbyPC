@@ -10,7 +10,7 @@ def my_output(query):
     )
     return response.choices[0].message.content
 
-st.set_page_config(page_title="PLM Bot", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="PLM GPT", page_icon="🤖", layout="centered")
 
 st.markdown("""
     <style>
@@ -53,7 +53,7 @@ st.markdown("""
 
 st.markdown("""
     <div class="title-container">
-        <h1>🤖 PLM Bot</h1>
+        <h1>🤖 PLM GPT</h1>
         <div class="byline">A Bot by Pranav C</div>
         <div class="caption">Where curiosity meets intelligence — ask, explore, discover.</div>
     </div>
@@ -63,7 +63,7 @@ st.markdown("---")
 
 with st.form(key="query_form"):
     user_input = st.text_input("", placeholder="Type your question here...", key="input")
-    submit = st.form_submit_button("Ask PLM Bot")
+    submit = st.form_submit_button("Ask PLM GPT")
 
 if submit:
     if user_input.strip():
