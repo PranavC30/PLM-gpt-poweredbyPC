@@ -1,0 +1,23 @@
+
+
+chatgpt ----> query (submit)---> LLM ---> Response return 
+
+
+step-1 :: create requirements, then install it using command:::
+uv add -r requirements.txt 
+
+
+step-2:: create gemini api key and store it in .env file 
+
+step-3 :: create app.py file and run ::
+
+streamlit run app.py 
+
+
+step-4 :: push this code to a new github repo 
+
+
+step-5 :: create account on Streamlit cloud using github and paste the github url, branch name , in advance settings paste yur secret credentials from .env file . 
+
+
+Now click to deploy. 
