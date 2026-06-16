@@ -13,6 +13,16 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+# Viewport meta for mobile
+st.markdown("""
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<style>
+  /* Base mobile safety */
+  * { box-sizing: border-box; }
+  img, canvas { max-width: 100%; }
+</style>
+""", unsafe_allow_html=True)
+
 # ─────────────────────────────────────────
 #  HIDE STREAMLIT BRANDING
 # ─────────────────────────────────────────
@@ -480,6 +490,107 @@ def apply_theme():
       .session-meta {{ font-size:0.72rem; color:{t['sub']}; }}
 
       hr {{ border-color:{t['border']}; margin:0.7rem 0; }}
+
+      /* ═══════════════════════════════
+         MOBILE RESPONSIVE  (≤640px)
+         ═══════════════════════════════ */
+      @media (max-width: 640px) {{
+
+        /* App padding */
+        .block-container {{
+          padding: 0.5rem 0.6rem 2rem 0.6rem !important;
+          max-width: 100% !important;
+        }}
+
+        /* Toolbar — stack vertically */
+        .plm-toolbar {{
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0.5rem;
+          padding: 0.6rem 0.7rem;
+          border-radius: 10px;
+        }}
+        .plm-toolbar-label {{
+          font-size: 0.68rem;
+          margin-bottom: 1px;
+        }}
+
+        /* Title smaller on mobile */
+        .plm-title h1 {{
+          font-size: 1.8rem !important;
+        }}
+        .plm-title .byline {{ font-size: 0.78rem; }}
+        .plm-title .caption {{ font-size: 0.68rem; }}
+
+        /* Welcome card */
+        .welcome-card {{
+          padding: 1.2rem 1rem;
+          border-radius: 12px;
+        }}
+        .welcome-greeting {{ font-size: 1.4rem; }}
+        .welcome-sub {{ font-size: 0.88rem; }}
+
+        /* Chat bubbles */
+        .msg-user, .msg-bot {{
+          padding: 0.65rem 0.8rem;
+          font-size: 0.88rem;
+          border-radius: 8px;
+        }}
+        .msg-label {{ font-size: 0.65rem; }}
+        .msg-time  {{ font-size: 0.62rem; }}
+
+        /* Prompt suggestion grid — single column */
+        .prompt-grid {{ grid-template-columns: 1fr !important; }}
+
+        /* Input */
+        .stTextInput > div > div > input {{
+          font-size: 0.92rem !important;
+          padding: 0.5rem 0.8rem !important;
+        }}
+
+        /* Buttons */
+        .stFormSubmitButton > button,
+        .stButton > button {{
+          font-size: 0.82rem !important;
+          padding: 0.45rem 0.8rem !important;
+          border-radius: 8px !important;
+        }}
+
+        /* Char counter */
+        .char-counter {{ font-size: 0.65rem; }}
+
+        /* Summary / starred / session cards */
+        .summary-box {{ padding: 0.9rem 1rem; font-size: 0.85rem; }}
+        .starred-card {{ padding: 0.6rem 0.8rem; font-size: 0.82rem; }}
+        .session-card {{ padding: 0.5rem 0.7rem; font-size: 0.82rem; }}
+
+        /* Orbs smaller on mobile */
+        .plm-orb-1 {{ width:220px; height:220px; }}
+        .plm-orb-2 {{ width:180px; height:180px; }}
+        .plm-orb-3 {{ width:140px; height:140px; }}
+        .plm-orb-4 {{ width:120px; height:120px; }}
+
+        /* Selectbox */
+        .stSelectbox > div > div {{
+          font-size: 0.85rem !important;
+        }}
+
+        /* Session info bar */
+        p[style*="text-align:right"] {{
+          font-size: 0.62rem !important;
+          text-align: center !important;
+        }}
+      }}
+
+      /* Tablet (641px – 900px) */
+      @media (min-width: 641px) and (max-width: 900px) {{
+        .block-container {{
+          padding: 0.8rem 1rem 2rem 1rem !important;
+          max-width: 100% !important;
+        }}
+        .plm-title h1 {{ font-size: 2.1rem !important; }}
+        .msg-user, .msg-bot {{ font-size: 0.92rem; }}
+      }}
     </style>
     """, unsafe_allow_html=True)
 
