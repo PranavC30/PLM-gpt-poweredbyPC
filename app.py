@@ -81,9 +81,13 @@ defaults = {
     "temperature":     0.7,
     "conv_mode":       "💼 Professional",
     "welcome_shown":   False,
-    "starred":         [],       # pinned/starred messages
-    "show_starred":    False,    # toggle starred panel
-    "voice_text":      "",       # voice input result
+    "starred":         [],
+    "show_starred":    False,
+    "voice_text":      "",
+    # Multiple chat sessions
+    "sessions":        {},       # {session_id: {name, messages, starred}}
+    "active_session":  "default",
+    "show_sessions":   False,
 }
 for k, v in defaults.items():
     if k not in st.session_state:
@@ -133,6 +137,8 @@ THEMES = {
 
 def apply_theme():
     t = THEMES[st.session_state.theme]
+    # Inject background animations
+    st.markdown(BG_ANIMATION, unsafe_allow_html=True)
     st.markdown(f"""
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Inter:wght@400;500;600;700;800&display=swap');
@@ -330,63 +336,172 @@ def apply_theme():
         font-size:1rem; font-weight:600; margin-bottom:0.5rem;
       }}
 
+      /* ── Copy button ── */
+      .copy-btn {
+        background: transparent;
+        border: 1px solid {t['border']};
+        border-radius: 6px;
+        padding: 2px 8px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        color: {t['sub']};
+        transition: all 0.15s;
+        margin-left: 4px;
+      }
+      .copy-btn:hover {{ background:{t['accent']}22; border-color:{t['accent']}; color:{t['accent']}; }}
+
+      /* ── Sessions panel ── */
+      .session-card {{
+        background:{t['card']}; border:1px solid {t['border']};
+        border-radius:10px; padding:0.6rem 1rem; margin:0.3rem 0;
+        color:{t['text']}; font-size:0.88rem; cursor:pointer;
+        transition:all 0.15s; display:flex; justify-content:space-between; align-items:center;
+      }}
+      .session-card:hover {{ border-color:{t['accent']}; background:{t['user_bg']}; }}
+      .session-active {{ border-color:{t['accent']} !important; background:{t['user_bg']} !important; }}
+      .session-name {{ font-weight:600; }}
+      .session-meta {{ font-size:0.72rem; color:{t['sub']}; }}
+
       hr {{ border-color:{t['border']}; margin:0.7rem 0; }}
     </style>
     """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────
-#  VOICE INPUT (Web Speech API via JS)
+#  BACKGROUND ANIMATIONS (particles + orbs)
 # ─────────────────────────────────────────
-VOICE_JS = """
-<script>
-function startVoice() {
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert("Voice input not supported in this browser. Please use Chrome.");
-    return;
-  }
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const rec = new SR();
-  rec.lang = 'en-US';
-  rec.interimResults = false;
-  rec.maxAlternatives = 1;
-
-  const btn = document.getElementById('voice-btn');
-  btn.innerHTML = '🔴 Listening...';
-  btn.style.borderColor = '#e05555';
-  btn.style.color = '#e05555';
-
-  rec.onresult = function(e) {
-    const txt = e.results[0][0].transcript;
-    // write into the Streamlit text input
-    const inputs = window.parent.document.querySelectorAll('input[type="text"]');
-    if (inputs.length > 0) {
-      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-      nativeInputValueSetter.call(inputs[inputs.length-1], txt);
-      inputs[inputs.length-1].dispatchEvent(new Event('input', { bubbles: true }));
-    }
-    btn.innerHTML = '🎙️ Voice';
-    btn.style.borderColor = '';
-    btn.style.color = '';
-  };
-  rec.onerror = function() {
-    btn.innerHTML = '🎙️ Voice';
-    btn.style.borderColor = '';
-    btn.style.color = '';
-  };
-  rec.onend = function() {
-    btn.innerHTML = '🎙️ Voice';
-    btn.style.borderColor = '';
-    btn.style.color = '';
-  };
-  rec.start();
+BG_ANIMATION = """
+<style>
+/* ── Floating particles canvas ── */
+#plm-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
 }
+
+/* ── Glowing orbs ── */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  animation: orbFloat linear infinite;
+}
+.orb-1 {
+  width: 340px; height: 340px;
+  background: radial-gradient(circle, #00c9a733 0%, transparent 70%);
+  top: -80px; left: -80px;
+  animation-duration: 18s;
+}
+.orb-2 {
+  width: 260px; height: 260px;
+  background: radial-gradient(circle, #3a8fcc22 0%, transparent 70%);
+  bottom: 10%; right: -60px;
+  animation-duration: 24s;
+  animation-delay: -8s;
+}
+.orb-3 {
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, #7b4ccc1a 0%, transparent 70%);
+  top: 40%; left: 10%;
+  animation-duration: 30s;
+  animation-delay: -14s;
+}
+@keyframes orbFloat {
+  0%   { transform: translateY(0px) translateX(0px) scale(1); }
+  25%  { transform: translateY(-30px) translateX(20px) scale(1.05); }
+  50%  { transform: translateY(-10px) translateX(-15px) scale(0.97); }
+  75%  { transform: translateY(20px) translateX(10px) scale(1.03); }
+  100% { transform: translateY(0px) translateX(0px) scale(1); }
+}
+
+/* Make sure content sits above canvas */
+[data-testid="stAppViewContainer"] > section,
+[data-testid="stAppViewBlockContainer"],
+.block-container { position: relative; z-index: 1; }
+</style>
+
+<!-- Glowing orbs -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- Floating particles -->
+<canvas id="plm-canvas"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('plm-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  window.addEventListener('resize', () => {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const COLORS = ['#00c9a7', '#3a8fcc', '#7b4ccc', '#00c9a755', '#3a8fcc55'];
+  const COUNT  = 55;
+
+  const particles = Array.from({ length: COUNT }, () => ({
+    x:    Math.random() * canvas.width,
+    y:    Math.random() * canvas.height,
+    r:    Math.random() * 2.2 + 0.5,
+    dx:   (Math.random() - 0.5) * 0.45,
+    dy:   (Math.random() - 0.5) * 0.45,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    alpha: Math.random() * 0.5 + 0.15,
+    pulse: Math.random() * Math.PI * 2,
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw connecting lines
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 130) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(0,201,167,${0.07 * (1 - dist/130)})`;
+          ctx.lineWidth = 0.6;
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Draw particles
+    particles.forEach(p => {
+      p.pulse += 0.02;
+      const pulsedAlpha = p.alpha + Math.sin(p.pulse) * 0.1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, Math.min(1, pulsedAlpha));
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      p.x += p.dx;
+      p.y += p.dy;
+
+      if (p.x < 0 || p.x > canvas.width)  p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 </script>
-<button id="voice-btn" onclick="startVoice()"
-  style="background:transparent; border:1px solid #444; border-radius:8px;
-         padding:6px 14px; font-size:0.88rem; font-weight:600; cursor:pointer;
-         color:#aaa; transition:all 0.2s; margin-bottom:0.5rem;">
-  🎙️ Voice
-</button>
 """
 
 # ─────────────────────────────────────────
@@ -461,6 +576,57 @@ def get_summary() -> str:
         return "⚠️ Could not generate summary."
 
 # ─────────────────────────────────────────
+#  SESSION MANAGEMENT HELPERS
+# ─────────────────────────────────────────
+def init_sessions():
+    """Ensure sessions dict has at least the default session."""
+    if not st.session_state.sessions:
+        st.session_state.sessions["default"] = {
+            "name": "Chat 1",
+            "messages": [],
+            "starred": [],
+        }
+    # Sync active session data with top-level state
+    sid = st.session_state.active_session
+    if sid in st.session_state.sessions:
+        st.session_state.messages = st.session_state.sessions[sid]["messages"]
+        st.session_state.starred  = st.session_state.sessions[sid]["starred"]
+
+def save_active_session():
+    """Push current messages/starred back into sessions dict."""
+    sid = st.session_state.active_session
+    if sid in st.session_state.sessions:
+        st.session_state.sessions[sid]["messages"] = st.session_state.messages
+        st.session_state.sessions[sid]["starred"]  = st.session_state.starred
+
+def switch_session(sid: str):
+    save_active_session()
+    st.session_state.active_session = sid
+    st.session_state.messages = st.session_state.sessions[sid]["messages"]
+    st.session_state.starred  = st.session_state.sessions[sid]["starred"]
+    st.session_state.show_sessions = False
+
+def new_session():
+    save_active_session()
+    import uuid
+    sid  = str(uuid.uuid4())[:8]
+    num  = len(st.session_state.sessions) + 1
+    st.session_state.sessions[sid] = {
+        "name": f"Chat {num}",
+        "messages": [],
+        "starred":  [],
+    }
+    switch_session(sid)
+
+def delete_session(sid: str):
+    if len(st.session_state.sessions) <= 1:
+        return   # keep at least one session
+    del st.session_state.sessions[sid]
+    # Switch to first remaining session
+    first = list(st.session_state.sessions.keys())[0]
+    switch_session(first)
+
+# ─────────────────────────────────────────
 #  LOGIN PAGE
 # ─────────────────────────────────────────
 def login_page():
@@ -533,9 +699,12 @@ def chat_page():
     apply_theme()
     t = THEMES[st.session_state.theme]
 
+    # Init + sync sessions
+    init_sessions()
+
     # ── Toolbar ──
     st.markdown('<div class="plm-toolbar">', unsafe_allow_html=True)
-    tc1, tc2, tc3, tc4, tc5, tc6, tc7 = st.columns([2, 2, 2, 1, 1, 1, 1])
+    tc1, tc2, tc3, tc4, tc5, tc6, tc7, tc8 = st.columns([2, 2, 2, 1, 1, 1, 1, 1])
 
     with tc1:
         st.markdown('<div class="plm-toolbar-label">🧠 Model</div>', unsafe_allow_html=True)
@@ -568,20 +737,27 @@ def chat_page():
 
     with tc5:
         st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
-        star_label = f"⭐ {len(st.session_state.starred)}" if st.session_state.starred else "⭐"
-        if st.button(star_label, use_container_width=True, key="starred_btn", help="Starred messages"):
+        star_label = f"⭐{len(st.session_state.starred)}" if st.session_state.starred else "⭐"
+        if st.button(star_label, use_container_width=True, key="starred_btn", help="Starred"):
             st.session_state.show_starred = not st.session_state.show_starred
+            st.session_state.show_sessions = False
             st.rerun()
 
     with tc6:
         st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
-        if st.button("🗑️", use_container_width=True, key="new_chat_btn", help="New Chat"):
-            st.session_state.messages = []
-            st.session_state.starred = []
+        sess_count = len(st.session_state.sessions)
+        if st.button(f"💬{sess_count}", use_container_width=True, key="sessions_btn", help="Chat Sessions"):
+            st.session_state.show_sessions = not st.session_state.show_sessions
             st.session_state.show_starred = False
             st.rerun()
 
     with tc7:
+        st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
+        if st.button("➕", use_container_width=True, key="new_session_btn", help="New Chat Session"):
+            new_session()
+            st.rerun()
+
+    with tc8:
         st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
         if st.button("🚪", use_container_width=True, key="logout_btn", help="Logout"):
             for k, v in defaults.items():
@@ -603,11 +779,38 @@ def chat_page():
     # ── Session info bar ──
     remaining = max(0, int((SESSION_TIMEOUT - (time.time() - st.session_state.last_activity)) / 60))
     msg_count = len(st.session_state.messages)
+    active_name = st.session_state.sessions.get(st.session_state.active_session, {}).get("name", "Chat")
     st.markdown(
         f"<p style='text-align:right; color:{t['sub']}; font-size:0.72rem; margin-bottom:0.3rem;'>"
-        f"⏱️ ~{remaining} min &nbsp;|&nbsp; 🎭 {st.session_state.conv_mode} &nbsp;|&nbsp; 💬 {msg_count} messages</p>",
+        f"⏱️ ~{remaining} min &nbsp;|&nbsp; 🎭 {st.session_state.conv_mode} &nbsp;|&nbsp; 💬 {active_name} ({msg_count} messages)</p>",
         unsafe_allow_html=True
     )
+
+    # ── Sessions panel ──
+    if st.session_state.show_sessions:
+        st.markdown(f"<div class='summary-title'>💬 Chat Sessions</div>", unsafe_allow_html=True)
+        for sid, sdata in st.session_state.sessions.items():
+            is_active = sid == st.session_state.active_session
+            msg_n = len(sdata["messages"])
+            sc1, sc2, sc3 = st.columns([5, 1, 1])
+            with sc1:
+                card_class = "session-card session-active" if is_active else "session-card"
+                st.markdown(f"""
+                <div class="{card_class}">
+                  <span class="session-name">{'▶ ' if is_active else ''}{sdata['name']}</span>
+                  <span class="session-meta">{msg_n} messages</span>
+                </div>""", unsafe_allow_html=True)
+            with sc2:
+                if not is_active:
+                    if st.button("Open", key=f"open_{sid}"):
+                        switch_session(sid)
+                        st.rerun()
+            with sc3:
+                if len(st.session_state.sessions) > 1 and not is_active:
+                    if st.button("🗑", key=f"del_{sid}"):
+                        delete_session(sid)
+                        st.rerun()
+        st.markdown("---")
 
     # ── Starred messages panel ──
     if st.session_state.show_starred:
@@ -619,16 +822,51 @@ def chat_page():
             st.info("No starred messages yet. Click ⭐ on any response to save it.")
         st.markdown("---")
 
-    # ── Smart summary button (show if 6+ messages) ──
+    # ── Smart summary + Export buttons (show if 6+ messages) ──
     if len(st.session_state.messages) >= 6:
-        if st.button("📋 Summarize this conversation", use_container_width=False, key="summarize_btn"):
-            with st.spinner("Generating summary..."):
-                summary = get_summary()
-            st.markdown(f"""
-            <div class="summary-box">
-              <div class="summary-title">📋 Conversation Summary</div>
-              {summary}
-            </div>""", unsafe_allow_html=True)
+        ex_col1, ex_col2 = st.columns([1, 1])
+        with ex_col1:
+            if st.button("📋 Summarize this conversation", use_container_width=True, key="summarize_btn"):
+                with st.spinner("Generating summary..."):
+                    summary = get_summary()
+                st.markdown(f"""
+                <div class="summary-box">
+                  <div class="summary-title">📋 Conversation Summary</div>
+                  {summary}
+                </div>""", unsafe_allow_html=True)
+        with ex_col2:
+            # Build export text
+            active_name = st.session_state.sessions.get(
+                st.session_state.active_session, {}
+            ).get("name", "Chat")
+            export_lines = [
+                "=" * 50,
+                f"  PLM GPT — Conversation Export",
+                f"  Session : {active_name}",
+                f"  Mode    : {st.session_state.conv_mode}",
+                f"  Exported: {datetime.datetime.now().strftime('%d %b %Y, %I:%M %p')}",
+                "=" * 50,
+                "",
+            ]
+            for msg in st.session_state.messages:
+                role = "You" if msg["role"] == "user" else "PLM GPT"
+                ts   = msg.get("time", "")
+                export_lines.append(f"[{ts}]  {role}")
+                export_lines.append(msg["content"])
+                export_lines.append("")
+            export_lines.append("=" * 50)
+            export_lines.append("  Developed by Pranav Chakravorty")
+            export_lines.append("=" * 50)
+            export_text = "\n".join(export_lines)
+            filename = f"plmgpt_{active_name.replace(' ', '_').lower()}_{datetime.datetime.now().strftime('%Y%m%d_%H%M')}.txt"
+            st.download_button(
+                label="⬇️ Export Chat",
+                data=export_text,
+                file_name=filename,
+                mime="text/plain",
+                use_container_width=True,
+                key="export_btn",
+            )
 
     # ── Welcome / Prompt suggestions ──
     if not st.session_state.messages:
@@ -659,6 +897,7 @@ def chat_page():
             "role": "assistant", "content": full_reply,
             "time": now_str(), "feedback": None, "starred": False,
         })
+        save_active_session()
         st.rerun()
 
     # ── Chat history ──
@@ -685,8 +924,8 @@ def chat_page():
               {msg['content']}
             </div>""", unsafe_allow_html=True)
 
-            # ── Feedback + Star row ──
-            fb_col1, fb_col2, fb_col3, fb_col4 = st.columns([1, 1, 1, 6])
+            # ── Feedback + Star + Copy row ──
+            fb_col1, fb_col2, fb_col3, fb_col4, fb_col5 = st.columns([1, 1, 1, 1, 5])
             feedback = msg.get("feedback")
             star_icon = "⭐" if is_starred else "☆"
 
@@ -707,7 +946,15 @@ def chat_page():
                         st.session_state.messages[i]["starred"] = False
                         if msg["content"] in st.session_state.starred:
                             st.session_state.starred.remove(msg["content"])
+                    save_active_session()
                     st.rerun()
+            with fb_col4:
+                # Copy button via JS clipboard
+                escaped = msg["content"].replace("'", "\\'").replace("\n", "\\n").replace("`", "\\`")
+                st.markdown(f"""
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('{escaped}').then(()=>{{
+                  this.innerHTML='✓ Copied'; setTimeout(()=>{{this.innerHTML='📋 Copy'}},1500);
+                }})">📋 Copy</button>""", unsafe_allow_html=True)
 
             if feedback == "liked":
                 st.markdown(f"<p style='font-size:0.7rem; color:{t['accent']}; margin-top:-0.3rem;'>✓ Marked as helpful</p>", unsafe_allow_html=True)
@@ -716,13 +963,10 @@ def chat_page():
 
     st.markdown("<div style='margin-top:0.8rem;'></div>", unsafe_allow_html=True)
 
-    # ── Voice input button ──
-    st.markdown(VOICE_JS, unsafe_allow_html=True)
-
     # ── Input form ──
     with st.form(key="chat_form", clear_on_submit=True):
         user_input = st.text_input(
-            "", placeholder="Type your message or use 🎙️ Voice above...",
+            "", placeholder="Type your message here...",
             key="input", max_chars=3000,
         )
         submit = st.form_submit_button("Ask PLM GPT", use_container_width=True)
@@ -783,7 +1027,28 @@ def chat_page():
                 "role": "assistant", "content": full_reply,
                 "time": now_str(), "feedback": None, "starred": False,
             })
+            save_active_session()
             st.rerun()
+
+    # ── Auto-scroll to bottom ──
+    st.markdown("""
+    <script>
+    (function() {
+      function scrollToBottom() {
+        const doc = window.parent.document;
+        const scrollable = doc.querySelector('[data-testid="stAppViewBlockContainer"]')
+                        || doc.querySelector('section.main')
+                        || doc.documentElement;
+        if (scrollable) {
+          scrollable.scrollTop = scrollable.scrollHeight;
+        }
+        window.parent.scrollTo(0, window.parent.document.body.scrollHeight);
+      }
+      // Small delay to let DOM render
+      setTimeout(scrollToBottom, 200);
+    })();
+    </script>
+    """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────
 #  ENTRY POINT
