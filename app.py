@@ -3,7 +3,7 @@ import streamlit as st
 from groq import Groq
 
 # ─────────────────────────────────────────
-#  PAGE CONFIG  (must be first Streamlit call)
+#  PAGE CONFIG
 # ─────────────────────────────────────────
 st.set_page_config(
     page_title="PLM GPT",
@@ -13,31 +13,31 @@ st.set_page_config(
 )
 
 # ─────────────────────────────────────────
-#  HIDE ALL STREAMLIT BRANDING & CHROME
+#  HIDE ALL STREAMLIT BRANDING
 # ─────────────────────────────────────────
-HIDE_ST = """
+st.markdown("""
 <style>
   #MainMenu, header, footer,
   [data-testid="stToolbar"],
   [data-testid="stDecoration"],
   [data-testid="stStatusWidget"],
   [data-testid="stSidebarNav"],
-  .stDeployButton, #stDecoration { display: none !important; visibility: hidden !important; }
+  [data-testid="collapsedControl"],
+  .stDeployButton { display:none !important; visibility:hidden !important; }
 </style>
-"""
-st.markdown(HIDE_ST, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────
 #  SESSION STATE DEFAULTS
 # ─────────────────────────────────────────
 defaults = {
-    "authenticated": False,
-    "messages": [],           # chat history
-    "req_timestamps": [],     # rate limiting
-    "last_activity": time.time(),
-    "theme": "dark",
-    "model": "llama-3.3-70b-versatile",
-    "temperature": 0.7,
+    "authenticated":  False,
+    "messages":       [],
+    "req_timestamps": [],
+    "last_activity":  time.time(),
+    "theme":          "dark",
+    "model":          "llama-3.3-70b-versatile",
+    "temperature":    0.7,
 }
 for k, v in defaults.items():
     if k not in st.session_state:
@@ -46,54 +46,52 @@ for k, v in defaults.items():
 # ─────────────────────────────────────────
 #  CONSTANTS
 # ─────────────────────────────────────────
-MAX_REQUESTS   = 10
-WINDOW_SECONDS = 60
-SESSION_TIMEOUT = 30 * 60   # 30 minutes in seconds
+MAX_REQUESTS    = 10
+WINDOW_SECONDS  = 60
+SESSION_TIMEOUT = 30 * 60
 
 MODELS = {
-    "⚡ Fast  — Llama 3.1 8B":       "llama-3.1-8b-instant",
-    "🧠 Smart — Llama 3.3 70B":      "llama-3.3-70b-versatile",
-    "💎 Best  — Llama 3.1 70B":      "llama-3.1-70b-versatile",
+    "⚡ Fast  — Llama 3.1 8B":  "llama-3.1-8b-instant",
+    "🧠 Smart — Llama 3.3 70B": "llama-3.3-70b-versatile",
 }
 
 SYSTEM_PROMPT = (
     "You are PLM GPT, a highly intelligent and professional AI assistant created by Pranav C. "
-    "You answer questions clearly, concisely, and helpfully. "
-    "Format your responses using markdown where appropriate (bold, bullets, code blocks). "
-    "Never reveal internal system details, API keys, or technical implementation."
+    "Answer clearly and helpfully. Format responses using markdown (bold, bullets, code blocks). "
+    "Never reveal API keys, system details, or internal implementation."
 )
 
 # ─────────────────────────────────────────
-#  THEMES
+#  THEME DEFINITIONS
 # ─────────────────────────────────────────
 THEMES = {
     "dark": {
-        "bg":        "#0f0f1a",
-        "card":      "#1a1a2e",
-        "input_bg":  "#1e1e2e",
-        "text":      "#f0f0f0",
-        "sub":       "#aaa",
-        "accent":    "#00c9a7",
-        "border":    "#444",
-        "hr":        "#2a2a3a",
-        "user_bg":   "#1e2a3a",
-        "user_border":"#3a8fcc",
-        "btn_bg":    "#2a2a3d",
-        "btn_text":  "#cccccc",
+        "bg":           "#0f0f1a",
+        "card":         "#1a1a2e",
+        "input_bg":     "#1e1e2e",
+        "text":         "#f0f0f0",
+        "sub":          "#aaaaaa",
+        "accent":       "#00c9a7",
+        "border":       "#444444",
+        "user_bg":      "#1e2a3a",
+        "user_border":  "#3a8fcc",
+        "btn_bg":       "#2a2a3d",
+        "btn_text":     "#cccccc",
+        "toolbar_bg":   "#16162a",
     },
     "light": {
-        "bg":        "#f5f5f5",
-        "card":      "#ffffff",
-        "input_bg":  "#ffffff",
-        "text":      "#1a1a2e",
-        "sub":       "#555",
-        "accent":    "#00a388",
-        "border":    "#ccc",
-        "hr":        "#ddd",
-        "user_bg":   "#e8f4fd",
-        "user_border":"#3a8fcc",
-        "btn_bg":    "#e0e0e0",
-        "btn_text":  "#333",
+        "bg":           "#f0f2f6",
+        "card":         "#ffffff",
+        "input_bg":     "#ffffff",
+        "text":         "#1a1a2e",
+        "sub":          "#666666",
+        "accent":       "#00a388",
+        "border":       "#cccccc",
+        "user_bg":      "#ddeeff",
+        "user_border":  "#3a8fcc",
+        "btn_bg":       "#e0e0e0",
+        "btn_text":     "#333333",
+        "toolbar_bg":   "#e4e6f0",
     },
 }
 
@@ -101,26 +99,49 @@ def apply_theme():
     t = THEMES[st.session_state.theme]
     st.markdown(f"""
     <style>
-      .stApp {{ background-color: {t['bg']}; }}
-      .plm-title {{ text-align:center; padding:2rem 0 0.5rem; }}
-      .plm-title h1 {{ font-size:2.8rem; font-weight:800; color:{t['text']}; margin-bottom:0.2rem; }}
-      .plm-title .byline {{ color:{t['sub']}; font-size:0.9rem; }}
-      .plm-title .caption {{ color:{t['sub']}; font-size:0.78rem; font-style:italic; opacity:0.7; }}
+      .stApp {{ background-color:{t['bg']}; }}
 
-      /* Chat bubbles */
+      /* ── Toolbar bar ── */
+      .plm-toolbar {{
+        display:flex; align-items:center; justify-content:space-between;
+        background:{t['toolbar_bg']}; border-radius:12px;
+        padding:0.6rem 1rem; margin-bottom:0.8rem;
+        border:1px solid {t['border']};
+        flex-wrap:wrap; gap:0.4rem;
+      }}
+      .plm-toolbar-label {{
+        color:{t['sub']}; font-size:0.78rem; font-weight:600;
+        text-transform:uppercase; letter-spacing:0.05em;
+        margin-bottom:2px;
+      }}
+
+      /* ── Title ── */
+      .plm-title {{ text-align:center; padding:1.5rem 0 0.5rem; }}
+      .plm-title h1 {{
+        font-size:2.6rem; font-weight:800; color:{t['text']}; margin-bottom:0.1rem;
+      }}
+      .plm-title .byline {{ color:{t['sub']}; font-size:0.9rem; }}
+      .plm-title .caption {{
+        color:{t['sub']}; font-size:0.78rem; font-style:italic; opacity:0.65;
+      }}
+
+      /* ── Chat bubbles ── */
       .msg-user {{
         background:{t['user_bg']}; border-left:4px solid {t['user_border']};
-        border-radius:10px; padding:0.9rem 1.2rem; margin:0.5rem 0;
+        border-radius:10px; padding:0.8rem 1.1rem; margin:0.45rem 0;
         color:{t['text']}; font-size:0.95rem; line-height:1.6;
       }}
-      .msg-assistant {{
+      .msg-bot {{
         background:{t['card']}; border-left:4px solid {t['accent']};
-        border-radius:10px; padding:0.9rem 1.2rem; margin:0.5rem 0;
+        border-radius:10px; padding:0.8rem 1.1rem; margin:0.45rem 0;
         color:{t['text']}; font-size:0.95rem; line-height:1.7;
       }}
-      .msg-label {{ font-size:0.75rem; font-weight:700; margin-bottom:0.3rem; opacity:0.6; }}
+      .msg-label {{
+        font-size:0.72rem; font-weight:700; margin-bottom:0.25rem;
+        opacity:0.55; text-transform:uppercase; letter-spacing:0.06em;
+      }}
 
-      /* Input */
+      /* ── Input ── */
       .stTextInput > div > div > input {{
         background-color:{t['input_bg']} !important; color:{t['text']} !important;
         border:1px solid {t['border']} !important; border-radius:10px !important;
@@ -131,24 +152,30 @@ def apply_theme():
         box-shadow:0 0 0 2px {t['accent']}33 !important;
       }}
 
-      /* Submit button */
-      .stFormSubmitButton > button {{
+      /* ── Buttons ── */
+      .stFormSubmitButton > button, .stButton > button {{
         background-color:{t['btn_bg']}; color:{t['btn_text']};
         border:1px solid {t['border']}; border-radius:10px;
-        padding:0.6rem 2rem; font-size:1rem; font-weight:600; width:100%;
+        padding:0.5rem 1.2rem; font-size:0.9rem; font-weight:600;
         transition:all 0.2s;
       }}
-      .stFormSubmitButton > button:hover {{
+      .stFormSubmitButton > button:hover, .stButton > button:hover {{
         background-color:{t['accent']}; color:{t['bg']};
         border-color:{t['accent']};
       }}
 
-      /* Sidebar */
-      [data-testid="stSidebar"] {{
-        background-color:{t['card']};
+      /* ── Slider ── */
+      .stSlider > div {{ color:{t['text']}; }}
+
+      /* ── Select box ── */
+      .stSelectbox > div > div {{
+        background-color:{t['input_bg']} !important;
+        color:{t['text']} !important;
+        border:1px solid {t['border']} !important;
+        border-radius:10px !important;
       }}
 
-      hr {{ border-color:{t['hr']}; }}
+      hr {{ border-color:{t['border']}; margin:0.8rem 0; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -157,7 +184,7 @@ def apply_theme():
 # ─────────────────────────────────────────
 def is_rate_limited() -> bool:
     now = time.time()
-    ts = [t for t in st.session_state.req_timestamps if now - t < WINDOW_SECONDS]
+    ts = [x for x in st.session_state.req_timestamps if now - x < WINDOW_SECONDS]
     if len(ts) >= MAX_REQUESTS:
         return True
     ts.append(now)
@@ -177,7 +204,6 @@ def get_response(query: str) -> str:
     try:
         client = Groq(api_key=st.secrets["GROQ_API_KEY"])
         history = [{"role": "system", "content": SYSTEM_PROMPT}]
-        # send last 10 messages for context
         for m in st.session_state.messages[-10:]:
             history.append({"role": m["role"], "content": m["content"]})
         history.append({"role": "user", "content": query})
@@ -187,9 +213,8 @@ def get_response(query: str) -> str:
             messages=history,
             max_tokens=1024,
             temperature=st.session_state.temperature,
-            stream=True,   # streaming enabled
+            stream=True,
         )
-        # collect streamed chunks
         result = ""
         for chunk in response:
             delta = chunk.choices[0].delta.content
@@ -200,94 +225,82 @@ def get_response(query: str) -> str:
         return "⚠️ Something went wrong. Please try again in a moment."
 
 # ─────────────────────────────────────────
-#  PASSWORD GATE
+#  LOGIN PAGE
 # ─────────────────────────────────────────
 def login_page():
     t = THEMES[st.session_state.theme]
+    st.markdown(f"<style>.stApp{{background-color:{t['bg']};}}</style>", unsafe_allow_html=True)
     st.markdown(f"""
-    <style>.stApp {{ background-color:{t['bg']}; }}</style>
-    <div style="text-align:center; padding:4rem 0 1rem;">
+    <div style="text-align:center; padding:4rem 0 2rem;">
       <h1 style="font-size:2.8rem; font-weight:800; color:{t['text']};">🤖 PLM GPT</h1>
-      <p style="color:{t['sub']}; font-size:0.95rem;">Enter password to continue</p>
+      <p style="color:{t['sub']}; font-size:0.95rem; margin-top:0.5rem;">
+        Enter password to continue
+      </p>
     </div>
     """, unsafe_allow_html=True)
 
-    with st.form("login_form"):
-        pwd = st.text_input("Password", type="password", placeholder="Enter password...")
-        login_btn = st.form_submit_button("Login", use_container_width=True)
-
-    if login_btn:
-        if pwd == st.secrets.get("APP_PASSWORD", ""):
-            st.session_state.authenticated = True
-            st.session_state.last_activity = time.time()
-            st.rerun()
-        else:
-            st.error("Incorrect password. Try again.")
-
-# ─────────────────────────────────────────
-#  SIDEBAR
-# ─────────────────────────────────────────
-def render_sidebar():
-    with st.sidebar:
-        t = THEMES[st.session_state.theme]
-        st.markdown(f"<h3 style='color:{t['text']}'>⚙️ Settings</h3>", unsafe_allow_html=True)
-        st.markdown("---")
-
-        # Theme toggle
-        theme_label = "☀️ Switch to Light" if st.session_state.theme == "dark" else "🌙 Switch to Dark"
-        if st.button(theme_label, use_container_width=True):
-            st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
-            st.rerun()
-
-        st.markdown("---")
-
-        # Model selector
-        st.markdown(f"<p style='color:{t['sub']}; font-size:0.85rem; font-weight:600;'>🧠 MODEL</p>", unsafe_allow_html=True)
-        selected_label = st.selectbox(
-            "", list(MODELS.keys()),
-            index=list(MODELS.values()).index(st.session_state.model),
-            label_visibility="collapsed",
-        )
-        st.session_state.model = MODELS[selected_label]
-
-        st.markdown("---")
-
-        # Temperature
-        st.markdown(f"<p style='color:{t['sub']}; font-size:0.85rem; font-weight:600;'>🎨 CREATIVITY</p>", unsafe_allow_html=True)
-        st.session_state.temperature = st.slider(
-            "", min_value=0.0, max_value=1.0,
-            value=st.session_state.temperature, step=0.1,
-            label_visibility="collapsed",
-        )
-        temp_label = "🧊 Factual" if st.session_state.temperature < 0.4 else ("⚖️ Balanced" if st.session_state.temperature < 0.75 else "🔥 Creative")
-        st.markdown(f"<p style='color:{t['sub']}; font-size:0.8rem; text-align:center'>{temp_label}</p>", unsafe_allow_html=True)
-
-        st.markdown("---")
-
-        # New chat + logout
-        if st.button("🗑️ New Chat", use_container_width=True):
-            st.session_state.messages = []
-            st.rerun()
-
-        if st.button("🚪 Logout", use_container_width=True):
-            for k in defaults:
-                st.session_state[k] = defaults[k]
-            st.rerun()
-
-        # Session info
-        st.markdown("---")
-        remaining = max(0, int((SESSION_TIMEOUT - (time.time() - st.session_state.last_activity)) / 60))
-        st.markdown(f"<p style='color:{t['sub']}; font-size:0.75rem; text-align:center'>Session expires in ~{remaining} min</p>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        with st.form("login_form"):
+            pwd = st.text_input("Password", type="password", placeholder="Enter password...")
+            btn = st.form_submit_button("🔓 Login", use_container_width=True)
+        if btn:
+            if pwd == st.secrets.get("APP_PASSWORD", ""):
+                st.session_state.authenticated = True
+                st.session_state.last_activity = time.time()
+                st.rerun()
+            else:
+                st.error("Incorrect password.")
 
 # ─────────────────────────────────────────
 #  MAIN CHAT PAGE
 # ─────────────────────────────────────────
 def chat_page():
     apply_theme()
-    render_sidebar()
     t = THEMES[st.session_state.theme]
 
-    # Header
+    # ── Top toolbar (all controls visible) ──
+    st.markdown('<div class="plm-toolbar">', unsafe_allow_html=True)
+    tc1, tc2, tc3, tc4, tc5 = st.columns([2, 2, 1, 1, 1])
+
+    with tc1:
+        st.markdown(f'<div class="plm-toolbar-label">🧠 Model</div>', unsafe_allow_html=True)
+        sel = st.selectbox("", list(MODELS.keys()),
+            index=list(MODELS.values()).index(st.session_state.model),
+            label_visibility="collapsed", key="model_select")
+        st.session_state.model = MODELS[sel]
+
+    with tc2:
+        temp_val = st.session_state.temperature
+        label = "🧊 Factual" if temp_val < 0.4 else ("⚖️ Balanced" if temp_val < 0.75 else "🔥 Creative")
+        st.markdown(f'<div class="plm-toolbar-label">🎨 Creativity — {label}</div>', unsafe_allow_html=True)
+        st.session_state.temperature = st.slider(
+            "", 0.0, 1.0, st.session_state.temperature, 0.1,
+            label_visibility="collapsed", key="temp_slider")
+
+    with tc3:
+        st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
+        theme_icon = "☀️ Light" if st.session_state.theme == "dark" else "🌙 Dark"
+        if st.button(theme_icon, use_container_width=True, key="theme_btn"):
+            st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
+            st.rerun()
+
+    with tc4:
+        st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
+        if st.button("🗑️ New", use_container_width=True, key="new_chat_btn"):
+            st.session_state.messages = []
+            st.rerun()
+
+    with tc5:
+        st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
+        if st.button("🚪 Exit", use_container_width=True, key="logout_btn"):
+            for k, v in defaults.items():
+                st.session_state[k] = v
+            st.rerun()
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # ── Header ──
     st.markdown(f"""
     <div class="plm-title">
       <h1>🤖 PLM GPT</h1>
@@ -297,22 +310,32 @@ def chat_page():
     """, unsafe_allow_html=True)
     st.markdown("---")
 
-    # Chat history
+    # ── Session timer ──
+    remaining = max(0, int((SESSION_TIMEOUT - (time.time() - st.session_state.last_activity)) / 60))
+    st.markdown(
+        f"<p style='text-align:right; color:{t['sub']}; font-size:0.75rem; margin-bottom:0.5rem;'>"
+        f"⏱️ Session expires in ~{remaining} min</p>",
+        unsafe_allow_html=True
+    )
+
+    # ── Chat history ──
     for msg in st.session_state.messages:
         if msg["role"] == "user":
             st.markdown(f"""
             <div class="msg-user">
-              <div class="msg-label">YOU</div>
+              <div class="msg-label">You</div>
               {msg['content']}
             </div>""", unsafe_allow_html=True)
         else:
             st.markdown(f"""
-            <div class="msg-assistant">
+            <div class="msg-bot">
               <div class="msg-label">PLM GPT</div>
               {msg['content']}
             </div>""", unsafe_allow_html=True)
 
-    # Input form
+    st.markdown("<div style='margin-top:1rem;'></div>", unsafe_allow_html=True)
+
+    # ── Input form ──
     with st.form(key="chat_form", clear_on_submit=True):
         user_input = st.text_input(
             "", placeholder="Type your question here...",
@@ -320,8 +343,8 @@ def chat_page():
         )
         submit = st.form_submit_button("Ask PLM GPT", use_container_width=True)
 
+    # ── Handle submit ──
     if submit:
-        # Session timeout check
         if is_session_expired():
             st.error("Session expired. Please login again.")
             st.session_state.authenticated = False
@@ -335,15 +358,11 @@ def chat_page():
         if not clean:
             st.warning("Please enter a question first.")
         elif is_rate_limited():
-            st.error(f"Too many requests. Max {MAX_REQUESTS} per minute. Please wait.")
+            st.error(f"Too many requests — max {MAX_REQUESTS} per minute. Please wait.")
         else:
-            # Add user message to history
             st.session_state.messages.append({"role": "user", "content": clean})
-
             with st.spinner("PLM GPT is thinking..."):
                 reply = get_response(clean)
-
-            # Add assistant reply to history
             st.session_state.messages.append({"role": "assistant", "content": reply})
             st.rerun()
 
