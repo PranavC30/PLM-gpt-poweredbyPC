@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 # ─────────────────────────────────────────
-#  HIDE ALL STREAMLIT BRANDING
+#  HIDE STREAMLIT BRANDING
 # ─────────────────────────────────────────
 st.markdown("""
 <style>
@@ -43,12 +43,11 @@ MODELS = {
 CONVERSATION_MODES = {
     "💼 Professional": (
         "You are PLM GPT, a highly professional AI assistant created by Pranav Chakravorty. "
-        "Respond formally, precisely, and concisely. Use structured formatting with markdown."
+        "Respond formally, precisely, and concisely. Use structured markdown formatting."
     ),
     "👨‍💻 Code Helper": (
         "You are PLM GPT, an expert programming assistant created by Pranav Chakravorty. "
-        "Focus on clean, efficient code. Always provide code in proper markdown code blocks with language specified. "
-        "Explain your code clearly."
+        "Focus on clean, efficient code in proper markdown code blocks with language specified."
     ),
     "✍️ Creative Writer": (
         "You are PLM GPT, a creative writing assistant created by Pranav Chakravorty. "
@@ -56,9 +55,18 @@ CONVERSATION_MODES = {
     ),
     "📚 Study Buddy": (
         "You are PLM GPT, a friendly study assistant created by Pranav Chakravorty. "
-        "Explain concepts simply and clearly, use examples and analogies. Break down complex topics step by step."
+        "Explain concepts simply with examples and analogies. Break down complex topics step by step."
     ),
 }
+
+PROMPT_SUGGESTIONS = [
+    "✍️ Write a professional introduction email",
+    "🧠 Explain machine learning in simple terms",
+    "💡 Give me 5 unique startup ideas for 2025",
+    "📝 Summarize the key principles of clean code",
+    "🌍 What are the biggest trends in AI right now?",
+    "🔥 Help me prepare for a technical interview",
+]
 
 # ─────────────────────────────────────────
 #  SESSION STATE DEFAULTS
@@ -73,6 +81,9 @@ defaults = {
     "temperature":     0.7,
     "conv_mode":       "💼 Professional",
     "welcome_shown":   False,
+    "starred":         [],       # pinned/starred messages
+    "show_starred":    False,    # toggle starred panel
+    "voice_text":      "",       # voice input result
 }
 for k, v in defaults.items():
     if k not in st.session_state:
@@ -96,6 +107,9 @@ THEMES = {
         "btn_text":    "#cccccc",
         "toolbar_bg":  "#16162a",
         "welcome_bg":  "#0d1f2d",
+        "grad1":       "#0f0f1a",
+        "grad2":       "#1a1a2e",
+        "grad3":       "#0d1a2a",
     },
     "light": {
         "bg":          "#f0f2f6",
@@ -111,26 +125,38 @@ THEMES = {
         "btn_text":    "#333333",
         "toolbar_bg":  "#e4e6f0",
         "welcome_bg":  "#e8f4f8",
+        "grad1":       "#f0f2f6",
+        "grad2":       "#e8f4f0",
+        "grad3":       "#eaf0ff",
     },
 }
 
-# ─────────────────────────────────────────
-#  APPLY THEME
-# ─────────────────────────────────────────
 def apply_theme():
     t = THEMES[st.session_state.theme]
     st.markdown(f"""
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Inter:wght@400;500;600;700;800&display=swap');
 
-      .stApp {{ background-color:{t['bg']}; font-family:'Inter', sans-serif; }}
+      /* ── Animated gradient background ── */
+      @keyframes gradientShift {{
+        0%   {{ background-position: 0% 50%; }}
+        50%  {{ background-position: 100% 50%; }}
+        100% {{ background-position: 0% 50%; }}
+      }}
+      .stApp {{
+        background: linear-gradient(-45deg, {t['grad1']}, {t['grad2']}, {t['grad3']}, {t['bg']});
+        background-size: 400% 400%;
+        animation: gradientShift 12s ease infinite;
+        font-family: 'Inter', sans-serif;
+      }}
 
       /* ── Toolbar ── */
       .plm-toolbar {{
         display:flex; align-items:center; justify-content:space-between;
-        background:{t['toolbar_bg']}; border-radius:12px;
+        background:{t['toolbar_bg']}cc; border-radius:12px;
         padding:0.6rem 1rem; margin-bottom:0.8rem;
         border:1px solid {t['border']}; flex-wrap:wrap; gap:0.4rem;
+        backdrop-filter: blur(8px);
       }}
       .plm-toolbar-label {{
         color:{t['sub']}; font-size:0.75rem; font-weight:600;
@@ -144,55 +170,51 @@ def apply_theme():
         font-family:'Inter', sans-serif; margin-bottom:0.1rem;
       }}
       .plm-title .byline {{ color:{t['sub']}; font-size:0.88rem; font-weight:500; }}
-      .plm-title .caption {{
-        color:{t['sub']}; font-size:0.76rem; font-style:italic; opacity:0.6;
-      }}
+      .plm-title .caption {{ color:{t['sub']}; font-size:0.76rem; font-style:italic; opacity:0.6; }}
 
       /* ── Welcome card ── */
       .welcome-card {{
         background: linear-gradient(135deg, {t['welcome_bg']} 0%, {t['card']} 100%);
-        border: 1px solid {t['accent']}55;
-        border-radius: 16px;
-        padding: 2rem 2.2rem;
-        margin: 1rem 0 1.5rem 0;
-        text-align: center;
-        box-shadow: 0 4px 24px {t['accent']}18;
+        border: 1px solid {t['accent']}55; border-radius: 16px;
+        padding: 2rem 2.2rem; margin: 1rem 0 1rem 0;
+        text-align: center; box-shadow: 0 4px 24px {t['accent']}18;
       }}
       .welcome-greeting {{
         font-family: 'Playfair Display', Georgia, serif;
-        font-size: 1.9rem;
-        font-weight: 600;
-        color: {t['accent']};
-        letter-spacing: 0.01em;
-        margin-bottom: 0.6rem;
-        line-height: 1.3;
+        font-size: 1.9rem; font-weight: 600; color: {t['accent']};
+        letter-spacing: 0.01em; margin-bottom: 0.6rem; line-height: 1.3;
       }}
       .welcome-sub {{
         font-family: 'Playfair Display', Georgia, serif;
-        font-size: 1rem;
-        font-style: italic;
-        color: {t['text']};
-        opacity: 0.85;
-        line-height: 1.7;
-        margin-bottom: 1rem;
+        font-size: 1rem; font-style: italic; color: {t['text']};
+        opacity: 0.85; line-height: 1.7; margin-bottom: 0.5rem;
       }}
       .welcome-dev {{
-        font-family: 'Inter', sans-serif;
-        font-size: 0.72rem;
-        font-weight: 600;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: {t['sub']};
-        opacity: 0.7;
-        margin-top: 0.8rem;
+        font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 600;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        color: {t['sub']}; opacity: 0.7; margin-top: 0.8rem;
       }}
       .welcome-dot {{
-        display: inline-block;
-        width: 6px; height: 6px;
-        background: {t['accent']};
-        border-radius: 50%;
-        margin: 0 6px;
-        vertical-align: middle;
+        display: inline-block; width: 6px; height: 6px;
+        background: {t['accent']}; border-radius: 50%;
+        margin: 0 6px; vertical-align: middle;
+      }}
+
+      /* ── Prompt suggestion cards ── */
+      .prompt-grid {{
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 0.5rem; margin: 0.8rem 0 1rem 0;
+      }}
+      .prompt-card {{
+        background: {t['card']}; border: 1px solid {t['border']};
+        border-radius: 10px; padding: 0.65rem 0.9rem;
+        font-size: 0.82rem; color: {t['text']}; cursor: pointer;
+        transition: all 0.2s; line-height: 1.4;
+        border-left: 3px solid {t['accent']};
+      }}
+      .prompt-card:hover {{
+        border-color: {t['accent']}; background: {t['user_bg']};
+        transform: translateY(-1px);
       }}
 
       /* ── Chat bubbles ── */
@@ -202,32 +224,47 @@ def apply_theme():
         color:{t['text']}; font-size:0.95rem; line-height:1.6;
       }}
       .msg-bot {{
-        background:{t['card']}; border-left:4px solid {t['accent']};
+        background:{t['card']}cc; border-left:4px solid {t['accent']};
         border-radius:10px; padding:0.8rem 1.1rem; margin:0.5rem 0;
         color:{t['text']}; font-size:0.95rem; line-height:1.7;
+        backdrop-filter: blur(4px);
       }}
       .msg-header {{
         display:flex; justify-content:space-between; align-items:center;
         margin-bottom:0.3rem;
       }}
-      .msg-label {{
-        font-size:0.72rem; font-weight:700;
-        opacity:0.55; text-transform:uppercase; letter-spacing:0.07em;
+      .msg-label {{ font-size:0.72rem; font-weight:700; opacity:0.55; text-transform:uppercase; letter-spacing:0.07em; }}
+      .msg-time {{ font-size:0.68rem; color:{t['sub']}; opacity:0.6; }}
+
+      /* ── Feedback buttons ── */
+      .feedback-row {{
+        display:flex; gap:0.4rem; margin-top:0.5rem; align-items:center;
       }}
-      .msg-time {{
-        font-size:0.68rem; color:{t['sub']}; opacity:0.6;
+      .feedback-btn {{
+        background:transparent; border:1px solid {t['border']};
+        border-radius:6px; padding:2px 8px; font-size:0.78rem;
+        cursor:pointer; color:{t['sub']}; transition:all 0.15s;
+      }}
+      .feedback-btn:hover {{ background:{t['accent']}22; border-color:{t['accent']}; }}
+      .feedback-liked {{ background:{t['accent']}22 !important; border-color:{t['accent']} !important; color:{t['accent']} !important; }}
+      .feedback-disliked {{ background:#e0555522 !important; border-color:#e05555 !important; color:#e05555 !important; }}
+
+      /* ── Starred panel ── */
+      .starred-card {{
+        background:{t['card']}; border:1px solid {t['accent']}66;
+        border-radius:10px; padding:0.8rem 1rem; margin:0.4rem 0;
+        color:{t['text']}; font-size:0.88rem; line-height:1.6;
+        border-left:3px solid {t['accent']};
       }}
 
       /* ── Typing animation ── */
       .typing-indicator {{
-        display:flex; align-items:center; gap:5px;
-        padding:0.8rem 1.1rem;
+        display:flex; align-items:center; gap:5px; padding:0.8rem 1.1rem;
         background:{t['card']}; border-left:4px solid {t['accent']};
         border-radius:10px; margin:0.5rem 0;
       }}
       .typing-dot {{
-        width:8px; height:8px; border-radius:50%;
-        background:{t['accent']};
+        width:8px; height:8px; border-radius:50%; background:{t['accent']};
         animation: typingBounce 1.2s infinite ease-in-out;
       }}
       .typing-dot:nth-child(2) {{ animation-delay:0.2s; }}
@@ -236,16 +273,22 @@ def apply_theme():
         0%,60%,100% {{ transform:translateY(0); opacity:0.4; }}
         30% {{ transform:translateY(-6px); opacity:1; }}
       }}
-      .typing-text {{
-        font-size:0.8rem; color:{t['sub']}; margin-left:4px; font-style:italic;
+      .typing-text {{ font-size:0.8rem; color:{t['sub']}; margin-left:4px; font-style:italic; }}
+
+      /* ── Streaming box ── */
+      .stream-box {{
+        background:{t['card']}; border-left:4px solid {t['accent']};
+        border-radius:10px; padding:0.8rem 1.1rem; margin:0.5rem 0;
+        color:{t['text']}; font-size:0.95rem; line-height:1.7; min-height:2rem;
+        white-space: pre-wrap;
       }}
 
       /* ── Char counter ── */
       .char-counter {{
-        text-align:right; font-size:0.72rem;
-        color:{t['sub']}; margin-top:-0.6rem; margin-bottom:0.5rem; opacity:0.7;
+        text-align:right; font-size:0.72rem; color:{t['sub']};
+        margin-top:-0.5rem; margin-bottom:0.4rem; opacity:0.7;
       }}
-      .char-warn {{ color:#f0a500 !important; opacity:1 !important; }}
+      .char-warn  {{ color:#f0a500 !important; opacity:1 !important; }}
       .char-danger {{ color:#e05555 !important; opacity:1 !important; }}
 
       /* ── Input ── */
@@ -263,12 +306,10 @@ def apply_theme():
       .stFormSubmitButton > button, .stButton > button {{
         background-color:{t['btn_bg']}; color:{t['btn_text']};
         border:1px solid {t['border']}; border-radius:10px;
-        padding:0.5rem 1.2rem; font-size:0.9rem; font-weight:600;
-        transition:all 0.2s;
+        padding:0.5rem 1.2rem; font-size:0.9rem; font-weight:600; transition:all 0.2s;
       }}
       .stFormSubmitButton > button:hover, .stButton > button:hover {{
-        background-color:{t['accent']}; color:{t['bg']};
-        border-color:{t['accent']};
+        background-color:{t['accent']}; color:{t['bg']}; border-color:{t['accent']};
       }}
 
       /* ── Selectbox ── */
@@ -277,9 +318,76 @@ def apply_theme():
         border:1px solid {t['border']} !important; border-radius:10px !important;
       }}
 
+      /* ── Summary box ── */
+      .summary-box {{
+        background: linear-gradient(135deg, {t['welcome_bg']}, {t['card']});
+        border: 1px solid {t['accent']}44; border-radius:12px;
+        padding:1.2rem 1.4rem; margin:0.8rem 0;
+        color:{t['text']}; font-size:0.92rem; line-height:1.7;
+      }}
+      .summary-title {{
+        font-family:'Playfair Display',serif; color:{t['accent']};
+        font-size:1rem; font-weight:600; margin-bottom:0.5rem;
+      }}
+
       hr {{ border-color:{t['border']}; margin:0.7rem 0; }}
     </style>
     """, unsafe_allow_html=True)
+
+# ─────────────────────────────────────────
+#  VOICE INPUT (Web Speech API via JS)
+# ─────────────────────────────────────────
+VOICE_JS = """
+<script>
+function startVoice() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert("Voice input not supported in this browser. Please use Chrome.");
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const rec = new SR();
+  rec.lang = 'en-US';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+
+  const btn = document.getElementById('voice-btn');
+  btn.innerHTML = '🔴 Listening...';
+  btn.style.borderColor = '#e05555';
+  btn.style.color = '#e05555';
+
+  rec.onresult = function(e) {
+    const txt = e.results[0][0].transcript;
+    // write into the Streamlit text input
+    const inputs = window.parent.document.querySelectorAll('input[type="text"]');
+    if (inputs.length > 0) {
+      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+      nativeInputValueSetter.call(inputs[inputs.length-1], txt);
+      inputs[inputs.length-1].dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    btn.innerHTML = '🎙️ Voice';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+  };
+  rec.onerror = function() {
+    btn.innerHTML = '🎙️ Voice';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+  };
+  rec.onend = function() {
+    btn.innerHTML = '🎙️ Voice';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+  };
+  rec.start();
+}
+</script>
+<button id="voice-btn" onclick="startVoice()"
+  style="background:transparent; border:1px solid #444; border-radius:8px;
+         padding:6px 14px; font-size:0.88rem; font-weight:600; cursor:pointer;
+         color:#aaa; transition:all 0.2s; margin-bottom:0.5rem;">
+  🎙️ Voice
+</button>
+"""
 
 # ─────────────────────────────────────────
 #  HELPERS
@@ -305,11 +413,14 @@ def sanitize(text: str) -> str:
 def now_str() -> str:
     return datetime.datetime.now().strftime("%I:%M %p")
 
-def get_response(query: str) -> str:
+def get_system_prompt() -> str:
+    return CONVERSATION_MODES[st.session_state.conv_mode]
+
+def stream_response(query: str):
+    """Generator: yields text chunks from Groq streaming API."""
     try:
         client = Groq(api_key=st.secrets["GROQ_API_KEY"])
-        system_prompt = CONVERSATION_MODES[st.session_state.conv_mode]
-        history = [{"role": "system", "content": system_prompt}]
+        history = [{"role": "system", "content": get_system_prompt()}]
         for m in st.session_state.messages[-10:]:
             history.append({"role": m["role"], "content": m["content"]})
         history.append({"role": "user", "content": query})
@@ -321,14 +432,33 @@ def get_response(query: str) -> str:
             temperature=st.session_state.temperature,
             stream=True,
         )
-        result = ""
         for chunk in response:
             delta = chunk.choices[0].delta.content
             if delta:
-                result += delta
-        return result
+                yield delta
     except Exception:
-        return "⚠️ Something went wrong. Please try again in a moment."
+        yield "⚠️ Something went wrong. Please try again in a moment."
+
+def get_summary() -> str:
+    """Summarize the full conversation."""
+    try:
+        client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+        convo = "\n".join(
+            f"{'User' if m['role']=='user' else 'PLM GPT'}: {m['content']}"
+            for m in st.session_state.messages
+        )
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "system", "content": "Summarize the following conversation in 5-7 concise bullet points. Be precise and professional."},
+                {"role": "user", "content": convo},
+            ],
+            max_tokens=512,
+            temperature=0.3,
+        )
+        return response.choices[0].message.content
+    except Exception:
+        return "⚠️ Could not generate summary."
 
 # ─────────────────────────────────────────
 #  LOGIN PAGE
@@ -341,12 +471,9 @@ def login_page():
       <h1 style="font-size:2.8rem; font-weight:800; color:{t['text']}; font-family:'Inter',sans-serif;">
         🤖 PLM GPT
       </h1>
-      <p style="color:{t['sub']}; font-size:0.95rem; margin-top:0.5rem;">
-        Enter password to continue
-      </p>
+      <p style="color:{t['sub']}; font-size:0.95rem; margin-top:0.5rem;">Enter password to continue</p>
     </div>
     """, unsafe_allow_html=True)
-
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         with st.form("login_form"):
@@ -373,10 +500,9 @@ def render_welcome():
         Your intelligent companion for thoughtful conversations,<br>
         creative exploration, and precise answers — whenever you need them.
       </div>
-      <div style="margin: 0.8rem 0; color:{t['accent']}; font-size:1.4rem;">✦ &nbsp; ✦ &nbsp; ✦</div>
+      <div style="margin:0.8rem 0; color:{t['accent']}; font-size:1.3rem;">✦ &nbsp; ✦ &nbsp; ✦</div>
       <div class="welcome-sub" style="font-size:0.88rem; opacity:0.75;">
-        Select a conversation mode from the toolbar above,<br>
-        then type your first message to begin.
+        Choose a conversation mode, or pick a suggestion below to get started.
       </div>
       <div class="welcome-dev">
         <span class="welcome-dot"></span>
@@ -385,6 +511,20 @@ def render_welcome():
       </div>
     </div>
     """, unsafe_allow_html=True)
+
+    # ── Prompt suggestion cards ──
+    st.markdown(f"<p style='text-align:center; color:{t['sub']}; font-size:0.8rem; margin-bottom:0.3rem;'>✨ Try one of these</p>", unsafe_allow_html=True)
+    cols = st.columns(2)
+    for i, suggestion in enumerate(PROMPT_SUGGESTIONS):
+        with cols[i % 2]:
+            if st.button(suggestion, key=f"suggest_{i}", use_container_width=True):
+                clean = suggestion.split(" ", 1)[1] if suggestion[0] in "✍🧠💡📝🌍🔥" else suggestion
+                st.session_state.messages.append({
+                    "role": "user", "content": clean, "time": now_str(),
+                    "feedback": None, "starred": False,
+                })
+                st.session_state["_pending_query"] = clean
+                st.rerun()
 
 # ─────────────────────────────────────────
 #  CHAT PAGE
@@ -395,7 +535,7 @@ def chat_page():
 
     # ── Toolbar ──
     st.markdown('<div class="plm-toolbar">', unsafe_allow_html=True)
-    tc1, tc2, tc3, tc4, tc5, tc6 = st.columns([2, 2, 2, 1, 1, 1])
+    tc1, tc2, tc3, tc4, tc5, tc6, tc7 = st.columns([2, 2, 2, 1, 1, 1, 1])
 
     with tc1:
         st.markdown('<div class="plm-toolbar-label">🧠 Model</div>', unsafe_allow_html=True)
@@ -407,7 +547,7 @@ def chat_page():
     with tc2:
         temp_val = st.session_state.temperature
         lbl = "🧊 Factual" if temp_val < 0.4 else ("⚖️ Balanced" if temp_val < 0.75 else "🔥 Creative")
-        st.markdown(f'<div class="plm-toolbar-label">🎨 Creativity — {lbl}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="plm-toolbar-label">🎨 {lbl}</div>', unsafe_allow_html=True)
         st.session_state.temperature = st.slider(
             "", 0.0, 1.0, st.session_state.temperature, 0.1,
             label_visibility="collapsed", key="temp_slider")
@@ -422,18 +562,26 @@ def chat_page():
     with tc4:
         st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
         theme_icon = "☀️" if st.session_state.theme == "dark" else "🌙"
-        if st.button(theme_icon, use_container_width=True, key="theme_btn"):
+        if st.button(theme_icon, use_container_width=True, key="theme_btn", help="Toggle theme"):
             st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
             st.rerun()
 
     with tc5:
         st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
-        if st.button("🗑️", use_container_width=True, key="new_chat_btn", help="New Chat"):
-            st.session_state.messages = []
-            st.session_state.welcome_shown = False
+        star_label = f"⭐ {len(st.session_state.starred)}" if st.session_state.starred else "⭐"
+        if st.button(star_label, use_container_width=True, key="starred_btn", help="Starred messages"):
+            st.session_state.show_starred = not st.session_state.show_starred
             st.rerun()
 
     with tc6:
+        st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
+        if st.button("🗑️", use_container_width=True, key="new_chat_btn", help="New Chat"):
+            st.session_state.messages = []
+            st.session_state.starred = []
+            st.session_state.show_starred = False
+            st.rerun()
+
+    with tc7:
         st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
         if st.button("🚪", use_container_width=True, key="logout_btn", help="Logout"):
             for k, v in defaults.items():
@@ -452,21 +600,72 @@ def chat_page():
     """, unsafe_allow_html=True)
     st.markdown("---")
 
-    # ── Session timer ──
+    # ── Session info bar ──
     remaining = max(0, int((SESSION_TIMEOUT - (time.time() - st.session_state.last_activity)) / 60))
+    msg_count = len(st.session_state.messages)
     st.markdown(
         f"<p style='text-align:right; color:{t['sub']}; font-size:0.72rem; margin-bottom:0.3rem;'>"
-        f"⏱️ Session expires in ~{remaining} min &nbsp;|&nbsp; 🎭 {st.session_state.conv_mode}</p>",
+        f"⏱️ ~{remaining} min &nbsp;|&nbsp; 🎭 {st.session_state.conv_mode} &nbsp;|&nbsp; 💬 {msg_count} messages</p>",
         unsafe_allow_html=True
     )
 
-    # ── Welcome card (shown when no messages) ──
+    # ── Starred messages panel ──
+    if st.session_state.show_starred:
+        if st.session_state.starred:
+            st.markdown(f"<div class='summary-title' style='margin-bottom:0.3rem;'>⭐ Starred Messages</div>", unsafe_allow_html=True)
+            for s in st.session_state.starred:
+                st.markdown(f"<div class='starred-card'>{s}</div>", unsafe_allow_html=True)
+        else:
+            st.info("No starred messages yet. Click ⭐ on any response to save it.")
+        st.markdown("---")
+
+    # ── Smart summary button (show if 6+ messages) ──
+    if len(st.session_state.messages) >= 6:
+        if st.button("📋 Summarize this conversation", use_container_width=False, key="summarize_btn"):
+            with st.spinner("Generating summary..."):
+                summary = get_summary()
+            st.markdown(f"""
+            <div class="summary-box">
+              <div class="summary-title">📋 Conversation Summary</div>
+              {summary}
+            </div>""", unsafe_allow_html=True)
+
+    # ── Welcome / Prompt suggestions ──
     if not st.session_state.messages:
         render_welcome()
 
+    # ── Handle pending query from prompt suggestion ──
+    pending = st.session_state.pop("_pending_query", None)
+    if pending:
+        placeholder = st.empty()
+        placeholder.markdown("""
+        <div class="typing-indicator">
+          <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+          <span class="typing-text">PLM GPT is thinking...</span>
+        </div>""", unsafe_allow_html=True)
+
+        full_reply = ""
+        stream_placeholder = st.empty()
+        for chunk in stream_response(pending):
+            full_reply += chunk
+            stream_placeholder.markdown(
+                f'<div class="stream-box"><span class="msg-label" style="display:block;margin-bottom:0.3rem;opacity:0.5;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;">PLM GPT</span>{full_reply}▌</div>',
+                unsafe_allow_html=True
+            )
+        placeholder.empty()
+        stream_placeholder.empty()
+
+        st.session_state.messages.append({
+            "role": "assistant", "content": full_reply,
+            "time": now_str(), "feedback": None, "starred": False,
+        })
+        st.rerun()
+
     # ── Chat history ──
-    for msg in st.session_state.messages:
+    for i, msg in enumerate(st.session_state.messages):
         ts = msg.get("time", "")
+        is_starred = msg.get("starred", False)
+
         if msg["role"] == "user":
             st.markdown(f"""
             <div class="msg-user">
@@ -486,25 +685,54 @@ def chat_page():
               {msg['content']}
             </div>""", unsafe_allow_html=True)
 
+            # ── Feedback + Star row ──
+            fb_col1, fb_col2, fb_col3, fb_col4 = st.columns([1, 1, 1, 6])
+            feedback = msg.get("feedback")
+            star_icon = "⭐" if is_starred else "☆"
+
+            with fb_col1:
+                if st.button("👍", key=f"like_{i}", help="Good response"):
+                    st.session_state.messages[i]["feedback"] = "liked"
+                    st.rerun()
+            with fb_col2:
+                if st.button("👎", key=f"dislike_{i}", help="Bad response"):
+                    st.session_state.messages[i]["feedback"] = "disliked"
+                    st.rerun()
+            with fb_col3:
+                if st.button(star_icon, key=f"star_{i}", help="Star this response"):
+                    if not is_starred:
+                        st.session_state.messages[i]["starred"] = True
+                        st.session_state.starred.append(msg["content"])
+                    else:
+                        st.session_state.messages[i]["starred"] = False
+                        if msg["content"] in st.session_state.starred:
+                            st.session_state.starred.remove(msg["content"])
+                    st.rerun()
+
+            if feedback == "liked":
+                st.markdown(f"<p style='font-size:0.7rem; color:{t['accent']}; margin-top:-0.3rem;'>✓ Marked as helpful</p>", unsafe_allow_html=True)
+            elif feedback == "disliked":
+                st.markdown(f"<p style='font-size:0.7rem; color:#e05555; margin-top:-0.3rem;'>✗ Marked as not helpful</p>", unsafe_allow_html=True)
+
     st.markdown("<div style='margin-top:0.8rem;'></div>", unsafe_allow_html=True)
+
+    # ── Voice input button ──
+    st.markdown(VOICE_JS, unsafe_allow_html=True)
 
     # ── Input form ──
     with st.form(key="chat_form", clear_on_submit=True):
         user_input = st.text_input(
-            "", placeholder="Type your message here...",
+            "", placeholder="Type your message or use 🎙️ Voice above...",
             key="input", max_chars=3000,
         )
         submit = st.form_submit_button("Ask PLM GPT", use_container_width=True)
 
     # ── Character counter ──
     char_count = len(user_input) if user_input else 0
-    max_chars  = 3000
     words      = len(user_input.split()) if user_input and user_input.strip() else 0
     warn_class = "char-danger" if char_count > 2700 else ("char-warn" if char_count > 2000 else "")
     st.markdown(
-        f"<div class='char-counter {warn_class}'>"
-        f"{words} words &nbsp;·&nbsp; {char_count} / {max_chars} characters"
-        f"</div>",
+        f"<div class='char-counter {warn_class}'>{words} words &nbsp;·&nbsp; {char_count} / 3000 chars</div>",
         unsafe_allow_html=True
     )
 
@@ -525,31 +753,35 @@ def chat_page():
         elif is_rate_limited():
             st.error(f"Too many requests — max {MAX_REQUESTS} per minute. Please wait.")
         else:
-            # Save user message with timestamp
             st.session_state.messages.append({
-                "role":    "user",
-                "content": clean,
-                "time":    now_str(),
+                "role": "user", "content": clean,
+                "time": now_str(), "feedback": None, "starred": False,
             })
 
-            # Show typing animation while fetching
-            typing_placeholder = st.empty()
-            typing_placeholder.markdown(f"""
+            # Typing indicator
+            typing_ph = st.empty()
+            typing_ph.markdown("""
             <div class="typing-indicator">
-              <div class="typing-dot"></div>
-              <div class="typing-dot"></div>
-              <div class="typing-dot"></div>
+              <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
               <span class="typing-text">PLM GPT is thinking...</span>
             </div>""", unsafe_allow_html=True)
 
-            reply = get_response(clean)
-            typing_placeholder.empty()
+            # Word-by-word streaming
+            full_reply = ""
+            stream_ph = st.empty()
+            for chunk in stream_response(clean):
+                full_reply += chunk
+                stream_ph.markdown(
+                    f'<div class="stream-box"><span class="msg-label" style="display:block;margin-bottom:0.3rem;opacity:0.5;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;">PLM GPT</span>{full_reply}▌</div>',
+                    unsafe_allow_html=True
+                )
 
-            # Save bot reply with timestamp
+            typing_ph.empty()
+            stream_ph.empty()
+
             st.session_state.messages.append({
-                "role":    "assistant",
-                "content": reply,
-                "time":    now_str(),
+                "role": "assistant", "content": full_reply,
+                "time": now_str(), "feedback": None, "starred": False,
             })
             st.rerun()
 
