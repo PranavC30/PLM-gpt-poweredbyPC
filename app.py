@@ -135,6 +135,111 @@ THEMES = {
     },
 }
 
+# ─────────────────────────────────────────
+#  BACKGROUND ANIMATIONS (particles + orbs)
+# ─────────────────────────────────────────
+BG_ANIMATION = """
+<style>
+#plm-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none; z-index: 0; opacity: 0.55;
+}
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(80px); pointer-events: none;
+  z-index: 0; animation: orbFloat linear infinite;
+}
+.orb-1 {
+  width: 340px; height: 340px;
+  background: radial-gradient(circle, #00c9a733 0%, transparent 70%);
+  top: -80px; left: -80px; animation-duration: 18s;
+}
+.orb-2 {
+  width: 260px; height: 260px;
+  background: radial-gradient(circle, #3a8fcc22 0%, transparent 70%);
+  bottom: 10%; right: -60px; animation-duration: 24s; animation-delay: -8s;
+}
+.orb-3 {
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, #7b4ccc1a 0%, transparent 70%);
+  top: 40%; left: 10%; animation-duration: 30s; animation-delay: -14s;
+}
+@keyframes orbFloat {
+  0%   { transform: translateY(0px) translateX(0px) scale(1); }
+  25%  { transform: translateY(-30px) translateX(20px) scale(1.05); }
+  50%  { transform: translateY(-10px) translateX(-15px) scale(0.97); }
+  75%  { transform: translateY(20px) translateX(10px) scale(1.03); }
+  100% { transform: translateY(0px) translateX(0px) scale(1); }
+}
+[data-testid="stAppViewContainer"] > section,
+[data-testid="stAppViewBlockContainer"],
+.block-container { position: relative; z-index: 1; }
+</style>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<canvas id="plm-canvas"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('plm-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+  const COLORS = ['#00c9a7','#3a8fcc','#7b4ccc','#00c9a755','#3a8fcc55'];
+  const COUNT = 55;
+  const particles = Array.from({ length: COUNT }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2.2 + 0.5,
+    dx: (Math.random() - 0.5) * 0.45,
+    dy: (Math.random() - 0.5) * 0.45,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    alpha: Math.random() * 0.5 + 0.15,
+    pulse: Math.random() * Math.PI * 2,
+  }));
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 130) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(0,201,167,${0.07 * (1 - dist/130)})`;
+          ctx.lineWidth = 0.6;
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    particles.forEach(p => {
+      p.pulse += 0.02;
+      const a = p.alpha + Math.sin(p.pulse) * 0.1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, Math.min(1, a));
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < 0 || p.x > canvas.width)  p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+"""
+
 def apply_theme():
     t = THEMES[st.session_state.theme]
     # Inject background animations
@@ -337,7 +442,7 @@ def apply_theme():
       }}
 
       /* ── Copy button ── */
-      .copy-btn {
+      .copy-btn {{
         background: transparent;
         border: 1px solid {t['border']};
         border-radius: 6px;
@@ -347,7 +452,7 @@ def apply_theme():
         color: {t['sub']};
         transition: all 0.15s;
         margin-left: 4px;
-      }
+      }}
       .copy-btn:hover {{ background:{t['accent']}22; border-color:{t['accent']}; color:{t['accent']}; }}
 
       /* ── Sessions panel ── */
@@ -365,144 +470,6 @@ def apply_theme():
       hr {{ border-color:{t['border']}; margin:0.7rem 0; }}
     </style>
     """, unsafe_allow_html=True)
-
-# ─────────────────────────────────────────
-#  BACKGROUND ANIMATIONS (particles + orbs)
-# ─────────────────────────────────────────
-BG_ANIMATION = """
-<style>
-/* ── Floating particles canvas ── */
-#plm-canvas {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.55;
-}
-
-/* ── Glowing orbs ── */
-.orb {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
-  animation: orbFloat linear infinite;
-}
-.orb-1 {
-  width: 340px; height: 340px;
-  background: radial-gradient(circle, #00c9a733 0%, transparent 70%);
-  top: -80px; left: -80px;
-  animation-duration: 18s;
-}
-.orb-2 {
-  width: 260px; height: 260px;
-  background: radial-gradient(circle, #3a8fcc22 0%, transparent 70%);
-  bottom: 10%; right: -60px;
-  animation-duration: 24s;
-  animation-delay: -8s;
-}
-.orb-3 {
-  width: 200px; height: 200px;
-  background: radial-gradient(circle, #7b4ccc1a 0%, transparent 70%);
-  top: 40%; left: 10%;
-  animation-duration: 30s;
-  animation-delay: -14s;
-}
-@keyframes orbFloat {
-  0%   { transform: translateY(0px) translateX(0px) scale(1); }
-  25%  { transform: translateY(-30px) translateX(20px) scale(1.05); }
-  50%  { transform: translateY(-10px) translateX(-15px) scale(0.97); }
-  75%  { transform: translateY(20px) translateX(10px) scale(1.03); }
-  100% { transform: translateY(0px) translateX(0px) scale(1); }
-}
-
-/* Make sure content sits above canvas */
-[data-testid="stAppViewContainer"] > section,
-[data-testid="stAppViewBlockContainer"],
-.block-container { position: relative; z-index: 1; }
-</style>
-
-<!-- Glowing orbs -->
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-
-<!-- Floating particles -->
-<canvas id="plm-canvas"></canvas>
-<script>
-(function() {
-  const canvas = document.getElementById('plm-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  window.addEventListener('resize', () => {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
-
-  const COLORS = ['#00c9a7', '#3a8fcc', '#7b4ccc', '#00c9a755', '#3a8fcc55'];
-  const COUNT  = 55;
-
-  const particles = Array.from({ length: COUNT }, () => ({
-    x:    Math.random() * canvas.width,
-    y:    Math.random() * canvas.height,
-    r:    Math.random() * 2.2 + 0.5,
-    dx:   (Math.random() - 0.5) * 0.45,
-    dy:   (Math.random() - 0.5) * 0.45,
-    color: COLORS[Math.floor(Math.random() * COLORS.length)],
-    alpha: Math.random() * 0.5 + 0.15,
-    pulse: Math.random() * Math.PI * 2,
-  }));
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw connecting lines
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < 130) {
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(0,201,167,${0.07 * (1 - dist/130)})`;
-          ctx.lineWidth = 0.6;
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
-        }
-      }
-    }
-
-    // Draw particles
-    particles.forEach(p => {
-      p.pulse += 0.02;
-      const pulsedAlpha = p.alpha + Math.sin(p.pulse) * 0.1;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      ctx.globalAlpha = Math.max(0, Math.min(1, pulsedAlpha));
-      ctx.fill();
-      ctx.globalAlpha = 1;
-
-      p.x += p.dx;
-      p.y += p.dy;
-
-      if (p.x < 0 || p.x > canvas.width)  p.dx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-    });
-
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
-</script>
-"""
 
 # ─────────────────────────────────────────
 #  HELPERS
