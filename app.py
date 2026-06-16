@@ -1039,12 +1039,16 @@ def chat_page():
                     save_active_session()
                     st.rerun()
             with fb_col4:
-                # Copy button via JS clipboard
-                escaped = msg["content"].replace("'", "\\'").replace("\n", "\\n").replace("`", "\\`")
+                # Copy button — store text in data attribute to avoid HTML injection
+                import json
+                safe_text = json.dumps(msg["content"])  # properly escaped JSON string
                 st.markdown(f"""
-                <button class="copy-btn" onclick="navigator.clipboard.writeText('{escaped}').then(()=>{{
-                  this.innerHTML='✓ Copied'; setTimeout(()=>{{this.innerHTML='📋 Copy'}},1500);
-                }})">📋 Copy</button>""", unsafe_allow_html=True)
+                <button class="copy-btn"
+                  data-txt={safe_text}
+                  onclick="navigator.clipboard.writeText(this.dataset.txt).then(()=>{{
+                    this.innerHTML='✓ Copied';
+                    setTimeout(()=>{{this.innerHTML='📋 Copy'}},1500);
+                  }})">📋 Copy</button>""", unsafe_allow_html=True)
 
             if feedback == "liked":
                 st.markdown(f"<p style='font-size:0.7rem; color:{t['accent']}; margin-top:-0.3rem;'>✓ Marked as helpful</p>", unsafe_allow_html=True)
