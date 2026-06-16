@@ -1014,8 +1014,8 @@ def chat_page():
               {msg['content']}
             </div>""", unsafe_allow_html=True)
 
-            # ── Feedback + Star + Copy row ──
-            fb_col1, fb_col2, fb_col3, fb_col4, fb_col5 = st.columns([1, 1, 1, 1, 5])
+            # ── Feedback + Star row ──
+            fb_col1, fb_col2, fb_col3, fb_col4 = st.columns([1, 1, 1, 6])
             feedback = msg.get("feedback")
             star_icon = "⭐" if is_starred else "☆"
 
@@ -1038,17 +1038,6 @@ def chat_page():
                             st.session_state.starred.remove(msg["content"])
                     save_active_session()
                     st.rerun()
-            with fb_col4:
-                # Copy button — store text in data attribute to avoid HTML injection
-                import json
-                safe_text = json.dumps(msg["content"])  # properly escaped JSON string
-                st.markdown(f"""
-                <button class="copy-btn"
-                  data-txt={safe_text}
-                  onclick="navigator.clipboard.writeText(this.dataset.txt).then(()=>{{
-                    this.innerHTML='✓ Copied';
-                    setTimeout(()=>{{this.innerHTML='📋 Copy'}},1500);
-                  }})">📋 Copy</button>""", unsafe_allow_html=True)
 
             if feedback == "liked":
                 st.markdown(f"<p style='font-size:0.7rem; color:{t['accent']}; margin-top:-0.3rem;'>✓ Marked as helpful</p>", unsafe_allow_html=True)
