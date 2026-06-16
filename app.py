@@ -140,104 +140,116 @@ THEMES = {
 # ─────────────────────────────────────────
 BG_ANIMATION = """
 <style>
-#plm-canvas {
-  position: fixed; top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  pointer-events: none; z-index: 0; opacity: 0.55;
+/* ── Glowing orbs — pure CSS, no JS needed ── */
+.plm-orb {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
 }
-.orb {
-  position: fixed; border-radius: 50%;
-  filter: blur(80px); pointer-events: none;
-  z-index: 0; animation: orbFloat linear infinite;
+.plm-orb-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle at center, #00c9a740 0%, #00c9a715 40%, transparent 70%);
+  top: -150px; left: -150px;
+  animation: orbMove1 20s ease-in-out infinite;
+  filter: blur(40px);
 }
-.orb-1 {
-  width: 340px; height: 340px;
-  background: radial-gradient(circle, #00c9a733 0%, transparent 70%);
-  top: -80px; left: -80px; animation-duration: 18s;
+.plm-orb-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle at center, #3a8fcc35 0%, #3a8fcc10 40%, transparent 70%);
+  bottom: -100px; right: -100px;
+  animation: orbMove2 25s ease-in-out infinite;
+  filter: blur(50px);
 }
-.orb-2 {
-  width: 260px; height: 260px;
-  background: radial-gradient(circle, #3a8fcc22 0%, transparent 70%);
-  bottom: 10%; right: -60px; animation-duration: 24s; animation-delay: -8s;
+.plm-orb-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle at center, #7b4ccc30 0%, #7b4ccc0d 40%, transparent 70%);
+  top: 35%; left: 5%;
+  animation: orbMove3 30s ease-in-out infinite;
+  filter: blur(45px);
 }
-.orb-3 {
-  width: 200px; height: 200px;
-  background: radial-gradient(circle, #7b4ccc1a 0%, transparent 70%);
-  top: 40%; left: 10%; animation-duration: 30s; animation-delay: -14s;
+.plm-orb-4 {
+  width: 250px; height: 250px;
+  background: radial-gradient(circle at center, #00c9a725 0%, transparent 70%);
+  top: 60%; right: 10%;
+  animation: orbMove4 22s ease-in-out infinite;
+  filter: blur(35px);
 }
-@keyframes orbFloat {
-  0%   { transform: translateY(0px) translateX(0px) scale(1); }
-  25%  { transform: translateY(-30px) translateX(20px) scale(1.05); }
-  50%  { transform: translateY(-10px) translateX(-15px) scale(0.97); }
-  75%  { transform: translateY(20px) translateX(10px) scale(1.03); }
-  100% { transform: translateY(0px) translateX(0px) scale(1); }
+
+@keyframes orbMove1 {
+  0%,100% { transform: translate(0px, 0px) scale(1); }
+  33%      { transform: translate(60px, 40px) scale(1.08); }
+  66%      { transform: translate(20px, 80px) scale(0.95); }
 }
+@keyframes orbMove2 {
+  0%,100% { transform: translate(0px, 0px) scale(1); }
+  33%      { transform: translate(-50px, -40px) scale(1.1); }
+  66%      { transform: translate(-20px, -70px) scale(0.92); }
+}
+@keyframes orbMove3 {
+  0%,100% { transform: translate(0px, 0px) scale(1); }
+  50%      { transform: translate(40px, -50px) scale(1.12); }
+}
+@keyframes orbMove4 {
+  0%,100% { transform: translate(0px, 0px) scale(1); }
+  40%      { transform: translate(-30px, 40px) scale(1.06); }
+  80%      { transform: translate(20px, -20px) scale(0.94); }
+}
+
+/* ── Floating dots — pure CSS ── */
+.plm-dot {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: dotFloat linear infinite;
+}
+.plm-dot-1  { width:3px;  height:3px;  background:#00c9a7; top:10%; left:15%; opacity:0.4; animation-duration:8s;  animation-delay:0s;   }
+.plm-dot-2  { width:2px;  height:2px;  background:#3a8fcc; top:25%; left:80%; opacity:0.3; animation-duration:12s; animation-delay:-3s;  }
+.plm-dot-3  { width:4px;  height:4px;  background:#7b4ccc; top:60%; left:25%; opacity:0.25;animation-duration:10s; animation-delay:-5s;  }
+.plm-dot-4  { width:2px;  height:2px;  background:#00c9a7; top:75%; left:65%; opacity:0.35;animation-duration:15s; animation-delay:-7s;  }
+.plm-dot-5  { width:3px;  height:3px;  background:#3a8fcc; top:40%; left:45%; opacity:0.3; animation-duration:9s;  animation-delay:-2s;  }
+.plm-dot-6  { width:2px;  height:2px;  background:#00c9a7; top:85%; left:10%; opacity:0.4; animation-duration:11s; animation-delay:-4s;  }
+.plm-dot-7  { width:4px;  height:4px;  background:#7b4ccc; top:15%; left:55%; opacity:0.2; animation-duration:14s; animation-delay:-9s;  }
+.plm-dot-8  { width:2px;  height:2px;  background:#3a8fcc; top:50%; left:90%; opacity:0.3; animation-duration:7s;  animation-delay:-1s;  }
+.plm-dot-9  { width:3px;  height:3px;  background:#00c9a7; top:70%; left:40%; opacity:0.35;animation-duration:13s; animation-delay:-6s;  }
+.plm-dot-10 { width:2px;  height:2px;  background:#7b4ccc; top:30%; left:5%;  opacity:0.25;animation-duration:16s; animation-delay:-11s; }
+.plm-dot-11 { width:3px;  height:3px;  background:#00c9a7; top:5%;  left:70%; opacity:0.3; animation-duration:10s; animation-delay:-8s;  }
+.plm-dot-12 { width:2px;  height:2px;  background:#3a8fcc; top:90%; left:50%; opacity:0.4; animation-duration:18s; animation-delay:-13s; }
+
+@keyframes dotFloat {
+  0%   { transform: translateY(0px)   translateX(0px);   opacity: 0.4; }
+  25%  { transform: translateY(-20px) translateX(10px);  opacity: 0.7; }
+  50%  { transform: translateY(-35px) translateX(-8px);  opacity: 0.3; }
+  75%  { transform: translateY(-15px) translateX(15px);  opacity: 0.6; }
+  100% { transform: translateY(0px)   translateX(0px);   opacity: 0.4; }
+}
+
+/* Content above animations */
 [data-testid="stAppViewContainer"] > section,
 [data-testid="stAppViewBlockContainer"],
 .block-container { position: relative; z-index: 1; }
 </style>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-<canvas id="plm-canvas"></canvas>
-<script>
-(function() {
-  const canvas = document.getElementById('plm-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
-  const COLORS = ['#00c9a7','#3a8fcc','#7b4ccc','#00c9a755','#3a8fcc55'];
-  const COUNT = 55;
-  const particles = Array.from({ length: COUNT }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 2.2 + 0.5,
-    dx: (Math.random() - 0.5) * 0.45,
-    dy: (Math.random() - 0.5) * 0.45,
-    color: COLORS[Math.floor(Math.random() * COLORS.length)],
-    alpha: Math.random() * 0.5 + 0.15,
-    pulse: Math.random() * Math.PI * 2,
-  }));
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < 130) {
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(0,201,167,${0.07 * (1 - dist/130)})`;
-          ctx.lineWidth = 0.6;
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
-        }
-      }
-    }
-    particles.forEach(p => {
-      p.pulse += 0.02;
-      const a = p.alpha + Math.sin(p.pulse) * 0.1;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      ctx.globalAlpha = Math.max(0, Math.min(1, a));
-      ctx.fill();
-      ctx.globalAlpha = 1;
-      p.x += p.dx; p.y += p.dy;
-      if (p.x < 0 || p.x > canvas.width)  p.dx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
-</script>
+
+<!-- Orbs -->
+<div class="plm-orb plm-orb-1"></div>
+<div class="plm-orb plm-orb-2"></div>
+<div class="plm-orb plm-orb-3"></div>
+<div class="plm-orb plm-orb-4"></div>
+
+<!-- Floating dots -->
+<div class="plm-dot plm-dot-1"></div>
+<div class="plm-dot plm-dot-2"></div>
+<div class="plm-dot plm-dot-3"></div>
+<div class="plm-dot plm-dot-4"></div>
+<div class="plm-dot plm-dot-5"></div>
+<div class="plm-dot plm-dot-6"></div>
+<div class="plm-dot plm-dot-7"></div>
+<div class="plm-dot plm-dot-8"></div>
+<div class="plm-dot plm-dot-9"></div>
+<div class="plm-dot plm-dot-10"></div>
+<div class="plm-dot plm-dot-11"></div>
+<div class="plm-dot plm-dot-12"></div>
 """
 
 def apply_theme():
