@@ -689,12 +689,12 @@ def splash_screen():
       }
       .splash-logo-ring {
         width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 1.4rem;
-        background: linear-gradient(135deg, #00c9a722, #1a1a2e);
+        background: linear-gradient(135deg, #00c9a718, #1a1a2e);
         border: 2px solid #00c9a755;
         display: flex; align-items: center; justify-content: center;
         box-shadow: 0 0 40px #00c9a730, inset 0 0 20px #00c9a710;
         animation: logoGlow 3s ease-in-out infinite;
-        font-size: 2.6rem; line-height: 1;
+        padding: 4px;
       }
       .splash-title {
         font-size: 3.2rem; font-weight: 800; letter-spacing: -0.02em;
@@ -755,7 +755,25 @@ def splash_screen():
       <div class="splash-orb-2"></div>
       <div class="splash-orb-3"></div>
       <div class="splash-card">
-        <div class="splash-logo-ring">🤖</div>
+        <div class="splash-logo-ring">
+          <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- P -->
+            <text x="3" y="38" font-family="'Inter',sans-serif" font-weight="800" font-size="22"
+                  fill="url(#splashGrad)" letter-spacing="-1">PLM</text>
+            <!-- Animated underline accent -->
+            <rect x="3" y="42" width="48" height="2.5" rx="1.25" fill="url(#splashGrad)" opacity="0.7"/>
+            <!-- Top-right sparkle dot -->
+            <circle cx="48" cy="7" r="3" fill="#00c9a7" opacity="0.9"/>
+            <circle cx="48" cy="7" r="5.5" fill="#00c9a7" opacity="0.2"/>
+            <defs>
+              <linearGradient id="splashGrad" x1="0" y1="0" x2="54" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="55%" stop-color="#00c9a7"/>
+                <stop offset="100%" stop-color="#3a8fcc"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
         <div class="splash-title">PLM GPT</div>
         <div class="splash-tagline">
           Where curiosity meets intelligence —<br>ask, explore, discover.
@@ -961,9 +979,24 @@ def auth_page():
     st.markdown("""
     <div style="text-align:center; padding: 2.5rem 0 0.5rem;">
       <div class="auth-logo-ring" style="width:72px;height:72px;border-radius:50%;margin:0 auto 1rem;
-           background:linear-gradient(135deg,#00c9a718,#1a1a2e);border:1.5px solid #00c9a755;
-           display:flex;align-items:center;justify-content:center;font-size:2rem;line-height:1;
-           box-shadow:0 0 24px #00c9a730;">🤖</div>
+           background:linear-gradient(135deg,#00c9a714,#1a1a2e);border:1.5px solid #00c9a750;
+           display:flex;align-items:center;justify-content:center;
+           box-shadow:0 0 28px #00c9a730, inset 0 0 16px #00c9a708;">
+        <svg width="46" height="46" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <text x="3" y="38" font-family="'Inter',sans-serif" font-weight="800" font-size="22"
+                fill="url(#authGrad)" letter-spacing="-1">PLM</text>
+          <rect x="3" y="42" width="48" height="2.5" rx="1.25" fill="url(#authGrad)" opacity="0.6"/>
+          <circle cx="48" cy="7" r="3" fill="#00c9a7" opacity="0.9"/>
+          <circle cx="48" cy="7" r="5.5" fill="#00c9a7" opacity="0.2"/>
+          <defs>
+            <linearGradient id="authGrad" x1="0" y1="0" x2="54" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="55%" stop-color="#00c9a7"/>
+              <stop offset="100%" stop-color="#3a8fcc"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
       <div class="auth-title">PLM GPT</div>
       <div class="auth-subtitle">Where curiosity meets intelligence</div>
     </div>
