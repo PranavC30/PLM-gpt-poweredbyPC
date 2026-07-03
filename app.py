@@ -1,6 +1,9 @@
 import time
 import datetime
 import hashlib
+import json
+import os
+from pathlib import Path
 import streamlit as st
 from groq import Groq
 
@@ -79,47 +82,104 @@ PROMPT_SUGGESTIONS = [
 ]
 
 # ─────────────────────────────────────────
-#  USER ACCOUNTS  (in-memory store)
+#  PERSISTENT DATABASE  (JSON file)
 # ─────────────────────────────────────────
+# Streamlit Cloud pe /tmp writable hai (restart tak persist karta hai)
+# Local machine pe same directory mein save hoga
+DB_PATH = Path("/tmp/plmgpt_db.json")
+if not DB_PATH.exists():
+    # fallback: project folder ke andar (local dev)
+    _local = Path(__file__).parent / "plmgpt_db.json"
+    DB_PATH = _local
+
+def _load_db() -> dict:
+    """Read the full database from disk. Returns empty structure if missing."""
+    if DB_PATH.exists():
+        try:
+            with open(DB_PATH, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {"users": {}, "chats": {}}
+
+def _save_db(db: dict):
+    """Write the full database to disk atomically."""
+    try:
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+        tmp = DB_PATH.with_suffix(".tmp")
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(db, f, ensure_ascii=False, indent=2)
+        tmp.replace(DB_PATH)
+    except Exception as e:
+        st.toast(f"⚠️ Could not save data: {e}", icon="⚠️")
+
+# ── helpers ──────────────────────────────
 def _hash(pw: str) -> str:
     return hashlib.sha256(pw.encode()).hexdigest()
 
-# Seed a default admin account from secrets so existing users aren't locked out
-_DEFAULT_ADMIN = st.secrets.get("ADMIN_USER", "admin")
-_DEFAULT_PASS  = st.secrets.get("APP_PASSWORD", "plmgpt2024")
-
-if "user_db" not in st.session_state:
-    st.session_state.user_db = {
-        _DEFAULT_ADMIN: {
-            "password_hash": _hash(_DEFAULT_PASS),
+def _seed_admin(db: dict):
+    """Ensure the default admin account always exists."""
+    admin = st.secrets.get("ADMIN_USER", "admin")
+    if admin not in db["users"]:
+        db["users"][admin] = {
+            "password_hash": _hash(st.secrets.get("APP_PASSWORD", "plmgpt2024")),
             "display_name":  "Admin",
             "created_at":    datetime.datetime.now().strftime("%d %b %Y"),
         }
-    }
+        _save_db(db)
 
+# ── load once per interpreter boot ───────
+if "db" not in st.session_state:
+    st.session_state.db = _load_db()
+    _seed_admin(st.session_state.db)
+
+# ── public API ───────────────────────────
 def register_user(username: str, display_name: str, password: str) -> tuple[bool, str]:
     username = username.strip().lower()
     if len(username) < 3:
         return False, "Username must be at least 3 characters."
     if len(password) < 6:
         return False, "Password must be at least 6 characters."
-    if username in st.session_state.user_db:
+    db = st.session_state.db
+    if username in db["users"]:
         return False, "Username already taken. Choose another."
-    st.session_state.user_db[username] = {
+    db["users"][username] = {
         "password_hash": _hash(password),
         "display_name":  display_name.strip() or username,
         "created_at":    datetime.datetime.now().strftime("%d %b %Y"),
     }
+    # init empty chat store for new user
+    if username not in db["chats"]:
+        db["chats"][username] = {}
+    _save_db(db)
     return True, "Account created!"
 
 def verify_login(username: str, password: str) -> tuple[bool, str]:
     username = username.strip().lower()
-    if username not in st.session_state.user_db:
+    db = st.session_state.db
+    if username not in db["users"]:
         return False, "No account found with that username."
-    user = st.session_state.user_db[username]
+    user = db["users"][username]
     if user["password_hash"] != _hash(password):
         return False, "Incorrect password."
     return True, user["display_name"]
+
+def save_user_chats(username: str, sessions_data: dict):
+    """Persist all chat sessions for a user to disk."""
+    if not username:
+        return
+    db = st.session_state.db
+    if "chats" not in db:
+        db["chats"] = {}
+    db["chats"][username] = sessions_data
+    _save_db(db)
+
+def load_user_chats(username: str) -> dict:
+    """Load saved chat sessions for a user from disk."""
+    if not username:
+        return {}
+    db = st.session_state.db
+    return db.get("chats", {}).get(username, {})
 
 # ─────────────────────────────────────────
 #  SESSION STATE DEFAULTS
@@ -553,22 +613,35 @@ def get_summary() -> str:
 #  SESSION MANAGEMENT HELPERS
 # ─────────────────────────────────────────
 def init_sessions():
+    """Load sessions from DB if first time this login, else sync state."""
     if not st.session_state.sessions:
-        st.session_state.sessions["default"] = {
-            "name": "Chat 1",
-            "messages": [],
-            "starred": [],
-        }
+        # Try loading saved chats from disk for this user
+        saved = load_user_chats(st.session_state.current_user)
+        if saved:
+            st.session_state.sessions = saved
+            # restore last active session
+            first_sid = list(saved.keys())[0]
+            st.session_state.active_session = first_sid
+        else:
+            st.session_state.sessions["default"] = {
+                "name": "Chat 1",
+                "messages": [],
+                "starred": [],
+            }
     sid = st.session_state.active_session
-    if sid in st.session_state.sessions:
-        st.session_state.messages = st.session_state.sessions[sid]["messages"]
-        st.session_state.starred  = st.session_state.sessions[sid]["starred"]
+    if sid not in st.session_state.sessions:
+        sid = list(st.session_state.sessions.keys())[0]
+        st.session_state.active_session = sid
+    st.session_state.messages = st.session_state.sessions[sid]["messages"]
+    st.session_state.starred  = st.session_state.sessions[sid]["starred"]
 
 def save_active_session():
+    """Push current messages/starred into sessions dict AND persist to disk."""
     sid = st.session_state.active_session
     if sid in st.session_state.sessions:
         st.session_state.sessions[sid]["messages"] = st.session_state.messages
         st.session_state.sessions[sid]["starred"]  = st.session_state.starred
+    save_user_chats(st.session_state.current_user, st.session_state.sessions)
 
 def switch_session(sid: str):
     save_active_session()
@@ -1057,6 +1130,11 @@ def auth_page():
                         st.session_state.display_name   = result
                         st.session_state.last_activity  = time.time()
                         st.session_state.welcome_shown  = False
+                        # Clear sessions so init_sessions() loads from DB fresh
+                        st.session_state.sessions       = {}
+                        st.session_state.messages       = []
+                        st.session_state.starred        = []
+                        st.session_state.active_session = "default"
                         st.rerun()
                     else:
                         st.markdown(f'<div class="auth-error">⚠️ {result}</div>', unsafe_allow_html=True)
@@ -1257,26 +1335,56 @@ def chat_page():
     # ── Sessions panel ──
     if st.session_state.show_sessions:
         st.markdown(f"<div class='summary-title'>💬 Chat Sessions</div>", unsafe_allow_html=True)
-        for sid, sdata in st.session_state.sessions.items():
+        for sid, sdata in list(st.session_state.sessions.items()):
             is_active = sid == st.session_state.active_session
             msg_n = len(sdata["messages"])
-            sc1, sc2, sc3 = st.columns([5, 1, 1])
+            sc1, sc2, sc3, sc4 = st.columns([4, 1, 1, 1])
             with sc1:
                 card_class = "session-card session-active" if is_active else "session-card"
+                # Show first message preview if exists
+                preview = ""
+                if sdata["messages"]:
+                    first_user = next((m for m in sdata["messages"] if m["role"] == "user"), None)
+                    if first_user:
+                        preview = first_user["content"][:50] + ("…" if len(first_user["content"]) > 50 else "")
                 st.markdown(f"""
                 <div class="{card_class}">
-                  <span class="session-name">{'▶ ' if is_active else ''}{sdata['name']}</span>
-                  <span class="session-meta">{msg_n} messages</span>
+                  <div>
+                    <span class="session-name">{'▶ ' if is_active else ''}{sdata['name']}</span>
+                    <span class="session-meta" style="margin-left:6px;">{msg_n} msgs</span>
+                  </div>
+                  {f'<div style="font-size:0.72rem;color:#888;margin-top:2px;font-style:italic;">{preview}</div>' if preview else ''}
                 </div>""", unsafe_allow_html=True)
             with sc2:
                 if not is_active:
                     if st.button("Open", key=f"open_{sid}"):
                         switch_session(sid)
                         st.rerun()
+                else:
+                    st.markdown("<span style='font-size:0.7rem;color:#00c9a7'>active</span>", unsafe_allow_html=True)
             with sc3:
+                # Rename button
+                if st.button("✏️", key=f"rename_{sid}", help="Rename"):
+                    st.session_state[f"renaming_{sid}"] = True
+            with sc4:
                 if len(st.session_state.sessions) > 1 and not is_active:
                     if st.button("🗑", key=f"del_{sid}"):
                         delete_session(sid)
+                        st.rerun()
+
+            # Inline rename input
+            if st.session_state.get(f"renaming_{sid}"):
+                new_name = st.text_input("New name", value=sdata["name"], key=f"newname_{sid}")
+                c1, c2 = st.columns(2)
+                with c1:
+                    if st.button("✅ Save", key=f"savename_{sid}"):
+                        st.session_state.sessions[sid]["name"] = new_name.strip() or sdata["name"]
+                        save_active_session()
+                        st.session_state[f"renaming_{sid}"] = False
+                        st.rerun()
+                with c2:
+                    if st.button("Cancel", key=f"cancelname_{sid}"):
+                        st.session_state[f"renaming_{sid}"] = False
                         st.rerun()
         st.markdown("---")
 
