@@ -1,3 +1,2 @@
 streamlit
-requests
-# groq  # uncomment when switching back to Groq API
+groq

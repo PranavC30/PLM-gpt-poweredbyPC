@@ -1,9 +1,8 @@
 import time
 import datetime
 import hashlib
-import json
-import requests
 import streamlit as st
+from groq import Groq
 
 # ─────────────────────────────────────────
 #  PAGE CONFIG
@@ -47,10 +46,9 @@ WINDOW_SECONDS  = 60
 SESSION_TIMEOUT = 30 * 60
 
 MODELS = {
-    "⚡ Fast  — Qwen 2.5 Coder 3B": "qwen2.5-coder:3b",
+    "⚡ Fast  — Llama 3.1 8B":  "llama-3.1-8b-instant",
+    "🧠 Smart — Llama 3.3 70B": "llama-3.3-70b-versatile",
 }
-
-OLLAMA_BASE_URL = "http://localhost:11434"
 
 CONVERSATION_MODES = {
     "💼 Professional": (
@@ -136,7 +134,7 @@ defaults = {
     "req_timestamps":  [],
     "last_activity":   time.time(),
     "theme":           "dark",
-    "model":           "qwen2.5-coder:3b",
+    "model":           "llama-3.3-70b-versatile",
     "temperature":     0.7,
     "conv_mode":       "💼 Professional",
     "welcome_shown":   False,
@@ -508,65 +506,48 @@ def get_system_prompt() -> str:
     return CONVERSATION_MODES[st.session_state.conv_mode]
 
 def stream_response(query: str):
-    """Generator: yields text chunks from Ollama streaming API."""
+    """Generator: yields text chunks from Groq streaming API."""
     try:
+        client = Groq(api_key=st.secrets["GROQ_API_KEY"])
         history = [{"role": "system", "content": get_system_prompt()}]
         for m in st.session_state.messages[-10:]:
             history.append({"role": m["role"], "content": m["content"]})
         history.append({"role": "user", "content": query})
 
-        response = requests.post(
-            f"{OLLAMA_BASE_URL}/api/chat",
-            json={
-                "model": st.session_state.model,
-                "messages": history,
-                "stream": True,
-                "options": {
-                    "temperature": st.session_state.temperature,
-                    "num_predict": 1024,
-                },
-            },
+        response = client.chat.completions.create(
+            model=st.session_state.model,
+            messages=history,
+            max_tokens=1024,
+            temperature=st.session_state.temperature,
             stream=True,
-            timeout=120,
         )
-        response.raise_for_status()
-        for line in response.iter_lines():
-            if line:
-                chunk = json.loads(line)
-                delta = chunk.get("message", {}).get("content", "")
-                if delta:
-                    yield delta
-                if chunk.get("done"):
-                    break
-    except requests.exceptions.ConnectionError:
-        yield "⚠️ Ollama server not reachable. Make sure Ollama is running (`ollama serve`)."
-    except Exception as e:
-        yield f"⚠️ Something went wrong: {str(e)}"
+        for chunk in response:
+            delta = chunk.choices[0].delta.content
+            if delta:
+                yield delta
+    except Exception:
+        yield "⚠️ Something went wrong. Please try again in a moment."
 
 def get_summary() -> str:
-    """Summarize the full conversation using Ollama."""
+    """Summarize the full conversation using Groq."""
     try:
+        client = Groq(api_key=st.secrets["GROQ_API_KEY"])
         convo = "\n".join(
             f"{'User' if m['role']=='user' else 'PLM GPT'}: {m['content']}"
             for m in st.session_state.messages
         )
-        response = requests.post(
-            f"{OLLAMA_BASE_URL}/api/chat",
-            json={
-                "model": st.session_state.model,
-                "messages": [
-                    {"role": "system", "content": "Summarize the following conversation in 5-7 concise bullet points. Be precise and professional."},
-                    {"role": "user", "content": convo},
-                ],
-                "stream": False,
-                "options": {"temperature": 0.3, "num_predict": 512},
-            },
-            timeout=120,
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "system", "content": "Summarize the following conversation in 5-7 concise bullet points. Be precise and professional."},
+                {"role": "user", "content": convo},
+            ],
+            max_tokens=512,
+            temperature=0.3,
         )
-        response.raise_for_status()
-        return response.json().get("message", {}).get("content", "Could not generate summary.")
-    except Exception as e:
-        return f"⚠️ Could not generate summary: {str(e)}"
+        return response.choices[0].message.content
+    except Exception:
+        return "⚠️ Could not generate summary."
 
 # ─────────────────────────────────────────
 #  SESSION MANAGEMENT HELPERS
