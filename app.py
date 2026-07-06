@@ -215,22 +215,22 @@ for k, v in defaults.items():
 THEMES = {
     "dark": {
         # ── Aurora Borealis ──────────────────────────
-        "bg":          "#020817",
-        "card":        "#0a1628",
-        "input_bg":    "#0d1f35",
-        "text":        "#e8f4f8",
-        "sub":         "#7eb8c9",
-        "accent":      "#00ff88",        # electric green — primary aurora
-        "accent2":     "#7c3aed",        # violet — secondary aurora
-        "accent3":     "#0ea5e9",        # sky blue — tertiary aurora
+        "bg":          "#0d0010",
+        "card":        "#160020",
+        "input_bg":    "#1e0030",
+        "text":        "#f3e5ff",
+        "sub":         "#ce93d8",
+        "accent":      "#e040fb",        # electric green — primary aurora
+        "accent2":     "#b388ff",        # violet — secondary aurora
+        "accent3":     "#ff6d9e",        # sky blue — tertiary aurora
         "border":      "#1e3a5f",
-        "user_bg":     "#0d1f35",
-        "user_border": "#0ea5e9",
-        "btn_bg":      "#0d1f35",
-        "btn_text":    "#e8f4f8",
-        "toolbar_bg":  "#060f1e",
-        "welcome_bg":  "#040e1c",
-        "grad1":       "#020817",
+        "user_bg":     "#1e0030",
+        "user_border": "#ff6d9e",
+        "btn_bg":      "#1e0030",
+        "btn_text":    "#f3e5ff",
+        "toolbar_bg":  "#110018",
+        "welcome_bg":  "#110018",
+        "grad1":       "#0d0010",
         "grad2":       "#050d1a",
         "grad3":       "#030b14",
     },
@@ -239,16 +239,16 @@ THEMES = {
         "bg":          "#f0f8ff",
         "card":        "#ffffff",
         "input_bg":    "#f0f8ff",
-        "text":        "#0a1628",
+        "text":        "#160020",
         "sub":         "#3a6b8a",
         "accent":      "#059669",
-        "accent2":     "#7c3aed",
+        "accent2":     "#b388ff",
         "accent3":     "#0284c7",
         "border":      "#bde0f0",
         "user_bg":     "#e0f2fe",
         "user_border": "#0284c7",
         "btn_bg":      "#e0f2fe",
-        "btn_text":    "#0a1628",
+        "btn_text":    "#160020",
         "toolbar_bg":  "#dbeafe",
         "welcome_bg":  "#ecfdf5",
         "grad1":       "#f0f8ff",
@@ -270,28 +270,28 @@ BG_ANIMATION = """
 }
 .plm-orb-1 {
   width: 500px; height: 500px;
-  background: radial-gradient(circle at center, #00ff8840 0%, #00ff8815 40%, transparent 70%);
+  background: radial-gradient(circle at center, #e040fb40 0%, #e040fb15 40%, transparent 70%);
   top: -150px; left: -150px;
   animation: orbMove1 20s ease-in-out infinite;
   filter: blur(40px);
 }
 .plm-orb-2 {
   width: 400px; height: 400px;
-  background: radial-gradient(circle at center, #7c3aed35 0%, #7c3aed10 40%, transparent 70%);
+  background: radial-gradient(circle at center, #b388ff35 0%, #b388ff10 40%, transparent 70%);
   bottom: -100px; right: -100px;
   animation: orbMove2 25s ease-in-out infinite;
   filter: blur(50px);
 }
 .plm-orb-3 {
   width: 300px; height: 300px;
-  background: radial-gradient(circle at center, #0ea5e930 0%, #0ea5e90d 40%, transparent 70%);
+  background: radial-gradient(circle at center, #ff6d9e30 0%, #ff6d9e0d 40%, transparent 70%);
   top: 35%; left: 5%;
   animation: orbMove3 30s ease-in-out infinite;
   filter: blur(45px);
 }
 .plm-orb-4 {
   width: 250px; height: 250px;
-  background: radial-gradient(circle at center, #00ff8825 0%, transparent 70%);
+  background: radial-gradient(circle at center, #e040fb25 0%, transparent 70%);
   top: 60%; right: 10%;
   animation: orbMove4 22s ease-in-out infinite;
   filter: blur(35px);
@@ -322,18 +322,18 @@ BG_ANIMATION = """
   z-index: 0;
   animation: dotFloat linear infinite;
 }
-.plm-dot-1  { width:3px;  height:3px;  background:#00ff88; top:10%; left:15%; opacity:0.4; animation-duration:8s;  animation-delay:0s;   }
-.plm-dot-2  { width:2px;  height:2px;  background:#0ea5e9; top:25%; left:80%; opacity:0.3; animation-duration:12s; animation-delay:-3s;  }
-.plm-dot-3  { width:4px;  height:4px;  background:#7c3aed; top:60%; left:25%; opacity:0.25;animation-duration:10s; animation-delay:-5s;  }
-.plm-dot-4  { width:2px;  height:2px;  background:#00ff88; top:75%; left:65%; opacity:0.35;animation-duration:15s; animation-delay:-7s;  }
-.plm-dot-5  { width:3px;  height:3px;  background:#0ea5e9; top:40%; left:45%; opacity:0.3; animation-duration:9s;  animation-delay:-2s;  }
-.plm-dot-6  { width:2px;  height:2px;  background:#00ff88; top:85%; left:10%; opacity:0.4; animation-duration:11s; animation-delay:-4s;  }
-.plm-dot-7  { width:4px;  height:4px;  background:#7c3aed; top:15%; left:55%; opacity:0.2; animation-duration:14s; animation-delay:-9s;  }
-.plm-dot-8  { width:2px;  height:2px;  background:#0ea5e9; top:50%; left:90%; opacity:0.3; animation-duration:7s;  animation-delay:-1s;  }
-.plm-dot-9  { width:3px;  height:3px;  background:#00ff88; top:70%; left:40%; opacity:0.35;animation-duration:13s; animation-delay:-6s;  }
-.plm-dot-10 { width:2px;  height:2px;  background:#7c3aed; top:30%; left:5%;  opacity:0.25;animation-duration:16s; animation-delay:-11s; }
-.plm-dot-11 { width:3px;  height:3px;  background:#00ff88; top:5%;  left:70%; opacity:0.3; animation-duration:10s; animation-delay:-8s;  }
-.plm-dot-12 { width:2px;  height:2px;  background:#0ea5e9; top:90%; left:50%; opacity:0.4; animation-duration:18s; animation-delay:-13s; }
+.plm-dot-1  { width:3px;  height:3px;  background:#e040fb; top:10%; left:15%; opacity:0.4; animation-duration:8s;  animation-delay:0s;   }
+.plm-dot-2  { width:2px;  height:2px;  background:#ff6d9e; top:25%; left:80%; opacity:0.3; animation-duration:12s; animation-delay:-3s;  }
+.plm-dot-3  { width:4px;  height:4px;  background:#b388ff; top:60%; left:25%; opacity:0.25;animation-duration:10s; animation-delay:-5s;  }
+.plm-dot-4  { width:2px;  height:2px;  background:#e040fb; top:75%; left:65%; opacity:0.35;animation-duration:15s; animation-delay:-7s;  }
+.plm-dot-5  { width:3px;  height:3px;  background:#ff6d9e; top:40%; left:45%; opacity:0.3; animation-duration:9s;  animation-delay:-2s;  }
+.plm-dot-6  { width:2px;  height:2px;  background:#e040fb; top:85%; left:10%; opacity:0.4; animation-duration:11s; animation-delay:-4s;  }
+.plm-dot-7  { width:4px;  height:4px;  background:#b388ff; top:15%; left:55%; opacity:0.2; animation-duration:14s; animation-delay:-9s;  }
+.plm-dot-8  { width:2px;  height:2px;  background:#ff6d9e; top:50%; left:90%; opacity:0.3; animation-duration:7s;  animation-delay:-1s;  }
+.plm-dot-9  { width:3px;  height:3px;  background:#e040fb; top:70%; left:40%; opacity:0.35;animation-duration:13s; animation-delay:-6s;  }
+.plm-dot-10 { width:2px;  height:2px;  background:#b388ff; top:30%; left:5%;  opacity:0.25;animation-duration:16s; animation-delay:-11s; }
+.plm-dot-11 { width:3px;  height:3px;  background:#e040fb; top:5%;  left:70%; opacity:0.3; animation-duration:10s; animation-delay:-8s;  }
+.plm-dot-12 { width:2px;  height:2px;  background:#ff6d9e; top:90%; left:50%; opacity:0.4; animation-duration:18s; animation-delay:-13s; }
 @keyframes dotFloat {
   0%   { transform: translateY(0px)   translateX(0px);   opacity: 0.4; }
   25%  { transform: translateY(-20px) translateX(10px);  opacity: 0.7; }
@@ -694,8 +694,8 @@ def splash_screen():
         to   { opacity: 1; transform: translateY(0px) scale(1); }
       }
       @keyframes logoGlow {
-        0%, 100% { text-shadow: 0 0 20px #00ff8880, 0 0 40px #00ff8840; }
-        50%       { text-shadow: 0 0 40px #00ff88cc, 0 0 80px #00ff8860, 0 0 120px #7c3aed30; }
+        0%, 100% { text-shadow: 0 0 20px #e040fb80, 0 0 40px #e040fb40; }
+        50%       { text-shadow: 0 0 40px #e040fbcc, 0 0 80px #e040fb60, 0 0 120px #b388ff30; }
       }
       @keyframes barFill {
         0%   { width: 0%; }
@@ -736,7 +736,7 @@ def splash_screen():
 
       .splash-wrap {
         position: fixed; inset: 0;
-        background: linear-gradient(-45deg, #020817, #06101f, #030c18, #020817);
+        background: linear-gradient(-45deg, #0d0010, #0d0010, #0a000e, #0d0010);
         background-size: 400% 400%;
         animation: gradientShift 8s ease infinite;
         display: flex; align-items: center; justify-content: center;
@@ -745,21 +745,21 @@ def splash_screen():
       }
       .splash-orb-1 {
         position: fixed; width: 600px; height: 600px; border-radius: 50%;
-        background: radial-gradient(circle, #00ff8840 0%, transparent 65%);
+        background: radial-gradient(circle, #e040fb40 0%, transparent 65%);
         top: -200px; left: -200px; filter: blur(50px);
         animation: orbSplash1 6s ease-in-out infinite;
         pointer-events: none;
       }
       .splash-orb-2 {
         position: fixed; width: 500px; height: 500px; border-radius: 50%;
-        background: radial-gradient(circle, #7c3aed35 0%, transparent 65%);
+        background: radial-gradient(circle, #b388ff35 0%, transparent 65%);
         bottom: -150px; right: -150px; filter: blur(60px);
         animation: orbSplash2 8s ease-in-out infinite;
         pointer-events: none;
       }
       .splash-orb-3 {
         position: fixed; width: 300px; height: 300px; border-radius: 50%;
-        background: radial-gradient(circle, #0ea5e930 0%, transparent 65%);
+        background: radial-gradient(circle, #ff6d9e30 0%, transparent 65%);
         top: 50%; left: 60%; filter: blur(40px);
         animation: orbSplash1 10s ease-in-out infinite reverse;
         pointer-events: none;
@@ -771,16 +771,16 @@ def splash_screen():
       }
       .splash-logo-ring {
         width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 1.4rem;
-        background: linear-gradient(135deg, #00ff8818, #020817);
-        border: 2px solid #00ff8855;
+        background: linear-gradient(135deg, #e040fb18, #0d0010);
+        border: 2px solid #e040fb55;
         display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 0 40px #00ff8830, inset 0 0 20px #00ff8810;
+        box-shadow: 0 0 40px #e040fb30, inset 0 0 20px #e040fb10;
         animation: logoGlow 3s ease-in-out infinite;
         padding: 4px;
       }
       .splash-title {
         font-size: 3.2rem; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #ffffff 30%, #00ff88 70%, #0ea5e9 100%);
+        background: linear-gradient(135deg, #ffffff 30%, #e040fb 70%, #ff6d9e 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text; margin-bottom: 0.4rem;
         animation: logoGlow 3s ease-in-out infinite;
@@ -798,7 +798,7 @@ def splash_screen():
       }
       .splash-bar {
         height: 100%; border-radius: 100px;
-        background: linear-gradient(90deg, #00ff88, #0ea5e9, #7c3aed, #00ff88);
+        background: linear-gradient(90deg, #e040fb, #ff6d9e, #b388ff, #e040fb);
         background-size: 200% auto;
         animation: barFill 2.8s cubic-bezier(0.4,0,0.2,1) forwards,
                    barShimmer 1.5s linear infinite;
@@ -820,11 +820,11 @@ def splash_screen():
         display: flex; justify-content: center; gap: 8px; margin-top: 0.8rem;
       }
       .splash-dot {
-        width: 8px; height: 8px; border-radius: 50%; background: #00ff88;
+        width: 8px; height: 8px; border-radius: 50%; background: #e040fb;
         animation: dotPulse 1.2s ease-in-out infinite;
       }
-      .splash-dot:nth-child(2) { animation-delay: 0.2s; background: #0ea5e9; }
-      .splash-dot:nth-child(3) { animation-delay: 0.4s; background: #7c3aed; }
+      .splash-dot:nth-child(2) { animation-delay: 0.2s; background: #ff6d9e; }
+      .splash-dot:nth-child(3) { animation-delay: 0.4s; background: #b388ff; }
       .splash-byline {
         position: absolute; bottom: 1.5rem; left: 0; right: 0;
         font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
@@ -850,8 +850,8 @@ def splash_screen():
             <defs>
               <linearGradient id="splashGrad" x1="0" y1="0" x2="54" y2="0" gradientUnits="userSpaceOnUse">
                 <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="55%" stop-color="#00ff88"/>
-                <stop offset="100%" stop-color="#0ea5e9"/>
+                <stop offset="55%" stop-color="#e040fb"/>
+                <stop offset="100%" stop-color="#ff6d9e"/>
               </linearGradient>
             </defs>
           </svg>
@@ -911,7 +911,7 @@ def auth_page():
       }}
 
       .stApp {{
-        background: linear-gradient(-45deg, #020817, #0a1628, #030c18, #020817);
+        background: linear-gradient(-45deg, #0d0010, #160020, #0a000e, #0d0010);
         background-size: 400% 400%;
         animation: gradientShift 12s ease infinite;
         font-family: 'Inter', sans-serif;
@@ -919,29 +919,29 @@ def auth_page():
 
       /* ── Auth card ── */
       .auth-card {{
-        background: linear-gradient(160deg, #0a1628dd 0%, #040e1cdd 100%);
-        border: 1px solid #00ff8833;
+        background: linear-gradient(160deg, #160020dd 0%, #110018dd 100%);
+        border: 1px solid #e040fb33;
         border-radius: 20px;
         padding: 2.4rem 2.8rem 2rem;
         margin: 0 auto;
         max-width: 420px;
         backdrop-filter: blur(16px);
-        box-shadow: 0 8px 40px #00000060, 0 0 60px #00ff8810;
+        box-shadow: 0 8px 40px #00000060, 0 0 60px #e040fb10;
         animation: cardSlideUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
       }}
 
       /* ── Logo area ── */
       .auth-logo-ring {{
         width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 1rem;
-        background: linear-gradient(135deg, #00ff8818, #020817);
-        border: 1.5px solid #00ff8855;
+        background: linear-gradient(135deg, #e040fb18, #0d0010);
+        border: 1.5px solid #e040fb55;
         display: flex; align-items: center; justify-content: center;
         font-size: 2rem; line-height: 1;
         box-shadow: 0 0 24px #00ff8730;
       }}
       .auth-title {{
         font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #ffffff 30%, #00ff88 100%);
+        background: linear-gradient(135deg, #ffffff 30%, #e040fb 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text; text-align: center; margin-bottom: 0.2rem;
       }}
@@ -962,9 +962,9 @@ def auth_page():
         color: #888899; background: transparent;
       }}
       .auth-tab-active {{
-        background: linear-gradient(135deg, #00ff8822, #0ea5e918);
-        color: #00ff88;
-        border-bottom: 2px solid #00ff88;
+        background: linear-gradient(135deg, #e040fb22, #ff6d9e18);
+        color: #e040fb;
+        border-bottom: 2px solid #e040fb;
       }}
 
       /* ── Form field labels ── */
@@ -987,16 +987,16 @@ def auth_page():
 
       /* ── Submit button ── */
       .stFormSubmitButton > button {{
-        background: linear-gradient(135deg, #00ff88, #0ea5e9) !important;
-        color: #020817 !important; border: none !important;
+        background: linear-gradient(135deg, #e040fb, #ff6d9e) !important;
+        color: #0d0010 !important; border: none !important;
         border-radius: 10px !important; font-weight: 700 !important;
         font-size: 0.95rem !important; letter-spacing: 0.04em !important;
         padding: 0.65rem 1rem !important;
         transition: all 0.25s !important;
-        box-shadow: 0 4px 20px #00ff8840 !important;
+        box-shadow: 0 4px 20px #e040fb40 !important;
       }}
       .stFormSubmitButton > button:hover {{
-        box-shadow: 0 6px 28px #00ff8870 !important;
+        box-shadow: 0 6px 28px #e040fb70 !important;
         transform: translateY(-1px) !important;
       }}
 
@@ -1021,9 +1021,9 @@ def auth_page():
         color: #e08080; font-size: 0.83rem; margin-bottom: 0.6rem;
       }}
       .auth-success {{
-        background: #00ff8818; border: 1px solid #00ff8866;
+        background: #e040fb18; border: 1px solid #e040fb66;
         border-radius: 8px; padding: 0.55rem 0.8rem;
-        color: #00ff88; font-size: 0.83rem; margin-bottom: 0.6rem;
+        color: #e040fb; font-size: 0.83rem; margin-bottom: 0.6rem;
       }}
 
       /* ── Password strength bar ── */
@@ -1061,20 +1061,20 @@ def auth_page():
     st.markdown("""
     <div style="text-align:center; padding: 2.5rem 0 0.5rem;">
       <div class="auth-logo-ring" style="width:72px;height:72px;border-radius:50%;margin:0 auto 1rem;
-           background:linear-gradient(135deg,#00ff8814,#020817);border:1.5px solid #00ff8850;
+           background:linear-gradient(135deg,#e040fb14,#0d0010);border:1.5px solid #e040fb50;
            display:flex;align-items:center;justify-content:center;
-           box-shadow:0 0 28px #00ff8730, inset 0 0 16px #00ff8808;">
+           box-shadow:0 0 28px #00ff8730, inset 0 0 16px #e040fb08;">
         <svg width="46" height="46" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
           <text x="3" y="38" font-family="'Inter',sans-serif" font-weight="800" font-size="22"
                 fill="url(#authGrad)" letter-spacing="-1">PLM</text>
           <rect x="3" y="42" width="48" height="2.5" rx="1.25" fill="url(#authGrad)" opacity="0.6"/>
-          <circle cx="48" cy="7" r="3" fill="#00ff88" opacity="0.9"/>
-          <circle cx="48" cy="7" r="5.5" fill="#00ff88" opacity="0.2"/>
+          <circle cx="48" cy="7" r="3" fill="#e040fb" opacity="0.9"/>
+          <circle cx="48" cy="7" r="5.5" fill="#e040fb" opacity="0.2"/>
           <defs>
             <linearGradient id="authGrad" x1="0" y1="0" x2="54" y2="0" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stop-color="#ffffff"/>
-              <stop offset="55%" stop-color="#00ff88"/>
-              <stop offset="100%" stop-color="#0ea5e9"/>
+              <stop offset="55%" stop-color="#e040fb"/>
+              <stop offset="100%" stop-color="#ff6d9e"/>
             </linearGradient>
           </defs>
         </svg>
@@ -1102,9 +1102,9 @@ def auth_page():
     # ─── Active indicator bar ───
     bar_left = "0%" if st.session_state.auth_tab == "login" else "50%"
     st.markdown(f"""
-    <div style="position:relative;height:3px;background:#0a1628;border-radius:100px;margin-bottom:1.4rem;">
+    <div style="position:relative;height:3px;background:#160020;border-radius:100px;margin-bottom:1.4rem;">
       <div style="position:absolute;top:0;left:{bar_left};width:50%;height:100%;
-                  background:linear-gradient(90deg,#00ff88,#0ea5e9);border-radius:100px;
+                  background:linear-gradient(90deg,#e040fb,#ff6d9e);border-radius:100px;
                   transition:left 0.3s ease;"></div>
     </div>
     """, unsafe_allow_html=True)
