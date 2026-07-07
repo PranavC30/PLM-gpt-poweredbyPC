@@ -88,9 +88,12 @@ PROMPT_SUGGESTIONS = [
 # Local machine pe same directory mein save hoga
 DB_PATH = Path("/tmp/plmgpt_db.json")
 if not DB_PATH.exists():
-    # fallback: project folder ke andar (local dev)
-    _local = Path(__file__).parent / "plmgpt_db.json"
-    DB_PATH = _local
+    try:
+        _local = Path(__file__).parent / "plmgpt_db.json"
+        DB_PATH = _local
+    except NameError:
+        # __file__ not defined (e.g. exec() context) — keep /tmp
+        pass
 
 def _load_db() -> dict:
     """Read the full database from disk. Returns empty structure if missing."""
@@ -205,6 +208,7 @@ defaults = {
     "active_session":  "default",
     "show_sessions":   False,
     "show_profile":    False,   # profile page toggle
+    "confetti_shown":  False,  # confetti shown once
 }
 for k, v in defaults.items():
     if k not in st.session_state:
@@ -429,7 +433,7 @@ def apply_theme():
         gap: 0.5rem; margin: 0.8rem 0 1rem 0;
       }}
       .msg-user {{
-        background: rgba({','.join(str(int(t['user_bg'].lstrip('#')[i:i+2], 16)) for i in (0,2,4))}, 0.6);
+        background: {t['user_bg']}99;
         border-left:4px solid {t['user_border']};
         border-radius:12px; padding:0.8rem 1.1rem; margin:0.5rem 0;
         color:{t['text']}; font-size:0.95rem; line-height:1.6;
@@ -440,7 +444,7 @@ def apply_theme():
         animation: msgSlideIn 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
       }}
       .msg-bot {{
-        background: rgba({','.join(str(int(t['card'].lstrip('#')[i:i+2], 16)) for i in (0,2,4))}, 0.55);
+        background: {t['card']}8c;
         border-left:4px solid {t['accent']};
         border-radius:12px; padding:0.8rem 1.1rem; margin:0.5rem 0;
         color:{t['text']}; font-size:0.95rem; line-height:1.7;
@@ -775,6 +779,7 @@ def get_auto_title(first_message: str) -> str:
 # ─────────────────────────────────────────
 #  SESSION MANAGEMENT HELPERS
 # ─────────────────────────────────────────
+def init_sessions():
     """Load sessions from DB if first time this login, else sync state."""
     if not st.session_state.sessions:
         # Try loading saved chats from disk for this user
@@ -1477,7 +1482,6 @@ def chat_page():
             st.session_state.show_profile = not st.session_state.get("show_profile", False)
             st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
 
     # ── Title ──
     name = st.session_state.display_name or ""
@@ -1604,7 +1608,7 @@ def chat_page():
                         switch_session(sid)
                         st.rerun()
                 else:
-                    st.markdown("<span style='font-size:0.7rem;color:#00c9a7'>active</span>", unsafe_allow_html=True)
+                    st.markdown(f"<span style='font-size:0.7rem;color:{t['accent']}'>active</span>", unsafe_allow_html=True)
             with sc3:
                 # Rename button
                 if st.button("✏️", key=f"rename_{sid}", help="Rename"):
@@ -1689,10 +1693,16 @@ def chat_page():
     pending = st.session_state.pop("_pending_query", None)
     if pending:
         placeholder = st.empty()
-        placeholder.markdown("""
-        <div class="typing-indicator">
-          <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
-          <span class="typing-text">PLM GPT is thinking...</span>
+        placeholder.markdown(f"""
+        <div class="msg-with-avatar">
+          <div class="msg-avatar msg-avatar-bot">PLM</div>
+          <div class="msg-bubble">
+            <div class="skeleton-wrap">
+              <div class="skeleton skeleton-wide"></div>
+              <div class="skeleton skeleton-med"></div>
+              <div class="skeleton skeleton-short"></div>
+            </div>
+          </div>
         </div>""", unsafe_allow_html=True)
         full_reply = ""
         stream_placeholder = st.empty()
