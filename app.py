@@ -625,6 +625,23 @@ def apply_theme():
         .plm-title h1 {{ font-size: 2.1rem !important; }}
         .msg-user, .msg-bot {{ font-size: 0.92rem; }}
       }}
+
+      /* ── Floating sticky input ── */
+      div[data-testid="stForm"] {
+        position: sticky !important;
+        bottom: 0 !important;
+        z-index: 100 !important;
+        background: transparent !important;
+        padding-bottom: 0.5rem;
+      }
+      div[data-testid="stForm"]::before {
+        content: '';
+        position: absolute;
+        inset: -10px -20px 0;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        z-index: -1;
+      }
     </style>
     """, unsafe_allow_html=True)
 
@@ -1041,7 +1058,7 @@ def splash_screen():
     """, unsafe_allow_html=True)
 
     # Hold for animation duration then mark done
-    time.sleep(3.2)
+    time.sleep(1.5)
     st.session_state.splash_done = True
     st.rerun()
 
@@ -1412,99 +1429,73 @@ def chat_page():
     t = THEMES[st.session_state.theme]
     init_sessions()
 
-    # ── Toolbar ──
-    st.markdown('<div class="plm-toolbar">', unsafe_allow_html=True)
-    tc1, tc2, tc3, tc4, tc5, tc6, tc7, tc8 = st.columns([2, 2, 2, 1, 1, 1, 1, 1])
-
-    with tc1:
-        st.markdown('<div class="plm-toolbar-label">🧠 Model</div>', unsafe_allow_html=True)
-        sel = st.selectbox("", list(MODELS.keys()),
+    # ── Toolbar — compact 2-row design ──
+    # Row 1: selectors
+    r1c1, r1c2, r1c3 = st.columns([3, 3, 3])
+    with r1c1:
+        sel = st.selectbox("🧠 Model", list(MODELS.keys()),
             index=list(MODELS.values()).index(st.session_state.model),
-            label_visibility="collapsed", key="model_select")
+            key="model_select")
         st.session_state.model = MODELS[sel]
-
-    with tc2:
+    with r1c2:
+        mode_sel = st.selectbox("🎭 Mode", list(CONVERSATION_MODES.keys()),
+            index=list(CONVERSATION_MODES.keys()).index(st.session_state.conv_mode),
+            key="mode_select")
+        st.session_state.conv_mode = mode_sel
+    with r1c3:
         temp_val = st.session_state.temperature
         lbl = "🧊 Factual" if temp_val < 0.4 else ("⚖️ Balanced" if temp_val < 0.75 else "🔥 Creative")
-        st.markdown(f'<div class="plm-toolbar-label">🎨 {lbl}</div>', unsafe_allow_html=True)
         st.session_state.temperature = st.slider(
-            "", 0.0, 1.0, st.session_state.temperature, 0.1,
-            label_visibility="collapsed", key="temp_slider")
+            f"🎨 {lbl}", 0.0, 1.0, temp_val, 0.1, key="temp_slider")
 
-    with tc3:
-        st.markdown('<div class="plm-toolbar-label">🎭 Mode</div>', unsafe_allow_html=True)
-        mode_sel = st.selectbox("", list(CONVERSATION_MODES.keys()),
-            index=list(CONVERSATION_MODES.keys()).index(st.session_state.conv_mode),
-            label_visibility="collapsed", key="mode_select")
-        st.session_state.conv_mode = mode_sel
-
-    with tc4:
-        st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
+    # Row 2: action buttons
+    b1, b2, b3, b4, b5, b6, bsp = st.columns([1, 1, 1, 1, 1, 1, 3])
+    with b1:
         theme_icon = "☀️" if st.session_state.theme == "dark" else "🌙"
         if st.button(theme_icon, use_container_width=True, key="theme_btn", help="Toggle theme"):
             st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
             st.rerun()
-
-    with tc5:
-        st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
-        star_label = f"⭐{len(st.session_state.starred)}" if st.session_state.starred else "⭐"
-        if st.button(star_label, use_container_width=True, key="starred_btn", help="Starred"):
+    with b2:
+        star_label = f"⭐ {len(st.session_state.starred)}" if st.session_state.starred else "⭐"
+        if st.button(star_label, use_container_width=True, key="starred_btn", help="Starred messages"):
             st.session_state.show_starred = not st.session_state.show_starred
             st.session_state.show_sessions = False
             st.rerun()
-
-    with tc6:
-        st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
+    with b3:
         sess_count = len(st.session_state.sessions)
-        if st.button(f"💬{sess_count}", use_container_width=True, key="sessions_btn", help="Chat Sessions"):
+        if st.button(f"💬 {sess_count}", use_container_width=True, key="sessions_btn", help="Chat sessions"):
             st.session_state.show_sessions = not st.session_state.show_sessions
             st.session_state.show_starred = False
             st.rerun()
-
-    with tc7:
-        st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
-        if st.button("➕", use_container_width=True, key="new_session_btn", help="New Chat Session"):
+    with b4:
+        if st.button("➕", use_container_width=True, key="new_session_btn", help="New chat"):
             new_session()
             st.rerun()
-
-    with tc8:
-        st.markdown('<div class="plm-toolbar-label">&nbsp;</div>', unsafe_allow_html=True)
+    with b5:
+        user_initial = (st.session_state.display_name or "U")[0].upper()
+        if st.button(f"👤 {user_initial}", use_container_width=True, key="profile_btn", help="Profile"):
+            st.session_state.show_profile = not st.session_state.get("show_profile", False)
+            st.rerun()
+    with b6:
         if st.button("🚪", use_container_width=True, key="logout_btn", help="Logout"):
             for k, v in defaults.items():
                 st.session_state[k] = v
             st.rerun()
-
-    # ── Profile button (extra col-like, appended after toolbar) ──
-    pcol1, pcol2 = st.columns([11, 1])
-    with pcol2:
-        user_initial = (st.session_state.display_name or "U")[0].upper()
-        if st.button(user_initial, key="profile_btn", help="Profile", use_container_width=True):
-            st.session_state.show_profile = not st.session_state.get("show_profile", False)
-            st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("<div style='margin-bottom:0.3rem'></div>", unsafe_allow_html=True)
 
     # ── Title ──
-    name = st.session_state.display_name or ""
-    greeting = f"🤖 PLM GPT"
+    active_chat = st.session_state.sessions.get(st.session_state.active_session, {}).get("name", "Chat")
     st.markdown(f"""
     <div class="plm-title">
-      <h1>{greeting}</h1>
-      <div class="byline">Developed by Pranav Chakravorty</div>
-      <div class="caption">Where curiosity meets intelligence — ask, explore, discover.</div>
+      <h1>🤖 PLM GPT</h1>
+      <div class="byline" style="color:{t['sub']};font-size:0.8rem;">
+        {active_chat} &nbsp;·&nbsp; {st.session_state.conv_mode}
+      </div>
     </div>
     """, unsafe_allow_html=True)
     st.markdown("---")
 
-    # ── Session info bar ──
-    remaining = max(0, int((SESSION_TIMEOUT - (time.time() - st.session_state.last_activity)) / 60))
-    msg_count = len(st.session_state.messages)
-    active_name = st.session_state.sessions.get(st.session_state.active_session, {}).get("name", "Chat")
-    user_display = f"👤 {st.session_state.display_name} &nbsp;|&nbsp; " if st.session_state.display_name else ""
-    st.markdown(
-        f"<p style='text-align:right; color:{t['sub']}; font-size:0.72rem; margin-bottom:0.3rem;'>"
-        f"{user_display}⏱️ ~{remaining} min &nbsp;|&nbsp; 🎭 {st.session_state.conv_mode} &nbsp;|&nbsp; 💬 {active_name} ({msg_count} messages)</p>",
-        unsafe_allow_html=True
-    )
+
 
     # ── Profile panel ──
     if st.session_state.get("show_profile", False):
