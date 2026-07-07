@@ -204,6 +204,7 @@ defaults = {
     "sessions":        {},
     "active_session":  "default",
     "show_sessions":   False,
+    "show_profile":    False,   # profile page toggle
 }
 for k, v in defaults.items():
     if k not in st.session_state:
@@ -214,42 +215,42 @@ for k, v in defaults.items():
 # ─────────────────────────────────────────
 THEMES = {
     "dark": {
-        # ── Spotify Green — Clean & Iconic ────────
-        "bg":          "#121212",
-        "card":        "#282828",
-        "input_bg":    "#333333",
-        "text":        "#ffffff",
-        "sub":         "#b3b3b3",
-        "accent":      "#1db954",
-        "border":      "#3e3e3e",
-        "user_bg":     "#282828",
-        "user_border": "#1ed760",
-        "btn_bg":      "#333333",
-        "btn_text":    "#ffffff",
-        "toolbar_bg":  "#0a0a0a",
-        "welcome_bg":  "#090909",
-        "grad1":       "#121212",
-        "grad2":       "#1a1a1a",
-        "grad3":       "#0a0a0a",
+        # ── Discord Dark ───────────────────────────
+        "bg":          "#313338",
+        "card":        "#2b2d31",
+        "input_bg":    "#383a40",
+        "text":        "#f2f3f5",
+        "sub":         "#949ba4",
+        "accent":      "#5865f2",
+        "border":      "#3f4147",
+        "user_bg":     "#383a40",
+        "user_border": "#7289da",
+        "btn_bg":      "#4752c4",
+        "btn_text":    "#f2f3f5",
+        "toolbar_bg":  "#1e1f22",
+        "welcome_bg":  "#232428",
+        "grad1":       "#313338",
+        "grad2":       "#2b2d31",
+        "grad3":       "#1e1f22",
     },
     "light": {
-        # ── Spotify Light ─────────────────────────
-        "bg":          "#f8fff8",
+        # ── Discord Light ─────────────────────────
+        "bg":          "#f2f3f5",
         "card":        "#ffffff",
-        "input_bg":    "#f0fff0",
-        "text":        "#121212",
-        "sub":         "#535353",
-        "accent":      "#1db954",
-        "border":      "#d4edda",
-        "user_bg":     "#e8f8ee",
-        "user_border": "#1db954",
-        "btn_bg":      "#e8f8ee",
-        "btn_text":    "#121212",
-        "toolbar_bg":  "#d4edda",
-        "welcome_bg":  "#e8f8ee",
-        "grad1":       "#f8fff8",
-        "grad2":       "#e8f8ee",
-        "grad3":       "#f0fff4",
+        "input_bg":    "#ebedef",
+        "text":        "#060607",
+        "sub":         "#4e5058",
+        "accent":      "#5865f2",
+        "border":      "#d7d9dd",
+        "user_bg":     "#ebedef",
+        "user_border": "#7289da",
+        "btn_bg":      "#5865f2",
+        "btn_text":    "#ffffff",
+        "toolbar_bg":  "#e3e5e8",
+        "welcome_bg":  "#ebedef",
+        "grad1":       "#f2f3f5",
+        "grad2":       "#ebedef",
+        "grad3":       "#e3e5e8",
     },
 }
 
@@ -266,28 +267,28 @@ BG_ANIMATION = """
 }
 .plm-orb-1 {
   width: 500px; height: 500px;
-  background: radial-gradient(circle at center, #1db95440 0%, #1db95415 40%, transparent 70%);
+  background: radial-gradient(circle at center, #5865f240 0%, #5865f215 40%, transparent 70%);
   top: -150px; left: -150px;
   animation: orbMove1 20s ease-in-out infinite;
   filter: blur(40px);
 }
 .plm-orb-2 {
   width: 400px; height: 400px;
-  background: radial-gradient(circle at center, #1aa34a35 0%, #1aa34a10 40%, transparent 70%);
+  background: radial-gradient(circle at center, #4752c435 0%, #4752c410 40%, transparent 70%);
   bottom: -100px; right: -100px;
   animation: orbMove2 25s ease-in-out infinite;
   filter: blur(50px);
 }
 .plm-orb-3 {
   width: 300px; height: 300px;
-  background: radial-gradient(circle at center, #1ed76030 0%, #1ed7600d 40%, transparent 70%);
+  background: radial-gradient(circle at center, #7289da30 0%, #7289da0d 40%, transparent 70%);
   top: 35%; left: 5%;
   animation: orbMove3 30s ease-in-out infinite;
   filter: blur(45px);
 }
 .plm-orb-4 {
   width: 250px; height: 250px;
-  background: radial-gradient(circle at center, #1db95425 0%, transparent 70%);
+  background: radial-gradient(circle at center, #5865f225 0%, transparent 70%);
   top: 60%; right: 10%;
   animation: orbMove4 22s ease-in-out infinite;
   filter: blur(35px);
@@ -318,18 +319,18 @@ BG_ANIMATION = """
   z-index: 0;
   animation: dotFloat linear infinite;
 }
-.plm-dot-1  { width:3px;  height:3px;  background:#1db954; top:10%; left:15%; opacity:0.4; animation-duration:8s;  animation-delay:0s;   }
-.plm-dot-2  { width:2px;  height:2px;  background:#1ed760; top:25%; left:80%; opacity:0.3; animation-duration:12s; animation-delay:-3s;  }
-.plm-dot-3  { width:4px;  height:4px;  background:#1aa34a; top:60%; left:25%; opacity:0.25;animation-duration:10s; animation-delay:-5s;  }
-.plm-dot-4  { width:2px;  height:2px;  background:#1db954; top:75%; left:65%; opacity:0.35;animation-duration:15s; animation-delay:-7s;  }
-.plm-dot-5  { width:3px;  height:3px;  background:#1ed760; top:40%; left:45%; opacity:0.3; animation-duration:9s;  animation-delay:-2s;  }
-.plm-dot-6  { width:2px;  height:2px;  background:#1db954; top:85%; left:10%; opacity:0.4; animation-duration:11s; animation-delay:-4s;  }
-.plm-dot-7  { width:4px;  height:4px;  background:#1aa34a; top:15%; left:55%; opacity:0.2; animation-duration:14s; animation-delay:-9s;  }
-.plm-dot-8  { width:2px;  height:2px;  background:#1ed760; top:50%; left:90%; opacity:0.3; animation-duration:7s;  animation-delay:-1s;  }
-.plm-dot-9  { width:3px;  height:3px;  background:#1db954; top:70%; left:40%; opacity:0.35;animation-duration:13s; animation-delay:-6s;  }
-.plm-dot-10 { width:2px;  height:2px;  background:#1aa34a; top:30%; left:5%;  opacity:0.25;animation-duration:16s; animation-delay:-11s; }
-.plm-dot-11 { width:3px;  height:3px;  background:#1db954; top:5%;  left:70%; opacity:0.3; animation-duration:10s; animation-delay:-8s;  }
-.plm-dot-12 { width:2px;  height:2px;  background:#1ed760; top:90%; left:50%; opacity:0.4; animation-duration:18s; animation-delay:-13s; }
+.plm-dot-1  { width:3px;  height:3px;  background:#5865f2; top:10%; left:15%; opacity:0.4; animation-duration:8s;  animation-delay:0s;   }
+.plm-dot-2  { width:2px;  height:2px;  background:#7289da; top:25%; left:80%; opacity:0.3; animation-duration:12s; animation-delay:-3s;  }
+.plm-dot-3  { width:4px;  height:4px;  background:#4752c4; top:60%; left:25%; opacity:0.25;animation-duration:10s; animation-delay:-5s;  }
+.plm-dot-4  { width:2px;  height:2px;  background:#5865f2; top:75%; left:65%; opacity:0.35;animation-duration:15s; animation-delay:-7s;  }
+.plm-dot-5  { width:3px;  height:3px;  background:#7289da; top:40%; left:45%; opacity:0.3; animation-duration:9s;  animation-delay:-2s;  }
+.plm-dot-6  { width:2px;  height:2px;  background:#5865f2; top:85%; left:10%; opacity:0.4; animation-duration:11s; animation-delay:-4s;  }
+.plm-dot-7  { width:4px;  height:4px;  background:#4752c4; top:15%; left:55%; opacity:0.2; animation-duration:14s; animation-delay:-9s;  }
+.plm-dot-8  { width:2px;  height:2px;  background:#7289da; top:50%; left:90%; opacity:0.3; animation-duration:7s;  animation-delay:-1s;  }
+.plm-dot-9  { width:3px;  height:3px;  background:#5865f2; top:70%; left:40%; opacity:0.35;animation-duration:13s; animation-delay:-6s;  }
+.plm-dot-10 { width:2px;  height:2px;  background:#4752c4; top:30%; left:5%;  opacity:0.25;animation-duration:16s; animation-delay:-11s; }
+.plm-dot-11 { width:3px;  height:3px;  background:#5865f2; top:5%;  left:70%; opacity:0.3; animation-duration:10s; animation-delay:-8s;  }
+.plm-dot-12 { width:2px;  height:2px;  background:#7289da; top:90%; left:50%; opacity:0.4; animation-duration:18s; animation-delay:-13s; }
 @keyframes dotFloat {
   0%   { transform: translateY(0px)   translateX(0px);   opacity: 0.4; }
   25%  { transform: translateY(-20px) translateX(10px);  opacity: 0.7; }
@@ -428,15 +429,30 @@ def apply_theme():
         gap: 0.5rem; margin: 0.8rem 0 1rem 0;
       }}
       .msg-user {{
-        background:{t['user_bg']}; border-left:4px solid {t['user_border']};
-        border-radius:10px; padding:0.8rem 1.1rem; margin:0.5rem 0;
+        background: rgba({','.join(str(int(t['user_bg'].lstrip('#')[i:i+2], 16)) for i in (0,2,4))}, 0.6);
+        border-left:4px solid {t['user_border']};
+        border-radius:12px; padding:0.8rem 1.1rem; margin:0.5rem 0;
         color:{t['text']}; font-size:0.95rem; line-height:1.6;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
+        border-top: 1px solid rgba(255,255,255,0.07);
+        animation: msgSlideIn 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
       }}
       .msg-bot {{
-        background:{t['card']}cc; border-left:4px solid {t['accent']};
-        border-radius:10px; padding:0.8rem 1.1rem; margin:0.5rem 0;
+        background: rgba({','.join(str(int(t['card'].lstrip('#')[i:i+2], 16)) for i in (0,2,4))}, 0.55);
+        border-left:4px solid {t['accent']};
+        border-radius:12px; padding:0.8rem 1.1rem; margin:0.5rem 0;
         color:{t['text']}; font-size:0.95rem; line-height:1.7;
-        backdrop-filter: blur(4px);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08);
+        border-top: 1px solid rgba(255,255,255,0.08);
+        animation: msgSlideIn 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+      }}
+      @keyframes msgSlideIn {{
+        from {{ opacity: 0; transform: translateY(18px) scale(0.98); }}
+        to   {{ opacity: 1; transform: translateY(0)    scale(1); }}
       }}
       .msg-header {{
         display:flex; justify-content:space-between; align-items:center;
@@ -521,6 +537,73 @@ def apply_theme():
       .session-meta {{ font-size:0.72rem; color:{t['sub']}; }}
       hr {{ border-color:{t['border']}; margin:0.7rem 0; }}
 
+      /* ── Custom Scrollbar (Discord style) ── */
+      ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
+      ::-webkit-scrollbar-track {{ background: transparent; }}
+      ::-webkit-scrollbar-thumb {{
+        background: {t['border']}; border-radius: 100px;
+        transition: background 0.2s;
+      }}
+      ::-webkit-scrollbar-thumb:hover {{ background: {t['accent']}88; }}
+      * {{ scrollbar-width: thin; scrollbar-color: {t['border']} transparent; }}
+
+      /* ── Page transition ── */
+      @keyframes pageSlideIn {{
+        from {{ opacity: 0; transform: translateY(12px); }}
+        to   {{ opacity: 1; transform: translateY(0); }}
+      }}
+      .block-container {{
+        animation: pageSlideIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+      }}
+
+      /* ── Skeleton shimmer ── */
+      @keyframes shimmer {{
+        0%   {{ background-position: -600px 0; }}
+        100% {{ background-position:  600px 0; }}
+      }}
+      .skeleton {{
+        background: linear-gradient(90deg,
+          {t['card']} 25%,
+          {t['border']} 50%,
+          {t['card']} 75%);
+        background-size: 600px 100%;
+        animation: shimmer 1.4s ease-in-out infinite;
+        border-radius: 8px; height: 14px; margin: 6px 0;
+      }}
+      .skeleton-wide  {{ width: 85%; }}
+      .skeleton-med   {{ width: 60%; }}
+      .skeleton-short {{ width: 35%; }}
+      .skeleton-wrap {{
+        background: {t['card']}99;
+        border-left: 4px solid {t['border']};
+        border-radius: 12px; padding: 0.9rem 1.1rem;
+        margin: 0.5rem 0;
+        backdrop-filter: blur(12px);
+      }}
+
+      /* ── Avatar in messages ── */
+      .msg-with-avatar {{
+        display: flex; gap: 0.65rem; align-items: flex-start; margin: 0.5rem 0;
+      }}
+      .msg-avatar {{
+        width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.78rem; font-weight: 800; margin-top: 2px;
+      }}
+      .msg-avatar-user {{
+        background: linear-gradient(135deg, {t['user_border']}, {t['accent']});
+        color: {t['bg']};
+      }}
+      .msg-avatar-bot {{
+        background: linear-gradient(135deg, {t['accent']}, {t['user_border']});
+        color: {t['bg']}; font-size: 0.65rem; letter-spacing: -0.5px;
+      }}
+      .msg-bubble {{ flex: 1; min-width: 0; }}
+      .msg-user {{ border-radius: 4px 12px 12px 12px !important; }}
+      .msg-bot  {{ border-radius: 12px 4px 12px 12px !important; border-left: none !important;
+                   border-top: none !important;
+                   border: 1px solid {t['accent']}44 !important; }}
+
       @media (max-width: 640px) {{
         .block-container {{ padding: 0.5rem 0.6rem 2rem 0.6rem !important; max-width: 100% !important; }}
         .plm-toolbar {{ flex-direction: column; align-items: stretch; gap: 0.5rem; padding: 0.6rem 0.7rem; border-radius: 10px; }}
@@ -531,6 +614,7 @@ def apply_theme():
         .plm-orb-2 {{ width:180px; height:180px; }}
         .plm-orb-3 {{ width:140px; height:140px; }}
         .plm-orb-4 {{ width:120px; height:120px; }}
+        .msg-avatar {{ width:26px; height:26px; font-size:0.65rem; }}
       }}
       @media (min-width: 641px) and (max-width: 900px) {{
         .block-container {{ padding: 0.8rem 1rem 2rem 1rem !important; max-width: 100% !important; }}
@@ -611,10 +695,86 @@ def get_summary() -> str:
     except Exception:
         return "⚠️ Could not generate summary."
 
+
+
+# ─────────────────────────────────────────
+#  MARKDOWN RENDERER
+# ─────────────────────────────────────────
+def render_markdown(text: str, t: dict) -> str:
+    """Convert markdown text to styled HTML for chat bubbles."""
+    import re as _re
+    # Code blocks
+    def replace_codeblock(m):
+        lang = m.group(1).strip() if m.group(1) else ""
+        code = m.group(2).replace('<','&lt;').replace('>','&gt;')
+        return (
+            f'<div style="background:#1e1f22;border:1px solid {t["border"]};border-radius:8px;margin:0.6rem 0;overflow:hidden;">' +
+            f'<div style="background:#232428;padding:0.3rem 0.8rem;font-size:0.72rem;color:{t["sub"]};">{lang if lang else "code"}</div>' +
+            f'<pre style="margin:0;padding:0.8rem;overflow-x:auto;font-size:0.88rem;line-height:1.6;color:#e8eaed;font-family:monospace;"><code>' +
+            code + '</code></pre></div>'
+        )
+    text = _re.sub(r'```(\w*)\n?([\s\S]*?)```', replace_codeblock, text)
+    # Inline code
+    text = _re.sub(r'`([^`]+)`',
+        lambda m: f'<code style="background:#232428;padding:1px 5px;border-radius:4px;font-size:0.88em;color:#e8eaed;font-family:monospace;">{m.group(1)}</code>', text)
+    # Bold
+    text = _re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
+    # Italic
+    text = _re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
+    # Headings
+    text = _re.sub(r'^### (.+)$', lambda m: f'<h4 style="color:{t["accent"]};margin:0.5rem 0 0.2rem;">{m.group(1)}</h4>', text, flags=_re.MULTILINE)
+    text = _re.sub(r'^## (.+)$',  lambda m: f'<h3 style="color:{t["accent"]};margin:0.6rem 0 0.3rem;">{m.group(1)}</h3>', text, flags=_re.MULTILINE)
+    text = _re.sub(r'^# (.+)$',   lambda m: f'<h2 style="color:{t["accent"]};margin:0.7rem 0 0.3rem;">{m.group(1)}</h2>', text, flags=_re.MULTILINE)
+    # Unordered list
+    def replace_ul(m):
+        items = _re.findall(r'^[-*] (.+)$', m.group(0), _re.MULTILINE)
+        lis = ''.join(f'<li style="margin:0.15rem 0;">{i}</li>' for i in items)
+        return f'<ul style="margin:0.3rem 0 0.3rem 1.2rem;padding:0;">{lis}</ul>'
+    text = _re.sub(r'(^[-*] .+$\n?)+', replace_ul, text, flags=_re.MULTILINE)
+    # Numbered list
+    def replace_ol(m):
+        items = _re.findall(r'^\d+\. (.+)$', m.group(0), _re.MULTILINE)
+        lis = ''.join(f'<li style="margin:0.15rem 0;">{i}</li>' for i in items)
+        return f'<ol style="margin:0.3rem 0 0.3rem 1.2rem;padding:0;">{lis}</ol>'
+    text = _re.sub(r'(^\d+\. .+$\n?)+', replace_ol, text, flags=_re.MULTILINE)
+    # HR
+    text = _re.sub(r'^---+$', f'<hr style="border-color:{t["border"]};margin:0.5rem 0;">', text, flags=_re.MULTILINE)
+    # Newlines
+    lines = text.split('\n')
+    result = []
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            result.append('<br>')
+        elif stripped.startswith('<'):
+            result.append(line)
+        else:
+            result.append(line + '<br>')
+    return '\n'.join(result)
+
+
+def get_auto_title(first_message: str) -> str:
+    """Generate a short chat title from the first user message."""
+    try:
+        client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "system", "content": "Generate a very short chat title (3-5 words max). Return ONLY the title, no quotes."},
+                {"role": "user", "content": first_message[:200]},
+            ],
+            max_tokens=15,
+            temperature=0.3,
+        )
+        title = response.choices[0].message.content.strip().strip('"\'\' ')
+        return title[:40] if title else "New Chat"
+    except Exception:
+        words = first_message.strip().split()[:5]
+        return " ".join(words) + ("…" if len(first_message.split()) > 5 else "")
+
 # ─────────────────────────────────────────
 #  SESSION MANAGEMENT HELPERS
 # ─────────────────────────────────────────
-def init_sessions():
     """Load sessions from DB if first time this login, else sync state."""
     if not st.session_state.sessions:
         # Try loading saved chats from disk for this user
@@ -690,8 +850,8 @@ def splash_screen():
         to   { opacity: 1; transform: translateY(0px) scale(1); }
       }
       @keyframes logoGlow {
-        0%, 100% { text-shadow: 0 0 20px #1db95480, 0 0 40px #1db95440; }
-        50%       { text-shadow: 0 0 40px #1db954cc, 0 0 80px #1db95460, 0 0 120px #1aa34a30; }
+        0%, 100% { text-shadow: 0 0 20px #5865f280, 0 0 40px #5865f240; }
+        50%       { text-shadow: 0 0 40px #5865f2cc, 0 0 80px #5865f260, 0 0 120px #4752c430; }
       }
       @keyframes barFill {
         0%   { width: 0%; }
@@ -732,7 +892,7 @@ def splash_screen():
 
       .splash-wrap {
         position: fixed; inset: 0;
-        background: linear-gradient(-45deg, #121212, #121212, #090909, #121212);
+        background: linear-gradient(-45deg, #313338, #313338, #1e1f22, #313338);
         background-size: 400% 400%;
         animation: gradientShift 8s ease infinite;
         display: flex; align-items: center; justify-content: center;
@@ -741,21 +901,21 @@ def splash_screen():
       }
       .splash-orb-1 {
         position: fixed; width: 600px; height: 600px; border-radius: 50%;
-        background: radial-gradient(circle, #1db95440 0%, transparent 65%);
+        background: radial-gradient(circle, #5865f240 0%, transparent 65%);
         top: -200px; left: -200px; filter: blur(50px);
         animation: orbSplash1 6s ease-in-out infinite;
         pointer-events: none;
       }
       .splash-orb-2 {
         position: fixed; width: 500px; height: 500px; border-radius: 50%;
-        background: radial-gradient(circle, #1aa34a35 0%, transparent 65%);
+        background: radial-gradient(circle, #4752c435 0%, transparent 65%);
         bottom: -150px; right: -150px; filter: blur(60px);
         animation: orbSplash2 8s ease-in-out infinite;
         pointer-events: none;
       }
       .splash-orb-3 {
         position: fixed; width: 300px; height: 300px; border-radius: 50%;
-        background: radial-gradient(circle, #1ed76030 0%, transparent 65%);
+        background: radial-gradient(circle, #7289da30 0%, transparent 65%);
         top: 50%; left: 60%; filter: blur(40px);
         animation: orbSplash1 10s ease-in-out infinite reverse;
         pointer-events: none;
@@ -767,16 +927,16 @@ def splash_screen():
       }
       .splash-logo-ring {
         width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 1.4rem;
-        background: linear-gradient(135deg, #1db95418, #121212);
-        border: 2px solid #1db95455;
+        background: linear-gradient(135deg, #5865f218, #313338);
+        border: 2px solid #5865f255;
         display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 0 40px #1db95430, inset 0 0 20px #1db95410;
+        box-shadow: 0 0 40px #5865f230, inset 0 0 20px #5865f210;
         animation: logoGlow 3s ease-in-out infinite;
         padding: 4px;
       }
       .splash-title {
         font-size: 3.2rem; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #ffffff 30%, #1db954 70%, #1ed760 100%);
+        background: linear-gradient(135deg, #f2f3f5 30%, #5865f2 70%, #7289da 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text; margin-bottom: 0.4rem;
         animation: logoGlow 3s ease-in-out infinite;
@@ -788,13 +948,13 @@ def splash_screen():
         animation: taglineFade 1s 0.5s ease forwards; opacity: 0;
       }
       .splash-bar-wrap {
-        width: 100%; background: #ffffff12; border-radius: 100px;
+        width: 100%; background: #f2f3f512; border-radius: 100px;
         height: 4px; overflow: hidden; margin-bottom: 1rem;
         box-shadow: 0 0 10px #00000040;
       }
       .splash-bar {
         height: 100%; border-radius: 100px;
-        background: linear-gradient(90deg, #1db954, #1ed760, #1aa34a, #1db954);
+        background: linear-gradient(90deg, #5865f2, #7289da, #4752c4, #5865f2);
         background-size: 200% auto;
         animation: barFill 2.8s cubic-bezier(0.4,0,0.2,1) forwards,
                    barShimmer 1.5s linear infinite;
@@ -816,11 +976,11 @@ def splash_screen():
         display: flex; justify-content: center; gap: 8px; margin-top: 0.8rem;
       }
       .splash-dot {
-        width: 8px; height: 8px; border-radius: 50%; background: #1db954;
+        width: 8px; height: 8px; border-radius: 50%; background: #5865f2;
         animation: dotPulse 1.2s ease-in-out infinite;
       }
-      .splash-dot:nth-child(2) { animation-delay: 0.2s; background: #1ed760; }
-      .splash-dot:nth-child(3) { animation-delay: 0.4s; background: #1aa34a; }
+      .splash-dot:nth-child(2) { animation-delay: 0.2s; background: #7289da; }
+      .splash-dot:nth-child(3) { animation-delay: 0.4s; background: #4752c4; }
       .splash-byline {
         position: absolute; bottom: 1.5rem; left: 0; right: 0;
         font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
@@ -845,9 +1005,9 @@ def splash_screen():
             <circle cx="48" cy="7" r="5.5" fill="#00c9a7" opacity="0.2"/>
             <defs>
               <linearGradient id="splashGrad" x1="0" y1="0" x2="54" y2="0" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="55%" stop-color="#1db954"/>
-                <stop offset="100%" stop-color="#1ed760"/>
+                <stop offset="0%" stop-color="#f2f3f5"/>
+                <stop offset="55%" stop-color="#5865f2"/>
+                <stop offset="100%" stop-color="#7289da"/>
               </linearGradient>
             </defs>
           </svg>
@@ -907,7 +1067,7 @@ def auth_page():
       }}
 
       .stApp {{
-        background: linear-gradient(-45deg, #121212, #282828, #090909, #121212);
+        background: linear-gradient(-45deg, #313338, #2b2d31, #1e1f22, #313338);
         background-size: 400% 400%;
         animation: gradientShift 12s ease infinite;
         font-family: 'Inter', sans-serif;
@@ -915,29 +1075,29 @@ def auth_page():
 
       /* ── Auth card ── */
       .auth-card {{
-        background: linear-gradient(160deg, #282828dd 0%, #0a0a0add 100%);
-        border: 1px solid #1db95433;
+        background: linear-gradient(160deg, #2b2d31dd 0%, #1e1f22dd 100%);
+        border: 1px solid #5865f233;
         border-radius: 20px;
         padding: 2.4rem 2.8rem 2rem;
         margin: 0 auto;
         max-width: 420px;
         backdrop-filter: blur(16px);
-        box-shadow: 0 8px 40px #00000060, 0 0 60px #1db95410;
+        box-shadow: 0 8px 40px #00000060, 0 0 60px #5865f210;
         animation: cardSlideUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
       }}
 
       /* ── Logo area ── */
       .auth-logo-ring {{
         width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 1rem;
-        background: linear-gradient(135deg, #1db95418, #121212);
-        border: 1.5px solid #1db95455;
+        background: linear-gradient(135deg, #5865f218, #313338);
+        border: 1.5px solid #5865f255;
         display: flex; align-items: center; justify-content: center;
         font-size: 2rem; line-height: 1;
         box-shadow: 0 0 24px #00ff8730;
       }}
       .auth-title {{
         font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #ffffff 30%, #1db954 100%);
+        background: linear-gradient(135deg, #f2f3f5 30%, #5865f2 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text; text-align: center; margin-bottom: 0.2rem;
       }}
@@ -958,9 +1118,9 @@ def auth_page():
         color: #888899; background: transparent;
       }}
       .auth-tab-active {{
-        background: linear-gradient(135deg, #1db95422, #1ed76018);
-        color: #1db954;
-        border-bottom: 2px solid #1db954;
+        background: linear-gradient(135deg, #5865f222, #7289da18);
+        color: #5865f2;
+        border-bottom: 2px solid #5865f2;
       }}
 
       /* ── Form field labels ── */
@@ -983,16 +1143,16 @@ def auth_page():
 
       /* ── Submit button ── */
       .stFormSubmitButton > button {{
-        background: linear-gradient(135deg, #1db954, #1ed760) !important;
-        color: #121212 !important; border: none !important;
+        background: linear-gradient(135deg, #5865f2, #7289da) !important;
+        color: #313338 !important; border: none !important;
         border-radius: 10px !important; font-weight: 700 !important;
         font-size: 0.95rem !important; letter-spacing: 0.04em !important;
         padding: 0.65rem 1rem !important;
         transition: all 0.25s !important;
-        box-shadow: 0 4px 20px #1db95440 !important;
+        box-shadow: 0 4px 20px #5865f240 !important;
       }}
       .stFormSubmitButton > button:hover {{
-        box-shadow: 0 6px 28px #1db95470 !important;
+        box-shadow: 0 6px 28px #5865f270 !important;
         transform: translateY(-1px) !important;
       }}
 
@@ -1017,9 +1177,9 @@ def auth_page():
         color: #e08080; font-size: 0.83rem; margin-bottom: 0.6rem;
       }}
       .auth-success {{
-        background: #1db95418; border: 1px solid #1db95466;
+        background: #5865f218; border: 1px solid #5865f266;
         border-radius: 8px; padding: 0.55rem 0.8rem;
-        color: #1db954; font-size: 0.83rem; margin-bottom: 0.6rem;
+        color: #5865f2; font-size: 0.83rem; margin-bottom: 0.6rem;
       }}
 
       /* ── Password strength bar ── */
@@ -1057,20 +1217,20 @@ def auth_page():
     st.markdown("""
     <div style="text-align:center; padding: 2.5rem 0 0.5rem;">
       <div class="auth-logo-ring" style="width:72px;height:72px;border-radius:50%;margin:0 auto 1rem;
-           background:linear-gradient(135deg,#1db95414,#121212);border:1.5px solid #1db95450;
+           background:linear-gradient(135deg,#5865f214,#313338);border:1.5px solid #5865f250;
            display:flex;align-items:center;justify-content:center;
-           box-shadow:0 0 28px #00ff8730, inset 0 0 16px #1db95408;">
+           box-shadow:0 0 28px #00ff8730, inset 0 0 16px #5865f208;">
         <svg width="46" height="46" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
           <text x="3" y="38" font-family="'Inter',sans-serif" font-weight="800" font-size="22"
                 fill="url(#authGrad)" letter-spacing="-1">PLM</text>
           <rect x="3" y="42" width="48" height="2.5" rx="1.25" fill="url(#authGrad)" opacity="0.6"/>
-          <circle cx="48" cy="7" r="3" fill="#1db954" opacity="0.9"/>
-          <circle cx="48" cy="7" r="5.5" fill="#1db954" opacity="0.2"/>
+          <circle cx="48" cy="7" r="3" fill="#5865f2" opacity="0.9"/>
+          <circle cx="48" cy="7" r="5.5" fill="#5865f2" opacity="0.2"/>
           <defs>
             <linearGradient id="authGrad" x1="0" y1="0" x2="54" y2="0" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#ffffff"/>
-              <stop offset="55%" stop-color="#1db954"/>
-              <stop offset="100%" stop-color="#1ed760"/>
+              <stop offset="0%" stop-color="#f2f3f5"/>
+              <stop offset="55%" stop-color="#5865f2"/>
+              <stop offset="100%" stop-color="#7289da"/>
             </linearGradient>
           </defs>
         </svg>
@@ -1098,9 +1258,9 @@ def auth_page():
     # ─── Active indicator bar ───
     bar_left = "0%" if st.session_state.auth_tab == "login" else "50%"
     st.markdown(f"""
-    <div style="position:relative;height:3px;background:#282828;border-radius:100px;margin-bottom:1.4rem;">
+    <div style="position:relative;height:3px;background:#2b2d31;border-radius:100px;margin-bottom:1.4rem;">
       <div style="position:absolute;top:0;left:{bar_left};width:50%;height:100%;
-                  background:linear-gradient(90deg,#1db954,#1ed760);border-radius:100px;
+                  background:linear-gradient(90deg,#5865f2,#7289da);border-radius:100px;
                   transition:left 0.3s ease;"></div>
     </div>
     """, unsafe_allow_html=True)
@@ -1309,6 +1469,14 @@ def chat_page():
                 st.session_state[k] = v
             st.rerun()
 
+    # ── Profile button (extra col-like, appended after toolbar) ──
+    pcol1, pcol2 = st.columns([11, 1])
+    with pcol2:
+        user_initial = (st.session_state.display_name or "U")[0].upper()
+        if st.button(user_initial, key="profile_btn", help="Profile", use_container_width=True):
+            st.session_state.show_profile = not st.session_state.get("show_profile", False)
+            st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
     # ── Title ──
@@ -1333,6 +1501,79 @@ def chat_page():
         f"{user_display}⏱️ ~{remaining} min &nbsp;|&nbsp; 🎭 {st.session_state.conv_mode} &nbsp;|&nbsp; 💬 {active_name} ({msg_count} messages)</p>",
         unsafe_allow_html=True
     )
+
+    # ── Profile panel ──
+    if st.session_state.get("show_profile", False):
+        t = THEMES[st.session_state.theme]
+        db = st.session_state.db
+        uname = st.session_state.current_user
+        udata = db["users"].get(uname, {})
+        total_msgs = sum(len(s.get("messages", [])) for s in st.session_state.sessions.values())
+        total_sessions = len(st.session_state.sessions)
+
+        st.markdown(f"""
+        <div style="background:{t['card']};border:1px solid {t['accent']}44;border-radius:14px;
+                    padding:1.4rem 1.6rem;margin-bottom:1rem;">
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+            <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,{t['accent']},{t['user_border']});
+                        display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+                        font-weight:800;color:{t['bg']};flex-shrink:0;">
+              {(st.session_state.display_name or 'U')[0].upper()}
+            </div>
+            <div>
+              <div style="font-size:1.1rem;font-weight:700;color:{t['text']};">{st.session_state.display_name}</div>
+              <div style="font-size:0.78rem;color:{t['sub']};">@{uname} · Member since {udata.get('created_at','—')}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:0.4rem;">
+            <div style="text-align:center;">
+              <div style="font-size:1.4rem;font-weight:800;color:{t['accent']};">{total_sessions}</div>
+              <div style="font-size:0.72rem;color:{t['sub']};">Chats</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:1.4rem;font-weight:800;color:{t['accent']};">{total_msgs}</div>
+              <div style="font-size:0.72rem;color:{t['sub']};">Messages</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:1.4rem;font-weight:800;color:{t['accent']};">{len(st.session_state.starred)}</div>
+              <div style="font-size:0.72rem;color:{t['sub']};">Starred</div>
+            </div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        tab1, tab2 = st.tabs(["✏️ Edit Profile", "🔒 Change Password"])
+
+        with tab1:
+            with st.form("edit_profile_form"):
+                new_display = st.text_input("Display Name", value=st.session_state.display_name, placeholder="Your name")
+                if st.form_submit_button("💾 Save Changes", use_container_width=True):
+                    if new_display.strip():
+                        db["users"][uname]["display_name"] = new_display.strip()
+                        st.session_state.display_name = new_display.strip()
+                        _save_db(db)
+                        st.success("✅ Display name updated!")
+                    else:
+                        st.error("Name cannot be empty.")
+
+        with tab2:
+            with st.form("change_pw_form"):
+                old_pw  = st.text_input("Current Password", type="password")
+                new_pw  = st.text_input("New Password", type="password", placeholder="Min 6 characters")
+                conf_pw = st.text_input("Confirm New Password", type="password")
+                if st.form_submit_button("🔒 Update Password", use_container_width=True):
+                    if db["users"][uname]["password_hash"] != _hash(old_pw):
+                        st.error("❌ Current password is incorrect.")
+                    elif len(new_pw) < 6:
+                        st.error("❌ New password must be at least 6 characters.")
+                    elif new_pw != conf_pw:
+                        st.error("❌ Passwords do not match.")
+                    else:
+                        db["users"][uname]["password_hash"] = _hash(new_pw)
+                        _save_db(db)
+                        st.success("✅ Password updated successfully!")
+
+        st.markdown("---")
 
     # ── Sessions panel ──
     if st.session_state.show_sessions:
@@ -1474,25 +1715,38 @@ def chat_page():
     for i, msg in enumerate(st.session_state.messages):
         ts = msg.get("time", "")
         is_starred = msg.get("starred", False)
+        user_initial = (st.session_state.display_name or "U")[0].upper()
+
         if msg["role"] == "user":
             st.markdown(f"""
-            <div class="msg-user">
-              <div class="msg-header">
-                <span class="msg-label">You</span>
-                <span class="msg-time">{ts}</span>
+            <div class="msg-with-avatar">
+              <div class="msg-avatar msg-avatar-user">{user_initial}</div>
+              <div class="msg-bubble">
+                <div class="msg-user">
+                  <div class="msg-header">
+                    <span class="msg-label">You</span>
+                    <span class="msg-time">{ts}</span>
+                  </div>
+                  {msg['content']}
+                </div>
               </div>
-              {msg['content']}
             </div>""", unsafe_allow_html=True)
         else:
+            rendered = render_markdown(msg['content'], t)
             st.markdown(f"""
-            <div class="msg-bot">
-              <div class="msg-header">
-                <span class="msg-label">PLM GPT</span>
-                <span class="msg-time">{ts}</span>
+            <div class="msg-with-avatar">
+              <div class="msg-avatar msg-avatar-bot">PLM</div>
+              <div class="msg-bubble">
+                <div class="msg-bot">
+                  <div class="msg-header">
+                    <span class="msg-label">PLM GPT</span>
+                    <span class="msg-time">{ts}</span>
+                  </div>
+                  <div class="msg-body">{rendered}</div>
+                </div>
               </div>
-              {msg['content']}
             </div>""", unsafe_allow_html=True)
-            fb_col1, fb_col2, fb_col3, fb_col4 = st.columns([1, 1, 1, 6])
+            fb_col1, fb_col2, fb_col3, fb_col4, fb_col5 = st.columns([1, 1, 1, 1, 5])
             feedback = msg.get("feedback")
             star_icon = "⭐" if is_starred else "☆"
             with fb_col1:
@@ -1514,11 +1768,20 @@ def chat_page():
                             st.session_state.starred.remove(msg["content"])
                     save_active_session()
                     st.rerun()
+            with fb_col4:
+                safe_content = msg['content'].replace('`','\\`').replace('\n','\\n').replace('\r','')
+                st.markdown(f"""
+                <button onclick="navigator.clipboard.writeText(`{safe_content}`).then(()=>{{
+                  this.innerText='✅'; setTimeout(()=>this.innerText='📋',1500);
+                }})" title="Copy"
+                style="background:transparent;border:1px solid {t['border']};border-radius:6px;
+                       padding:3px 8px;font-size:0.8rem;cursor:pointer;color:{t['sub']};
+                       transition:all 0.15s;">📋</button>
+                """, unsafe_allow_html=True)
             if feedback == "liked":
                 st.markdown(f"<p style='font-size:0.7rem; color:{t['accent']}; margin-top:-0.3rem;'>✓ Marked as helpful</p>", unsafe_allow_html=True)
             elif feedback == "disliked":
                 st.markdown(f"<p style='font-size:0.7rem; color:#e05555; margin-top:-0.3rem;'>✗ Marked as not helpful</p>", unsafe_allow_html=True)
-
     st.markdown("<div style='margin-top:0.8rem;'></div>", unsafe_allow_html=True)
 
     # ── Input form ──
@@ -1555,11 +1818,46 @@ def chat_page():
                 "role": "user", "content": clean,
                 "time": now_str(), "feedback": None, "starred": False,
             })
+            # ── Confetti on very first message ever ──
+            if len(st.session_state.messages) == 1 and not st.session_state.get("confetti_shown"):
+                st.session_state.confetti_shown = True
+                st.markdown("""
+                <script>
+                (function(){
+                  const colors=['#5865f2','#7289da','#ffffff','#4752c4','#99aab5'];
+                  const count = 120;
+                  for(let i=0;i<count;i++){
+                    const el=document.createElement('div');
+                    el.style.cssText=`position:fixed;top:-10px;left:${Math.random()*100}vw;
+                      width:${4+Math.random()*6}px;height:${8+Math.random()*8}px;
+                      background:${colors[Math.floor(Math.random()*colors.length)]};
+                      border-radius:2px;z-index:99999;pointer-events:none;
+                      animation:confettiFall ${1.5+Math.random()*2}s ease-in forwards;
+                      transform:rotate(${Math.random()*360}deg);
+                      animation-delay:${Math.random()*0.8}s`;
+                    document.body.appendChild(el);
+                    setTimeout(()=>el.remove(), 4000);
+                  }
+                  const style=document.createElement('style');
+                  style.textContent=`@keyframes confettiFall{
+                    to{top:110vh;transform:rotate(${Math.random()*720}deg);opacity:0;}}`;
+                  document.head.appendChild(style);
+                })();
+                </script>
+                """, unsafe_allow_html=True)
+
             typing_ph = st.empty()
-            typing_ph.markdown("""
-            <div class="typing-indicator">
-              <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
-              <span class="typing-text">PLM GPT is thinking...</span>
+            # ── Skeleton loading ──
+            typing_ph.markdown(f"""
+            <div class="msg-with-avatar">
+              <div class="msg-avatar msg-avatar-bot">PLM</div>
+              <div class="msg-bubble">
+                <div class="skeleton-wrap">
+                  <div class="skeleton skeleton-wide"></div>
+                  <div class="skeleton skeleton-med"></div>
+                  <div class="skeleton skeleton-short"></div>
+                </div>
+              </div>
             </div>""", unsafe_allow_html=True)
             full_reply = ""
             stream_ph = st.empty()
@@ -1575,6 +1873,12 @@ def chat_page():
                 "role": "assistant", "content": full_reply,
                 "time": now_str(), "feedback": None, "starred": False,
             })
+            # ── Auto-title: set chat name from first exchange ──
+            sid = st.session_state.active_session
+            current_name = st.session_state.sessions.get(sid, {}).get("name", "")
+            if len(st.session_state.messages) == 2 and current_name.startswith("Chat "):
+                new_title = get_auto_title(clean)
+                st.session_state.sessions[sid]["name"] = new_title
             save_active_session()
             st.rerun()
 
