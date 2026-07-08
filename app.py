@@ -1275,13 +1275,13 @@ def auth_page():
       }}
       .auth-feature-pill {{
         font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
-        color: #555577; display: flex; align-items: center; gap: 4px;
+        color: #999999; display: flex; align-items: center; gap: 4px;
       }}
 
       /* ── Bottom byline ── */
       .auth-byline {{
         text-align: center; font-size: 0.65rem; letter-spacing: 0.1em;
-        text-transform: uppercase; color: #333355; margin-top: 1.4rem;
+        text-transform: uppercase; color: #888888; margin-top: 1.4rem;
       }}
 
       /* ── Hide Streamlit extras on auth page ── */
@@ -1321,12 +1321,12 @@ def auth_page():
     col_l, col_r = st.columns(2)
     with col_l:
         login_active = "auth-tab auth-tab-active" if st.session_state.auth_tab == "login" else "auth-tab"
-        if st.button("🔐  Sign In", use_container_width=True, key="tab_login"):
+        if st.button("Sign In", use_container_width=True, key="tab_login"):
             st.session_state.auth_tab = "login"
             st.rerun()
     with col_r:
         signup_active = "auth-tab auth-tab-active" if st.session_state.auth_tab == "signup" else "auth-tab"
-        if st.button("✨  Sign Up", use_container_width=True, key="tab_signup"):
+        if st.button("Sign Up", use_container_width=True, key="tab_signup"):
             st.session_state.auth_tab = "signup"
             st.rerun()
 
@@ -1356,7 +1356,7 @@ def auth_page():
                 password = st.text_input("", placeholder="Enter your password", type="password",
                                          key="login_pass", label_visibility="collapsed")
                 st.markdown("<div style='height:0.4rem'></div>", unsafe_allow_html=True)
-                submitted = st.form_submit_button("🔐  Sign In", use_container_width=True)
+                submitted = st.form_submit_button("Sign In", use_container_width=True)
 
             if submitted:
                 if not username or not password:
@@ -1380,7 +1380,7 @@ def auth_page():
 
             st.markdown("""
             <div class="auth-divider">or</div>
-            <div class="auth-switch">
+            <div class="auth-switch" style="color:#aaaaaa;">
               Don't have an account? Click <strong style="color:#ef4444">Sign Up</strong> above.
             </div>
             """, unsafe_allow_html=True)
@@ -1403,7 +1403,7 @@ def auth_page():
                 confirm_pw   = st.text_input("", placeholder="Repeat your password",
                                               type="password", key="signup_confirm", label_visibility="collapsed")
                 st.markdown("<div style='height:0.4rem'></div>", unsafe_allow_html=True)
-                submitted = st.form_submit_button("✨  Create Account", use_container_width=True)
+                submitted = st.form_submit_button("Create Account", use_container_width=True)
 
             if submitted:
                 if not all([display_name, new_username, new_password, confirm_pw]):
@@ -1422,7 +1422,7 @@ def auth_page():
 
             st.markdown("""
             <div class="auth-divider">or</div>
-            <div class="auth-switch">
+            <div class="auth-switch" style="color:#aaaaaa;">
               Already have an account? Click <strong style="color:#ef4444">Sign In</strong> above.
             </div>
             """, unsafe_allow_html=True)
@@ -1430,10 +1430,10 @@ def auth_page():
     # ─── Feature pills ───
     st.markdown("""
     <div class="auth-features">
-      <div class="auth-feature-pill">⚡ Fast Streaming</div>
-      <div class="auth-feature-pill">🧠 Llama 3.3 70B</div>
-      <div class="auth-feature-pill">🎭 4 AI Modes</div>
-      <div class="auth-feature-pill">💬 Multi-Session</div>
+      <div class="auth-feature-pill">Fast Streaming</div>
+      <div class="auth-feature-pill">Llama 3.3 70B</div>
+      <div class="auth-feature-pill">4 AI Modes</div>
+      <div class="auth-feature-pill">Multi-Session</div>
     </div>
     <div class="auth-byline">PLM GPT · Crafted by Pranav Chakravorty</div>
     """, unsafe_allow_html=True)
@@ -1488,12 +1488,12 @@ def chat_page():
     # Row 1: selectors
     r1c1, r1c2, r1c3 = st.columns([3, 3, 3])
     with r1c1:
-        sel = st.selectbox("🧠 Model", list(MODELS.keys()),
+        sel = st.selectbox("Model", list(MODELS.keys()),
             index=list(MODELS.values()).index(st.session_state.model),
             key="model_select")
         st.session_state.model = MODELS[sel]
     with r1c2:
-        mode_sel = st.selectbox("🎭 Mode", list(CONVERSATION_MODES.keys()),
+        mode_sel = st.selectbox("Mode", list(CONVERSATION_MODES.keys()),
             index=list(CONVERSATION_MODES.keys()).index(st.session_state.conv_mode),
             key="mode_select")
         st.session_state.conv_mode = mode_sel
@@ -1501,38 +1501,39 @@ def chat_page():
         temp_val = st.session_state.temperature
         lbl = "🧊 Factual" if temp_val < 0.4 else ("⚖️ Balanced" if temp_val < 0.75 else "🔥 Creative")
         st.session_state.temperature = st.slider(
-            f"🎨 {lbl}", 0.0, 1.0, temp_val, 0.1, key="temp_slider")
+            f"{lbl}", 0.0, 1.0, temp_val, 0.1, key="temp_slider")
 
     # Row 2: action buttons
     b1, b2, b3, b4, b5, b6, bsp = st.columns([1, 1, 1, 1, 1, 1, 3])
     with b1:
-        theme_icon = "☀️" if st.session_state.theme == "dark" else "🌙"
+        theme_icon = "Light" if st.session_state.theme == "dark" else "Dark"
         if st.button(theme_icon, use_container_width=True, key="theme_btn", help="Toggle theme"):
             st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
             st.rerun()
     with b2:
-        star_label = f"⭐ {len(st.session_state.starred)}" if st.session_state.starred else "⭐"
+        star_count = len(st.session_state.starred)
+        star_label = f"Starred ({star_count})" if star_count else "Starred"
         if st.button(star_label, use_container_width=True, key="starred_btn", help="Starred messages"):
             st.session_state.show_starred = not st.session_state.show_starred
             st.session_state.show_sessions = False
             st.rerun()
     with b3:
         sess_count = len(st.session_state.sessions)
-        if st.button(f"💬 {sess_count}", use_container_width=True, key="sessions_btn", help="Chat sessions"):
+        if st.button(f"Chats ({sess_count})", use_container_width=True, key="sessions_btn", help="Chat sessions"):
             st.session_state.show_sessions = not st.session_state.show_sessions
             st.session_state.show_starred = False
             st.rerun()
     with b4:
-        if st.button("➕", use_container_width=True, key="new_session_btn", help="New chat"):
+        if st.button("New Chat", use_container_width=True, key="new_session_btn", help="New chat"):
             new_session()
             st.rerun()
     with b5:
         user_initial = (st.session_state.display_name or "U")[0].upper()
-        if st.button(f"👤 {user_initial}", use_container_width=True, key="profile_btn", help="Profile"):
+        if st.button(f"Profile", use_container_width=True, key="profile_btn", help="Profile"):
             st.session_state.show_profile = not st.session_state.get("show_profile", False)
             st.rerun()
     with b6:
-        if st.button("🚪", use_container_width=True, key="logout_btn", help="Logout"):
+        if st.button("Logout", use_container_width=True, key="logout_btn", help="Logout"):
             for k, v in defaults.items():
                 st.session_state[k] = v
             st.rerun()
@@ -1542,7 +1543,7 @@ def chat_page():
     active_chat = st.session_state.sessions.get(st.session_state.active_session, {}).get("name", "Chat")
     st.markdown(f"""
     <div class="plm-title">
-      <h1>🤖 PLM GPT</h1>
+      <h1>PLM GPT</h1>
       <div class="byline" style="color:{t['sub']};font-size:0.8rem;">
         {active_chat} &nbsp;·&nbsp; {st.session_state.conv_mode}
       </div>
