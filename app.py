@@ -217,50 +217,50 @@ for k, v in defaults.items():
 # ─────────────────────────────────────────
 THEMES = {
     "dark": {
-        # ── Cinematic Dark — Pure Black + Aurora ──
-        "bg":          "#000000",
-        "card":        "#0d0d0d",
-        "input_bg":    "#161616",
-        "text":        "#f0f0f0",
-        "sub":         "#666666",
-        "accent":      "#a78bfa",
-        "border":      "#222222",
-        "user_bg":     "#111111",
-        "user_border": "#6366f1",
-        "btn_bg":      "#161616",
-        "btn_text":    "#f0f0f0",
-        "toolbar_bg":  "#050505",
-        "welcome_bg":  "#080808",
-        "grad1":       "#000000",
-        "grad2":       "#050510",
-        "grad3":       "#000000",
-        "aurora1":     "#6366f1",
-        "aurora2":     "#a78bfa",
-        "aurora3":     "#22d3ee",
-        "aurora4":     "#818cf8",
+        # ── Forest Night — Deep Emerald ───────────
+        "bg":          "#0a1a0a",
+        "card":        "#0f2010",
+        "input_bg":    "#162518",
+        "text":        "#e8f5e8",
+        "sub":         "#4a7a4a",
+        "accent":      "#22c55e",
+        "border":      "#1a3a1a",
+        "user_bg":     "#0d1a0d",
+        "user_border": "#4ade80",
+        "btn_bg":      "#162518",
+        "btn_text":    "#e8f5e8",
+        "toolbar_bg":  "#080f08",
+        "welcome_bg":  "#0a1a0a",
+        "grad1":       "#0a1a0a",
+        "grad2":       "#0f2010",
+        "grad3":       "#080f08",
+        "aurora1":     "#22c55e",
+        "aurora2":     "#4ade80",
+        "aurora3":     "#86efac",
+        "aurora4":     "#16a34a",
     },
     "light": {
-        # ── Cinematic Light ───────────────────────
-        "bg":          "#fafafa",
+        # ── Forest Day ────────────────────────────
+        "bg":          "#f0faf0",
         "card":        "#ffffff",
-        "input_bg":    "#f4f4f5",
-        "text":        "#09090b",
-        "sub":         "#71717a",
-        "accent":      "#7c3aed",
-        "border":      "#e4e4e7",
-        "user_bg":     "#f4f4f5",
-        "user_border": "#6366f1",
-        "btn_bg":      "#f4f4f5",
-        "btn_text":    "#09090b",
-        "toolbar_bg":  "#ebebeb",
-        "welcome_bg":  "#f4f4f5",
-        "grad1":       "#fafafa",
-        "grad2":       "#f0f0ff",
-        "grad3":       "#fafafa",
-        "aurora1":     "#6366f1",
-        "aurora2":     "#a78bfa",
-        "aurora3":     "#22d3ee",
-        "aurora4":     "#818cf8",
+        "input_bg":    "#e8f5e8",
+        "text":        "#052005",
+        "sub":         "#4a7a4a",
+        "accent":      "#16a34a",
+        "border":      "#c8e6c9",
+        "user_bg":     "#e8f5e8",
+        "user_border": "#22c55e",
+        "btn_bg":      "#e8f5e8",
+        "btn_text":    "#052005",
+        "toolbar_bg":  "#d4edda",
+        "welcome_bg":  "#e8f5e8",
+        "grad1":       "#f0faf0",
+        "grad2":       "#e8f5e8",
+        "grad3":       "#d4edda",
+        "aurora1":     "#22c55e",
+        "aurora2":     "#4ade80",
+        "aurora3":     "#86efac",
+        "aurora4":     "#16a34a",
     },
 }
 
@@ -294,26 +294,26 @@ BG_ANIMATION = """
   animation: auroraShift linear infinite;
   filter: blur(60px);
 }
-.aurora-stripe-1 { --clr: #6366f155; animation-duration: 14s; animation-delay: 0s;   top: 10%; }
-.aurora-stripe-2 { --clr: #a78bfa44; animation-duration: 18s; animation-delay: -5s;  top: 40%; }
-.aurora-stripe-3 { --clr: #22d3ee33; animation-duration: 22s; animation-delay: -10s; top: 70%; }
-.aurora-stripe-4 { --clr: #818cf844; animation-duration: 16s; animation-delay: -7s;  top: 25%; }
+.aurora-stripe-1 { --clr: #16a34a55; animation-duration: 14s; animation-delay: 0s;   top: 10%; }
+.aurora-stripe-2 { --clr: #22c55e44; animation-duration: 18s; animation-delay: -5s;  top: 40%; }
+.aurora-stripe-3 { --clr: #4ade8033; animation-duration: 22s; animation-delay: -10s; top: 70%; }
+.aurora-stripe-4 { --clr: #15803d44; animation-duration: 16s; animation-delay: -7s;  top: 25%; }
 
 .aurora-glow-1 {
   position: fixed; width: 70vw; height: 40vh; left: -20vw; top: -10vh;
-  background: radial-gradient(ellipse, #6366f122 0%, transparent 70%);
+  background: radial-gradient(ellipse, #16a34a22 0%, transparent 70%);
   animation: auroraPulse 8s ease-in-out infinite; filter: blur(80px);
   pointer-events: none; z-index: 0;
 }
 .aurora-glow-2 {
   position: fixed; width: 60vw; height: 50vh; right: -15vw; bottom: -10vh;
-  background: radial-gradient(ellipse, #a78bfa1a 0%, transparent 70%);
+  background: radial-gradient(ellipse, #22c55e1a 0%, transparent 70%);
   animation: auroraPulse 11s ease-in-out infinite reverse; filter: blur(100px);
   pointer-events: none; z-index: 0;
 }
 .aurora-glow-3 {
   position: fixed; width: 40vw; height: 30vh; left: 30vw; top: 30vh;
-  background: radial-gradient(ellipse, #22d3ee11 0%, transparent 70%);
+  background: radial-gradient(ellipse, #4ade8011 0%, transparent 70%);
   animation: auroraPulse 14s ease-in-out infinite 3s; filter: blur(90px);
   pointer-events: none; z-index: 0;
 }
@@ -489,7 +489,7 @@ def apply_theme():
         margin-top:-0.5rem; margin-bottom:0.4rem; opacity:0.7;
       }}
       .char-warn  {{ color:#f0a500 !important; opacity:1 !important; }}
-      .char-danger {{ color:#cc5200 !important; opacity:1 !important; }}
+      .char-danger {{ color:#15803d !important; opacity:1 !important; }}
       .stTextInput > div > div > input {{
         background-color:{t['input_bg']} !important; color:{t['text']} !important;
         border:1px solid {t['border']} !important; border-radius:10px !important;
@@ -867,8 +867,8 @@ def splash_screen():
         to   { opacity: 1; transform: translateY(0px) scale(1); }
       }
       @keyframes logoGlow {
-        0%, 100% { text-shadow: 0 0 20px #ff660080, 0 0 40px #ff660040; }
-        50%       { text-shadow: 0 0 40px #ff6600cc, 0 0 80px #ff660060, 0 0 120px #cc520030; }
+        0%, 100% { text-shadow: 0 0 20px #22c55e80, 0 0 40px #22c55e40; }
+        50%       { text-shadow: 0 0 40px #22c55ecc, 0 0 80px #22c55e60, 0 0 120px #15803d30; }
       }
       @keyframes barFill {
         0%   { width: 0%; }
@@ -918,21 +918,21 @@ def splash_screen():
       }
       .splash-orb-1 {
         position: fixed; width: 600px; height: 600px; border-radius: 50%;
-        background: radial-gradient(circle, #ff660040 0%, transparent 65%);
+        background: radial-gradient(circle, #22c55e40 0%, transparent 65%);
         top: -200px; left: -200px; filter: blur(50px);
         animation: orbSplash1 6s ease-in-out infinite;
         pointer-events: none;
       }
       .splash-orb-2 {
         position: fixed; width: 500px; height: 500px; border-radius: 50%;
-        background: radial-gradient(circle, #cc520035 0%, transparent 65%);
+        background: radial-gradient(circle, #15803d35 0%, transparent 65%);
         bottom: -150px; right: -150px; filter: blur(60px);
         animation: orbSplash2 8s ease-in-out infinite;
         pointer-events: none;
       }
       .splash-orb-3 {
         position: fixed; width: 300px; height: 300px; border-radius: 50%;
-        background: radial-gradient(circle, #ff883330 0%, transparent 65%);
+        background: radial-gradient(circle, #16a34a30 0%, transparent 65%);
         top: 50%; left: 60%; filter: blur(40px);
         animation: orbSplash1 10s ease-in-out infinite reverse;
         pointer-events: none;
@@ -944,16 +944,16 @@ def splash_screen():
       }
       .splash-logo-ring {
         width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 1.4rem;
-        background: linear-gradient(135deg, #ff660018, #0a0a0f);
-        border: 2px solid #ff660055;
+        background: linear-gradient(135deg, #22c55e18, #0a0a0f);
+        border: 2px solid #22c55e55;
         display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 0 40px #ff660030, inset 0 0 20px #ff660010;
+        box-shadow: 0 0 40px #22c55e30, inset 0 0 20px #22c55e10;
         animation: logoGlow 3s ease-in-out infinite;
         padding: 4px;
       }
       .splash-title {
         font-size: 3.2rem; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #e8e0d0 30%, #ff6600 70%, #ff8833 100%);
+        background: linear-gradient(135deg, #e8e0d0 30%, #22c55e 70%, #16a34a 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text; margin-bottom: 0.4rem;
         animation: logoGlow 3s ease-in-out infinite;
@@ -967,11 +967,11 @@ def splash_screen():
       .splash-bar-wrap {
         width: 100%; background: #e8e0d012; border-radius: 100px;
         height: 4px; overflow: hidden; margin-bottom: 1rem;
-        box-shadow: 0 0 10px #00000040;
+        box-shadow: 0 0 10px #0a1a0a40;
       }
       .splash-bar {
         height: 100%; border-radius: 100px;
-        background: linear-gradient(90deg, #ff6600, #ff8833, #cc5200, #ff6600);
+        background: linear-gradient(90deg, #22c55e, #16a34a, #15803d, #22c55e);
         background-size: 200% auto;
         animation: barFill 2.8s cubic-bezier(0.4,0,0.2,1) forwards,
                    barShimmer 1.5s linear infinite;
@@ -993,11 +993,11 @@ def splash_screen():
         display: flex; justify-content: center; gap: 8px; margin-top: 0.8rem;
       }
       .splash-dot {
-        width: 8px; height: 8px; border-radius: 50%; background: #ff6600;
+        width: 8px; height: 8px; border-radius: 50%; background: #22c55e;
         animation: dotPulse 1.2s ease-in-out infinite;
       }
-      .splash-dot:nth-child(2) { animation-delay: 0.2s; background: #ff8833; }
-      .splash-dot:nth-child(3) { animation-delay: 0.4s; background: #cc5200; }
+      .splash-dot:nth-child(2) { animation-delay: 0.2s; background: #16a34a; }
+      .splash-dot:nth-child(3) { animation-delay: 0.4s; background: #15803d; }
       .splash-byline {
         position: absolute; bottom: 1.5rem; left: 0; right: 0;
         font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
@@ -1023,8 +1023,8 @@ def splash_screen():
             <defs>
               <linearGradient id="splashGrad" x1="0" y1="0" x2="54" y2="0" gradientUnits="userSpaceOnUse">
                 <stop offset="0%" stop-color="#e8e0d0"/>
-                <stop offset="55%" stop-color="#ff6600"/>
-                <stop offset="100%" stop-color="#ff8833"/>
+                <stop offset="55%" stop-color="#22c55e"/>
+                <stop offset="100%" stop-color="#16a34a"/>
               </linearGradient>
             </defs>
           </svg>
@@ -1093,28 +1093,28 @@ def auth_page():
       /* ── Auth card ── */
       .auth-card {{
         background: linear-gradient(160deg, #12121add 0%, #070710dd 100%);
-        border: 1px solid #ff660033;
+        border: 1px solid #22c55e33;
         border-radius: 20px;
         padding: 2.4rem 2.8rem 2rem;
         margin: 0 auto;
         max-width: 420px;
         backdrop-filter: blur(16px);
-        box-shadow: 0 8px 40px #00000060, 0 0 60px #ff660010;
+        box-shadow: 0 8px 40px #0a1a0a60, 0 0 60px #22c55e10;
         animation: cardSlideUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
       }}
 
       /* ── Logo area ── */
       .auth-logo-ring {{
         width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 1rem;
-        background: linear-gradient(135deg, #ff660018, #0a0a0f);
-        border: 1.5px solid #ff660055;
+        background: linear-gradient(135deg, #22c55e18, #0a0a0f);
+        border: 1.5px solid #22c55e55;
         display: flex; align-items: center; justify-content: center;
         font-size: 2rem; line-height: 1;
-        box-shadow: 0 0 24px #ff660030;
+        box-shadow: 0 0 24px #22c55e30;
       }}
       .auth-title {{
         font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #e8e0d0 30%, #ff6600 100%);
+        background: linear-gradient(135deg, #e8e0d0 30%, #22c55e 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text; text-align: center; margin-bottom: 0.2rem;
       }}
@@ -1135,9 +1135,9 @@ def auth_page():
         color: #888899; background: transparent;
       }}
       .auth-tab-active {{
-        background: linear-gradient(135deg, #ff660022, #ff883318);
-        color: #ff6600;
-        border-bottom: 2px solid #ff6600;
+        background: linear-gradient(135deg, #22c55e22, #16a34a18);
+        color: #22c55e;
+        border-bottom: 2px solid #22c55e;
       }}
 
       /* ── Form field labels ── */
@@ -1160,16 +1160,16 @@ def auth_page():
 
       /* ── Submit button ── */
       .stFormSubmitButton > button {{
-        background: linear-gradient(135deg, #ff6600, #ff8833) !important;
+        background: linear-gradient(135deg, #22c55e, #16a34a) !important;
         color: #0a0a0f !important; border: none !important;
         border-radius: 10px !important; font-weight: 700 !important;
         font-size: 0.95rem !important; letter-spacing: 0.04em !important;
         padding: 0.65rem 1rem !important;
         transition: all 0.25s !important;
-        box-shadow: 0 4px 20px #ff660040 !important;
+        box-shadow: 0 4px 20px #22c55e40 !important;
       }}
       .stFormSubmitButton > button:hover {{
-        box-shadow: 0 6px 28px #ff660070 !important;
+        box-shadow: 0 6px 28px #22c55e70 !important;
         transform: translateY(-1px) !important;
       }}
 
@@ -1189,14 +1189,14 @@ def auth_page():
 
       /* ── Error / success ── */
       .auth-error {{
-        background: #cc520018; border: 1px solid #cc520066;
+        background: #15803d18; border: 1px solid #15803d66;
         border-radius: 8px; padding: 0.55rem 0.8rem;
         color: #e08080; font-size: 0.83rem; margin-bottom: 0.6rem;
       }}
       .auth-success {{
-        background: #ff660018; border: 1px solid #ff660066;
+        background: #22c55e18; border: 1px solid #22c55e66;
         border-radius: 8px; padding: 0.55rem 0.8rem;
-        color: #ff6600; font-size: 0.83rem; margin-bottom: 0.6rem;
+        color: #22c55e; font-size: 0.83rem; margin-bottom: 0.6rem;
       }}
 
       /* ── Password strength bar ── */
@@ -1234,20 +1234,20 @@ def auth_page():
     st.markdown("""
     <div style="text-align:center; padding: 2.5rem 0 0.5rem;">
       <div class="auth-logo-ring" style="width:72px;height:72px;border-radius:50%;margin:0 auto 1rem;
-           background:linear-gradient(135deg,#ff660014,#0a0a0f);border:1.5px solid #ff660050;
+           background:linear-gradient(135deg,#22c55e14,#0a0a0f);border:1.5px solid #22c55e50;
            display:flex;align-items:center;justify-content:center;
-           box-shadow:0 0 28px #ff660030, inset 0 0 16px #ff660008;">
+           box-shadow:0 0 28px #22c55e30, inset 0 0 16px #22c55e08;">
         <svg width="46" height="46" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
           <text x="3" y="38" font-family="'Inter',sans-serif" font-weight="800" font-size="22"
                 fill="url(#authGrad)" letter-spacing="-1">PLM</text>
           <rect x="3" y="42" width="48" height="2.5" rx="1.25" fill="url(#authGrad)" opacity="0.6"/>
-          <circle cx="48" cy="7" r="3" fill="#ff6600" opacity="0.9"/>
-          <circle cx="48" cy="7" r="5.5" fill="#ff6600" opacity="0.2"/>
+          <circle cx="48" cy="7" r="3" fill="#22c55e" opacity="0.9"/>
+          <circle cx="48" cy="7" r="5.5" fill="#22c55e" opacity="0.2"/>
           <defs>
             <linearGradient id="authGrad" x1="0" y1="0" x2="54" y2="0" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stop-color="#e8e0d0"/>
-              <stop offset="55%" stop-color="#ff6600"/>
-              <stop offset="100%" stop-color="#ff8833"/>
+              <stop offset="55%" stop-color="#22c55e"/>
+              <stop offset="100%" stop-color="#16a34a"/>
             </linearGradient>
           </defs>
         </svg>
@@ -1277,7 +1277,7 @@ def auth_page():
     st.markdown(f"""
     <div style="position:relative;height:3px;background:#12121a;border-radius:100px;margin-bottom:1.4rem;">
       <div style="position:absolute;top:0;left:{bar_left};width:50%;height:100%;
-                  background:linear-gradient(90deg,#ff6600,#ff8833);border-radius:100px;
+                  background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:100px;
                   transition:left 0.3s ease;"></div>
     </div>
     """, unsafe_allow_html=True)
@@ -1321,7 +1321,7 @@ def auth_page():
             st.markdown("""
             <div class="auth-divider">or</div>
             <div class="auth-switch">
-              Don't have an account? Click <strong style="color:#a78bfa">Sign Up</strong> above.
+              Don't have an account? Click <strong style="color:#22c55e">Sign Up</strong> above.
             </div>
             """, unsafe_allow_html=True)
 
@@ -1363,7 +1363,7 @@ def auth_page():
             st.markdown("""
             <div class="auth-divider">or</div>
             <div class="auth-switch">
-              Already have an account? Click <strong style="color:#a78bfa">Sign In</strong> above.
+              Already have an account? Click <strong style="color:#22c55e">Sign In</strong> above.
             </div>
             """, unsafe_allow_html=True)
 
@@ -1783,7 +1783,7 @@ def chat_page():
             if feedback == "liked":
                 st.markdown(f"<p style='font-size:0.7rem; color:{t['accent']}; margin-top:-0.3rem;'>✓ Marked as helpful</p>", unsafe_allow_html=True)
             elif feedback == "disliked":
-                st.markdown(f"<p style='font-size:0.7rem; color:#cc5200; margin-top:-0.3rem;'>✗ Marked as not helpful</p>", unsafe_allow_html=True)
+                st.markdown(f"<p style='font-size:0.7rem; color:#15803d; margin-top:-0.3rem;'>✗ Marked as not helpful</p>", unsafe_allow_html=True)
     st.markdown("<div style='margin-top:0.8rem;'></div>", unsafe_allow_html=True)
 
     # ── Input form ──
@@ -1826,7 +1826,7 @@ def chat_page():
                 st.markdown("""
                 <script>
                 (function(){
-                  const colors=['#ff6600','#ff8833','#faf8f5','#cc5200','#99aab5'];
+                  const colors=['#22c55e','#16a34a','#faf8f5','#15803d','#99aab5'];
                   const count = 120;
                   for(let i=0;i<count;i++){
                     const el=document.createElement('div');
