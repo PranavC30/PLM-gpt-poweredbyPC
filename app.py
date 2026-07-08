@@ -860,7 +860,291 @@ def delete_session(sid: str):
     switch_session(first)
 
 # ─────────────────────────────────────────
-#  SPLASH SCREEN  (startup animation)
+#  SPLASH SCREEN  (cinematic startup)
+# ─────────────────────────────────────────
+def splash_screen():
+    """Full-screen cinematic startup animation."""
+    st.markdown("""
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap');
+
+      /* ── Core animations ── */
+      @keyframes bgPulse {
+        0%,100% { opacity: 1; }
+        50%      { opacity: 0.85; }
+      }
+      @keyframes scanLine {
+        0%   { transform: translateY(-100%); opacity: 0; }
+        10%  { opacity: 0.4; }
+        90%  { opacity: 0.1; }
+        100% { transform: translateY(100vh); opacity: 0; }
+      }
+      @keyframes logoReveal {
+        0%   { opacity: 0; transform: scale(0.8) translateY(20px); filter: blur(20px); }
+        60%  { filter: blur(0px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      @keyframes letterSpacing {
+        0%   { letter-spacing: 0.3em; opacity: 0; }
+        100% { letter-spacing: -0.02em; opacity: 1; }
+      }
+      @keyframes taglineReveal {
+        0%   { opacity: 0; transform: translateY(8px); }
+        100% { opacity: 0.6; transform: translateY(0); }
+      }
+      @keyframes barGrow {
+        0%   { width: 0%; opacity: 0; }
+        10%  { opacity: 1; }
+        100% { width: 100%; opacity: 1; }
+      }
+      @keyframes barShine {
+        0%   { background-position: -200% center; }
+        100% { background-position: 200% center; }
+      }
+      @keyframes dotBlink {
+        0%,100% { opacity: 0.2; transform: scale(0.8); }
+        50%      { opacity: 1;   transform: scale(1.1); }
+      }
+      @keyframes redGlow {
+        0%,100% { box-shadow: 0 0 40px #ef444430, 0 0 80px #ef444415; }
+        50%      { box-shadow: 0 0 60px #ef444455, 0 0 120px #ef444425; }
+      }
+      @keyframes ringRotate {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+      }
+      @keyframes ringRotateReverse {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(-360deg); }
+      }
+      @keyframes statusFade {
+        0%,100% { opacity: 0; }
+        20%,80% { opacity: 1; }
+      }
+      @keyframes gridFade {
+        0%   { opacity: 0; }
+        100% { opacity: 0.04; }
+      }
+
+      /* ── Background ── */
+      .sp-bg {
+        position: fixed; inset: 0; background: #000000;
+        display: flex; align-items: center; justify-content: center;
+        z-index: 9999; font-family: 'Space Grotesk', sans-serif;
+        overflow: hidden;
+      }
+
+      /* Cinematic grid overlay */
+      .sp-grid {
+        position: absolute; inset: 0;
+        background-image:
+          linear-gradient(rgba(239,68,68,0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(239,68,68,0.08) 1px, transparent 1px);
+        background-size: 60px 60px;
+        animation: gridFade 2s ease forwards;
+      }
+
+      /* Scan line effect */
+      .sp-scan {
+        position: absolute; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, transparent, #ef444466, transparent);
+        animation: scanLine 2.5s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      /* Red ambient glows */
+      .sp-glow-tl {
+        position: absolute; width: 500px; height: 500px;
+        border-radius: 50%; top: -200px; left: -200px;
+        background: radial-gradient(circle, #ef444420 0%, transparent 65%);
+        filter: blur(60px);
+        animation: bgPulse 4s ease-in-out infinite;
+      }
+      .sp-glow-br {
+        position: absolute; width: 400px; height: 400px;
+        border-radius: 50%; bottom: -150px; right: -100px;
+        background: radial-gradient(circle, #dc262618 0%, transparent 65%);
+        filter: blur(80px);
+        animation: bgPulse 5s ease-in-out infinite 1s;
+      }
+
+      /* ── Logo container ── */
+      .sp-card {
+        position: relative; text-align: center; z-index: 1;
+        padding: 3rem 4rem;
+      }
+
+      /* Rotating rings */
+      .sp-ring-wrap {
+        position: relative; width: 120px; height: 120px;
+        margin: 0 auto 2rem;
+      }
+      .sp-ring-1 {
+        position: absolute; inset: 0; border-radius: 50%;
+        border: 1px solid #ef444430;
+        border-top-color: #ef4444;
+        animation: ringRotate 3s linear infinite;
+      }
+      .sp-ring-2 {
+        position: absolute; inset: 10px; border-radius: 50%;
+        border: 1px solid #ef444420;
+        border-bottom-color: #f87171;
+        animation: ringRotateReverse 2s linear infinite;
+      }
+      .sp-ring-3 {
+        position: absolute; inset: 20px; border-radius: 50%;
+        border: 1px solid #ef444415;
+        border-left-color: #fca5a5;
+        animation: ringRotate 4s linear infinite;
+      }
+      .sp-logo-inner {
+        position: absolute; inset: 30px; border-radius: 50%;
+        background: radial-gradient(circle, #1a050588 0%, #00000088 100%);
+        display: flex; align-items: center; justify-content: center;
+        animation: redGlow 3s ease-in-out infinite;
+      }
+      .sp-logo-svg { width: 48px; height: 48px; }
+
+      /* ── Title ── */
+      .sp-title {
+        font-size: 3.5rem; font-weight: 700;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #ffffff 0%, #f87171 50%, #ef4444 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: logoReveal 1s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+        margin-bottom: 0.4rem;
+      }
+      .sp-tagline {
+        font-size: 0.78rem; font-weight: 400;
+        letter-spacing: 0.25em; text-transform: uppercase;
+        color: #ffffff;
+        animation: taglineReveal 0.8s ease 1s both;
+        margin-bottom: 2.5rem;
+      }
+
+      /* ── Progress bar ── */
+      .sp-bar-track {
+        width: 280px; height: 2px;
+        background: #ffffff0a; border-radius: 100px;
+        margin: 0 auto 1rem; overflow: hidden;
+        position: relative;
+      }
+      .sp-bar-fill {
+        height: 100%; border-radius: 100px;
+        background: linear-gradient(90deg, #dc2626, #ef4444, #f87171, #ef4444, #dc2626);
+        background-size: 200% auto;
+        animation: barGrow 2s cubic-bezier(0.4,0,0.2,1) 0.5s both,
+                   barShine 1.5s linear infinite;
+      }
+
+      /* ── Status text ── */
+      .sp-status {
+        font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+        color: #ef444488; min-height: 1rem; position: relative;
+      }
+      .sp-status span {
+        position: absolute; left: 50%; transform: translateX(-50%);
+        animation: statusFade 0.7s ease both;
+        white-space: nowrap;
+      }
+      .sp-status span:nth-child(1) { animation-delay: 0.5s; }
+      .sp-status span:nth-child(2) { animation-delay: 1.1s; }
+      .sp-status span:nth-child(3) { animation-delay: 1.7s; }
+      .sp-status span:nth-child(4) { animation-delay: 2.3s; }
+
+      /* ── Dots ── */
+      .sp-dots {
+        display: flex; justify-content: center; gap: 8px; margin-top: 1.2rem;
+      }
+      .sp-dot {
+        width: 5px; height: 5px; border-radius: 50%;
+        animation: dotBlink 1.2s ease-in-out infinite;
+      }
+      .sp-dot:nth-child(1) { background: #ef4444; animation-delay: 0s; }
+      .sp-dot:nth-child(2) { background: #f87171; animation-delay: 0.2s; }
+      .sp-dot:nth-child(3) { background: #fca5a5; animation-delay: 0.4s; }
+      .sp-dot:nth-child(4) { background: #f87171; animation-delay: 0.6s; }
+      .sp-dot:nth-child(5) { background: #ef4444; animation-delay: 0.8s; }
+
+      /* ── Byline ── */
+      .sp-byline {
+        position: fixed; bottom: 2rem; left: 0; right: 0;
+        text-align: center;
+        font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+        color: #ffffff15; font-weight: 500;
+      }
+
+      /* Hide Streamlit chrome */
+      #MainMenu, header, footer,
+      [data-testid="stToolbar"] { display: none !important; }
+      .block-container { padding: 0 !important; }
+    </style>
+
+    <div class="sp-bg">
+      <div class="sp-grid"></div>
+      <div class="sp-scan"></div>
+      <div class="sp-glow-tl"></div>
+      <div class="sp-glow-br"></div>
+
+      <div class="sp-card">
+        <!-- Rotating rings + logo -->
+        <div class="sp-ring-wrap">
+          <div class="sp-ring-1"></div>
+          <div class="sp-ring-2"></div>
+          <div class="sp-ring-3"></div>
+          <div class="sp-logo-inner">
+            <svg class="sp-logo-svg" viewBox="0 0 54 54" fill="none">
+              <text x="2" y="38" font-family="'Space Grotesk',sans-serif"
+                    font-weight="700" font-size="22" fill="url(#spGrad)"
+                    letter-spacing="-1">PLM</text>
+              <rect x="2" y="42" width="50" height="2" rx="1" fill="url(#spGrad)" opacity="0.6"/>
+              <defs>
+                <linearGradient id="spGrad" x1="0" y1="0" x2="54" y2="0">
+                  <stop offset="0%"   stop-color="#ffffff"/>
+                  <stop offset="50%"  stop-color="#f87171"/>
+                  <stop offset="100%" stop-color="#ef4444"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <div class="sp-title">PLM GPT</div>
+        <div class="sp-tagline">Where curiosity meets intelligence</div>
+
+        <!-- Progress -->
+        <div class="sp-bar-track">
+          <div class="sp-bar-fill"></div>
+        </div>
+
+        <!-- Status messages -->
+        <div class="sp-status">
+          <span>Initializing...</span>
+          <span>Loading models...</span>
+          <span>Preparing workspace...</span>
+          <span>Ready.</span>
+        </div>
+
+        <!-- Dots -->
+        <div class="sp-dots">
+          <div class="sp-dot"></div>
+          <div class="sp-dot"></div>
+          <div class="sp-dot"></div>
+          <div class="sp-dot"></div>
+          <div class="sp-dot"></div>
+        </div>
+      </div>
+
+      <div class="sp-byline">Crafted by Pranav Chakravorty &nbsp;·&nbsp; PLM GPT</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    time.sleep(1.5)
+    st.session_state.splash_done = True
+    st.rerun()
+
 # ─────────────────────────────────────────
 def splash_screen():
     """Full-screen startup animation. Runs once per browser session."""
