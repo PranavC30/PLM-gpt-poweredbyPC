@@ -217,42 +217,42 @@ for k, v in defaults.items():
 # ─────────────────────────────────────────
 THEMES = {
     "dark": {
-        # ── Dune — Desert Spice ───────────────────
-        "bg":          "#080600",
-        "card":        "#161000",
-        "input_bg":    "#2a2000",
-        "text":        "#ede0c4",
-        "sub":         "#8a7055",
-        "accent":      "#c8922a",
-        "border":      "#2a2000",
-        "user_bg":     "#1a1000",
-        "user_border": "#e0a83a",
-        "btn_bg":      "#2a2000",
-        "btn_text":    "#ede0c4",
-        "toolbar_bg":  "#050400",
-        "welcome_bg":  "#080600",
-        "grad1":       "#080600",
-        "grad2":       "#161000",
-        "grad3":       "#050400",
+        # ── Blade Runner 2049 — Neon Cyberpunk ────
+        "bg":          "#0a0a0f",
+        "card":        "#12121a",
+        "input_bg":    "#1e1e2e",
+        "text":        "#e8e0d0",
+        "sub":         "#665544",
+        "accent":      "#ff6600",
+        "border":      "#1e1e2e",
+        "user_bg":     "#0f0f18",
+        "user_border": "#ff8833",
+        "btn_bg":      "#1e1e2e",
+        "btn_text":    "#e8e0d0",
+        "toolbar_bg":  "#070710",
+        "welcome_bg":  "#0a0a0f",
+        "grad1":       "#0a0a0f",
+        "grad2":       "#12121a",
+        "grad3":       "#070710",
     },
     "light": {
-        # ── Dune Dawn — Desert Sand ───────────────
-        "bg":          "#faf0e0",
-        "card":        "#fffbf0",
-        "input_bg":    "#f0e4c8",
-        "text":        "#2a1a00",
-        "sub":         "#8a7050",
-        "accent":      "#c8922a",
-        "border":      "#ddd0b0",
-        "user_bg":     "#f0e4c0",
-        "user_border": "#c8922a",
-        "btn_bg":      "#f0e4c8",
-        "btn_text":    "#2a1a00",
-        "toolbar_bg":  "#f0e4c0",
-        "welcome_bg":  "#f0e4c0",
-        "grad1":       "#faf0e0",
-        "grad2":       "#f0e4c0",
-        "grad3":       "#f0e4c8",
+        # ── Blade Runner Light ────────────────────
+        "bg":          "#f0ece8",
+        "card":        "#faf8f5",
+        "input_bg":    "#e8e0d8",
+        "text":        "#1a1520",
+        "sub":         "#6a6070",
+        "accent":      "#e05500",
+        "border":      "#d0ccc8",
+        "user_bg":     "#e4dcd4",
+        "user_border": "#ff6600",
+        "btn_bg":      "#e8e0d8",
+        "btn_text":    "#1a1520",
+        "toolbar_bg":  "#e4dcd4",
+        "welcome_bg":  "#e4dcd4",
+        "grad1":       "#f0ece8",
+        "grad2":       "#e4dcd4",
+        "grad3":       "#e8e0d8",
     },
 }
 
@@ -269,28 +269,28 @@ BG_ANIMATION = """
 }
 .plm-orb-1 {
   width: 500px; height: 500px;
-  background: radial-gradient(circle at center, #c8922a40 0%, #c8922a15 40%, transparent 70%);
+  background: radial-gradient(circle at center, #ff660040 0%, #ff660015 40%, transparent 70%);
   top: -150px; left: -150px;
   animation: orbMove1 20s ease-in-out infinite;
   filter: blur(40px);
 }
 .plm-orb-2 {
   width: 400px; height: 400px;
-  background: radial-gradient(circle at center, #a8702035 0%, #a8702010 40%, transparent 70%);
+  background: radial-gradient(circle at center, #cc520035 0%, #cc520010 40%, transparent 70%);
   bottom: -100px; right: -100px;
   animation: orbMove2 25s ease-in-out infinite;
   filter: blur(50px);
 }
 .plm-orb-3 {
   width: 300px; height: 300px;
-  background: radial-gradient(circle at center, #e0a83a30 0%, #e0a83a0d 40%, transparent 70%);
+  background: radial-gradient(circle at center, #ff883330 0%, #ff88330d 40%, transparent 70%);
   top: 35%; left: 5%;
   animation: orbMove3 30s ease-in-out infinite;
   filter: blur(45px);
 }
 .plm-orb-4 {
   width: 250px; height: 250px;
-  background: radial-gradient(circle at center, #c8922a25 0%, transparent 70%);
+  background: radial-gradient(circle at center, #ff660025 0%, transparent 70%);
   top: 60%; right: 10%;
   animation: orbMove4 22s ease-in-out infinite;
   filter: blur(35px);
@@ -321,18 +321,18 @@ BG_ANIMATION = """
   z-index: 0;
   animation: dotFloat linear infinite;
 }
-.plm-dot-1  { width:3px;  height:3px;  background:#c8922a; top:10%; left:15%; opacity:0.4; animation-duration:8s;  animation-delay:0s;   }
-.plm-dot-2  { width:2px;  height:2px;  background:#e0a83a; top:25%; left:80%; opacity:0.3; animation-duration:12s; animation-delay:-3s;  }
-.plm-dot-3  { width:4px;  height:4px;  background:#a87020; top:60%; left:25%; opacity:0.25;animation-duration:10s; animation-delay:-5s;  }
-.plm-dot-4  { width:2px;  height:2px;  background:#c8922a; top:75%; left:65%; opacity:0.35;animation-duration:15s; animation-delay:-7s;  }
-.plm-dot-5  { width:3px;  height:3px;  background:#e0a83a; top:40%; left:45%; opacity:0.3; animation-duration:9s;  animation-delay:-2s;  }
-.plm-dot-6  { width:2px;  height:2px;  background:#c8922a; top:85%; left:10%; opacity:0.4; animation-duration:11s; animation-delay:-4s;  }
-.plm-dot-7  { width:4px;  height:4px;  background:#a87020; top:15%; left:55%; opacity:0.2; animation-duration:14s; animation-delay:-9s;  }
-.plm-dot-8  { width:2px;  height:2px;  background:#e0a83a; top:50%; left:90%; opacity:0.3; animation-duration:7s;  animation-delay:-1s;  }
-.plm-dot-9  { width:3px;  height:3px;  background:#c8922a; top:70%; left:40%; opacity:0.35;animation-duration:13s; animation-delay:-6s;  }
-.plm-dot-10 { width:2px;  height:2px;  background:#a87020; top:30%; left:5%;  opacity:0.25;animation-duration:16s; animation-delay:-11s; }
-.plm-dot-11 { width:3px;  height:3px;  background:#c8922a; top:5%;  left:70%; opacity:0.3; animation-duration:10s; animation-delay:-8s;  }
-.plm-dot-12 { width:2px;  height:2px;  background:#e0a83a; top:90%; left:50%; opacity:0.4; animation-duration:18s; animation-delay:-13s; }
+.plm-dot-1  { width:3px;  height:3px;  background:#ff6600; top:10%; left:15%; opacity:0.4; animation-duration:8s;  animation-delay:0s;   }
+.plm-dot-2  { width:2px;  height:2px;  background:#ff8833; top:25%; left:80%; opacity:0.3; animation-duration:12s; animation-delay:-3s;  }
+.plm-dot-3  { width:4px;  height:4px;  background:#cc5200; top:60%; left:25%; opacity:0.25;animation-duration:10s; animation-delay:-5s;  }
+.plm-dot-4  { width:2px;  height:2px;  background:#ff6600; top:75%; left:65%; opacity:0.35;animation-duration:15s; animation-delay:-7s;  }
+.plm-dot-5  { width:3px;  height:3px;  background:#ff8833; top:40%; left:45%; opacity:0.3; animation-duration:9s;  animation-delay:-2s;  }
+.plm-dot-6  { width:2px;  height:2px;  background:#ff6600; top:85%; left:10%; opacity:0.4; animation-duration:11s; animation-delay:-4s;  }
+.plm-dot-7  { width:4px;  height:4px;  background:#cc5200; top:15%; left:55%; opacity:0.2; animation-duration:14s; animation-delay:-9s;  }
+.plm-dot-8  { width:2px;  height:2px;  background:#ff8833; top:50%; left:90%; opacity:0.3; animation-duration:7s;  animation-delay:-1s;  }
+.plm-dot-9  { width:3px;  height:3px;  background:#ff6600; top:70%; left:40%; opacity:0.35;animation-duration:13s; animation-delay:-6s;  }
+.plm-dot-10 { width:2px;  height:2px;  background:#cc5200; top:30%; left:5%;  opacity:0.25;animation-duration:16s; animation-delay:-11s; }
+.plm-dot-11 { width:3px;  height:3px;  background:#ff6600; top:5%;  left:70%; opacity:0.3; animation-duration:10s; animation-delay:-8s;  }
+.plm-dot-12 { width:2px;  height:2px;  background:#ff8833; top:90%; left:50%; opacity:0.4; animation-duration:18s; animation-delay:-13s; }
 @keyframes dotFloat {
   0%   { transform: translateY(0px)   translateX(0px);   opacity: 0.4; }
   25%  { transform: translateY(-20px) translateX(10px);  opacity: 0.7; }
@@ -495,7 +495,7 @@ def apply_theme():
         margin-top:-0.5rem; margin-bottom:0.4rem; opacity:0.7;
       }}
       .char-warn  {{ color:#f0a500 !important; opacity:1 !important; }}
-      .char-danger {{ color:#a87020 !important; opacity:1 !important; }}
+      .char-danger {{ color:#cc5200 !important; opacity:1 !important; }}
       .stTextInput > div > div > input {{
         background-color:{t['input_bg']} !important; color:{t['text']} !important;
         border:1px solid {t['border']} !important; border-radius:10px !important;
@@ -730,15 +730,15 @@ def render_markdown(text: str, t: dict) -> str:
         lang = m.group(1).strip() if m.group(1) else ""
         code = m.group(2).replace('<','&lt;').replace('>','&gt;')
         return (
-            f'<div style="background:#050400;border:1px solid {t["border"]};border-radius:8px;margin:0.6rem 0;overflow:hidden;">' +
-            f'<div style="background:#080600;padding:0.3rem 0.8rem;font-size:0.72rem;color:{t["sub"]};">{lang if lang else "code"}</div>' +
+            f'<div style="background:#070710;border:1px solid {t["border"]};border-radius:8px;margin:0.6rem 0;overflow:hidden;">' +
+            f'<div style="background:#0a0a0f;padding:0.3rem 0.8rem;font-size:0.72rem;color:{t["sub"]};">{lang if lang else "code"}</div>' +
             f'<pre style="margin:0;padding:0.8rem;overflow-x:auto;font-size:0.88rem;line-height:1.6;color:#e8eaed;font-family:monospace;"><code>' +
             code + '</code></pre></div>'
         )
     text = _re.sub(r'```(\w*)\n?([\s\S]*?)```', replace_codeblock, text)
     # Inline code
     text = _re.sub(r'`([^`]+)`',
-        lambda m: f'<code style="background:#080600;padding:1px 5px;border-radius:4px;font-size:0.88em;color:#e8eaed;font-family:monospace;">{m.group(1)}</code>', text)
+        lambda m: f'<code style="background:#0a0a0f;padding:1px 5px;border-radius:4px;font-size:0.88em;color:#e8eaed;font-family:monospace;">{m.group(1)}</code>', text)
     # Bold
     text = _re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     # Italic
@@ -873,8 +873,8 @@ def splash_screen():
         to   { opacity: 1; transform: translateY(0px) scale(1); }
       }
       @keyframes logoGlow {
-        0%, 100% { text-shadow: 0 0 20px #c8922a80, 0 0 40px #c8922a40; }
-        50%       { text-shadow: 0 0 40px #c8922acc, 0 0 80px #c8922a60, 0 0 120px #a8702030; }
+        0%, 100% { text-shadow: 0 0 20px #ff660080, 0 0 40px #ff660040; }
+        50%       { text-shadow: 0 0 40px #ff6600cc, 0 0 80px #ff660060, 0 0 120px #cc520030; }
       }
       @keyframes barFill {
         0%   { width: 0%; }
@@ -915,7 +915,7 @@ def splash_screen():
 
       .splash-wrap {
         position: fixed; inset: 0;
-        background: linear-gradient(-45deg, #080600, #080600, #050400, #080600);
+        background: linear-gradient(-45deg, #0a0a0f, #0a0a0f, #070710, #0a0a0f);
         background-size: 400% 400%;
         animation: gradientShift 8s ease infinite;
         display: flex; align-items: center; justify-content: center;
@@ -924,21 +924,21 @@ def splash_screen():
       }
       .splash-orb-1 {
         position: fixed; width: 600px; height: 600px; border-radius: 50%;
-        background: radial-gradient(circle, #c8922a40 0%, transparent 65%);
+        background: radial-gradient(circle, #ff660040 0%, transparent 65%);
         top: -200px; left: -200px; filter: blur(50px);
         animation: orbSplash1 6s ease-in-out infinite;
         pointer-events: none;
       }
       .splash-orb-2 {
         position: fixed; width: 500px; height: 500px; border-radius: 50%;
-        background: radial-gradient(circle, #a8702035 0%, transparent 65%);
+        background: radial-gradient(circle, #cc520035 0%, transparent 65%);
         bottom: -150px; right: -150px; filter: blur(60px);
         animation: orbSplash2 8s ease-in-out infinite;
         pointer-events: none;
       }
       .splash-orb-3 {
         position: fixed; width: 300px; height: 300px; border-radius: 50%;
-        background: radial-gradient(circle, #e0a83a30 0%, transparent 65%);
+        background: radial-gradient(circle, #ff883330 0%, transparent 65%);
         top: 50%; left: 60%; filter: blur(40px);
         animation: orbSplash1 10s ease-in-out infinite reverse;
         pointer-events: none;
@@ -950,16 +950,16 @@ def splash_screen():
       }
       .splash-logo-ring {
         width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 1.4rem;
-        background: linear-gradient(135deg, #c8922a18, #080600);
-        border: 2px solid #c8922a55;
+        background: linear-gradient(135deg, #ff660018, #0a0a0f);
+        border: 2px solid #ff660055;
         display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 0 40px #c8922a30, inset 0 0 20px #c8922a10;
+        box-shadow: 0 0 40px #ff660030, inset 0 0 20px #ff660010;
         animation: logoGlow 3s ease-in-out infinite;
         padding: 4px;
       }
       .splash-title {
         font-size: 3.2rem; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #ede0c4 30%, #c8922a 70%, #e0a83a 100%);
+        background: linear-gradient(135deg, #e8e0d0 30%, #ff6600 70%, #ff8833 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text; margin-bottom: 0.4rem;
         animation: logoGlow 3s ease-in-out infinite;
@@ -971,13 +971,13 @@ def splash_screen():
         animation: taglineFade 1s 0.5s ease forwards; opacity: 0;
       }
       .splash-bar-wrap {
-        width: 100%; background: #ede0c412; border-radius: 100px;
+        width: 100%; background: #e8e0d012; border-radius: 100px;
         height: 4px; overflow: hidden; margin-bottom: 1rem;
         box-shadow: 0 0 10px #00000040;
       }
       .splash-bar {
         height: 100%; border-radius: 100px;
-        background: linear-gradient(90deg, #c8922a, #e0a83a, #a87020, #c8922a);
+        background: linear-gradient(90deg, #ff6600, #ff8833, #cc5200, #ff6600);
         background-size: 200% auto;
         animation: barFill 2.8s cubic-bezier(0.4,0,0.2,1) forwards,
                    barShimmer 1.5s linear infinite;
@@ -999,11 +999,11 @@ def splash_screen():
         display: flex; justify-content: center; gap: 8px; margin-top: 0.8rem;
       }
       .splash-dot {
-        width: 8px; height: 8px; border-radius: 50%; background: #c8922a;
+        width: 8px; height: 8px; border-radius: 50%; background: #ff6600;
         animation: dotPulse 1.2s ease-in-out infinite;
       }
-      .splash-dot:nth-child(2) { animation-delay: 0.2s; background: #e0a83a; }
-      .splash-dot:nth-child(3) { animation-delay: 0.4s; background: #a87020; }
+      .splash-dot:nth-child(2) { animation-delay: 0.2s; background: #ff8833; }
+      .splash-dot:nth-child(3) { animation-delay: 0.4s; background: #cc5200; }
       .splash-byline {
         position: absolute; bottom: 1.5rem; left: 0; right: 0;
         font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
@@ -1028,9 +1028,9 @@ def splash_screen():
             <circle cx="48" cy="7" r="5.5" fill="#00c9a7" opacity="0.2"/>
             <defs>
               <linearGradient id="splashGrad" x1="0" y1="0" x2="54" y2="0" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#ede0c4"/>
-                <stop offset="55%" stop-color="#c8922a"/>
-                <stop offset="100%" stop-color="#e0a83a"/>
+                <stop offset="0%" stop-color="#e8e0d0"/>
+                <stop offset="55%" stop-color="#ff6600"/>
+                <stop offset="100%" stop-color="#ff8833"/>
               </linearGradient>
             </defs>
           </svg>
@@ -1090,7 +1090,7 @@ def auth_page():
       }}
 
       .stApp {{
-        background: linear-gradient(-45deg, #080600, #161000, #050400, #080600);
+        background: linear-gradient(-45deg, #0a0a0f, #12121a, #070710, #0a0a0f);
         background-size: 400% 400%;
         animation: gradientShift 12s ease infinite;
         font-family: 'Inter', sans-serif;
@@ -1098,29 +1098,29 @@ def auth_page():
 
       /* ── Auth card ── */
       .auth-card {{
-        background: linear-gradient(160deg, #161000dd 0%, #050400dd 100%);
-        border: 1px solid #c8922a33;
+        background: linear-gradient(160deg, #12121add 0%, #070710dd 100%);
+        border: 1px solid #ff660033;
         border-radius: 20px;
         padding: 2.4rem 2.8rem 2rem;
         margin: 0 auto;
         max-width: 420px;
         backdrop-filter: blur(16px);
-        box-shadow: 0 8px 40px #00000060, 0 0 60px #c8922a10;
+        box-shadow: 0 8px 40px #00000060, 0 0 60px #ff660010;
         animation: cardSlideUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
       }}
 
       /* ── Logo area ── */
       .auth-logo-ring {{
         width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 1rem;
-        background: linear-gradient(135deg, #c8922a18, #080600);
-        border: 1.5px solid #c8922a55;
+        background: linear-gradient(135deg, #ff660018, #0a0a0f);
+        border: 1.5px solid #ff660055;
         display: flex; align-items: center; justify-content: center;
         font-size: 2rem; line-height: 1;
-        box-shadow: 0 0 24px #c8922a30;
+        box-shadow: 0 0 24px #ff660030;
       }}
       .auth-title {{
         font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #ede0c4 30%, #c8922a 100%);
+        background: linear-gradient(135deg, #e8e0d0 30%, #ff6600 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text; text-align: center; margin-bottom: 0.2rem;
       }}
@@ -1141,9 +1141,9 @@ def auth_page():
         color: #888899; background: transparent;
       }}
       .auth-tab-active {{
-        background: linear-gradient(135deg, #c8922a22, #e0a83a18);
-        color: #c8922a;
-        border-bottom: 2px solid #c8922a;
+        background: linear-gradient(135deg, #ff660022, #ff883318);
+        color: #ff6600;
+        border-bottom: 2px solid #ff6600;
       }}
 
       /* ── Form field labels ── */
@@ -1154,7 +1154,7 @@ def auth_page():
 
       /* ── Input override ── */
       .stTextInput > div > div > input {{
-        background: #12122088 !important; color: #f0e4c8 !important;
+        background: #12122088 !important; color: #e8e0d8 !important;
         border: 1px solid #333355 !important; border-radius: 10px !important;
         font-size: 0.95rem !important; padding: 0.6rem 0.9rem !important;
         transition: all 0.2s;
@@ -1166,16 +1166,16 @@ def auth_page():
 
       /* ── Submit button ── */
       .stFormSubmitButton > button {{
-        background: linear-gradient(135deg, #c8922a, #e0a83a) !important;
-        color: #080600 !important; border: none !important;
+        background: linear-gradient(135deg, #ff6600, #ff8833) !important;
+        color: #0a0a0f !important; border: none !important;
         border-radius: 10px !important; font-weight: 700 !important;
         font-size: 0.95rem !important; letter-spacing: 0.04em !important;
         padding: 0.65rem 1rem !important;
         transition: all 0.25s !important;
-        box-shadow: 0 4px 20px #c8922a40 !important;
+        box-shadow: 0 4px 20px #ff660040 !important;
       }}
       .stFormSubmitButton > button:hover {{
-        box-shadow: 0 6px 28px #c8922a70 !important;
+        box-shadow: 0 6px 28px #ff660070 !important;
         transform: translateY(-1px) !important;
       }}
 
@@ -1195,14 +1195,14 @@ def auth_page():
 
       /* ── Error / success ── */
       .auth-error {{
-        background: #a8702018; border: 1px solid #a8702066;
+        background: #cc520018; border: 1px solid #cc520066;
         border-radius: 8px; padding: 0.55rem 0.8rem;
         color: #e08080; font-size: 0.83rem; margin-bottom: 0.6rem;
       }}
       .auth-success {{
-        background: #c8922a18; border: 1px solid #c8922a66;
+        background: #ff660018; border: 1px solid #ff660066;
         border-radius: 8px; padding: 0.55rem 0.8rem;
-        color: #c8922a; font-size: 0.83rem; margin-bottom: 0.6rem;
+        color: #ff6600; font-size: 0.83rem; margin-bottom: 0.6rem;
       }}
 
       /* ── Password strength bar ── */
@@ -1240,20 +1240,20 @@ def auth_page():
     st.markdown("""
     <div style="text-align:center; padding: 2.5rem 0 0.5rem;">
       <div class="auth-logo-ring" style="width:72px;height:72px;border-radius:50%;margin:0 auto 1rem;
-           background:linear-gradient(135deg,#c8922a14,#080600);border:1.5px solid #c8922a50;
+           background:linear-gradient(135deg,#ff660014,#0a0a0f);border:1.5px solid #ff660050;
            display:flex;align-items:center;justify-content:center;
-           box-shadow:0 0 28px #c8922a30, inset 0 0 16px #c8922a08;">
+           box-shadow:0 0 28px #ff660030, inset 0 0 16px #ff660008;">
         <svg width="46" height="46" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
           <text x="3" y="38" font-family="'Inter',sans-serif" font-weight="800" font-size="22"
                 fill="url(#authGrad)" letter-spacing="-1">PLM</text>
           <rect x="3" y="42" width="48" height="2.5" rx="1.25" fill="url(#authGrad)" opacity="0.6"/>
-          <circle cx="48" cy="7" r="3" fill="#c8922a" opacity="0.9"/>
-          <circle cx="48" cy="7" r="5.5" fill="#c8922a" opacity="0.2"/>
+          <circle cx="48" cy="7" r="3" fill="#ff6600" opacity="0.9"/>
+          <circle cx="48" cy="7" r="5.5" fill="#ff6600" opacity="0.2"/>
           <defs>
             <linearGradient id="authGrad" x1="0" y1="0" x2="54" y2="0" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#ede0c4"/>
-              <stop offset="55%" stop-color="#c8922a"/>
-              <stop offset="100%" stop-color="#e0a83a"/>
+              <stop offset="0%" stop-color="#e8e0d0"/>
+              <stop offset="55%" stop-color="#ff6600"/>
+              <stop offset="100%" stop-color="#ff8833"/>
             </linearGradient>
           </defs>
         </svg>
@@ -1281,9 +1281,9 @@ def auth_page():
     # ─── Active indicator bar ───
     bar_left = "0%" if st.session_state.auth_tab == "login" else "50%"
     st.markdown(f"""
-    <div style="position:relative;height:3px;background:#161000;border-radius:100px;margin-bottom:1.4rem;">
+    <div style="position:relative;height:3px;background:#12121a;border-radius:100px;margin-bottom:1.4rem;">
       <div style="position:absolute;top:0;left:{bar_left};width:50%;height:100%;
-                  background:linear-gradient(90deg,#c8922a,#e0a83a);border-radius:100px;
+                  background:linear-gradient(90deg,#ff6600,#ff8833);border-radius:100px;
                   transition:left 0.3s ease;"></div>
     </div>
     """, unsafe_allow_html=True)
@@ -1327,7 +1327,7 @@ def auth_page():
             st.markdown("""
             <div class="auth-divider">or</div>
             <div class="auth-switch">
-              Don't have an account? Click <strong style="color:#c8922a">Sign Up</strong> above.
+              Don't have an account? Click <strong style="color:#ff6600">Sign Up</strong> above.
             </div>
             """, unsafe_allow_html=True)
 
@@ -1369,7 +1369,7 @@ def auth_page():
             st.markdown("""
             <div class="auth-divider">or</div>
             <div class="auth-switch">
-              Already have an account? Click <strong style="color:#c8922a">Sign In</strong> above.
+              Already have an account? Click <strong style="color:#ff6600">Sign In</strong> above.
             </div>
             """, unsafe_allow_html=True)
 
@@ -1789,7 +1789,7 @@ def chat_page():
             if feedback == "liked":
                 st.markdown(f"<p style='font-size:0.7rem; color:{t['accent']}; margin-top:-0.3rem;'>✓ Marked as helpful</p>", unsafe_allow_html=True)
             elif feedback == "disliked":
-                st.markdown(f"<p style='font-size:0.7rem; color:#a87020; margin-top:-0.3rem;'>✗ Marked as not helpful</p>", unsafe_allow_html=True)
+                st.markdown(f"<p style='font-size:0.7rem; color:#cc5200; margin-top:-0.3rem;'>✗ Marked as not helpful</p>", unsafe_allow_html=True)
     st.markdown("<div style='margin-top:0.8rem;'></div>", unsafe_allow_html=True)
 
     # ── Input form ──
@@ -1832,7 +1832,7 @@ def chat_page():
                 st.markdown("""
                 <script>
                 (function(){
-                  const colors=['#c8922a','#e0a83a','#fffbf0','#a87020','#99aab5'];
+                  const colors=['#ff6600','#ff8833','#faf8f5','#cc5200','#99aab5'];
                   const count = 120;
                   for(let i=0;i<count;i++){
                     const el=document.createElement('div');
