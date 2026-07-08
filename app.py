@@ -217,50 +217,50 @@ for k, v in defaults.items():
 # ─────────────────────────────────────────
 THEMES = {
     "dark": {
-        # ── Espresso — Premium Coffee Brown ───────
-        "bg":          "#0a0603",
-        "card":        "#1a1008",
-        "input_bg":    "#22140a",
-        "text":        "#fdf8f0",
-        "sub":         "#7a5c3a",
-        "accent":      "#d97706",
-        "border":      "#2a1a0a",
-        "user_bg":     "#160a05",
-        "user_border": "#f59e0b",
-        "btn_bg":      "#22140a",
-        "btn_text":    "#fdf8f0",
-        "toolbar_bg":  "#080402",
-        "welcome_bg":  "#0a0603",
-        "grad1":       "#0a0603",
-        "grad2":       "#1a1008",
-        "grad3":       "#080402",
-        "aurora1":     "#d97706",
-        "aurora2":     "#f59e0b",
-        "aurora3":     "#fde68a",
-        "aurora4":     "#b45309",
+        # ── Carbon Red — Bold & Powerful ──────────
+        "bg":          "#0a0000",
+        "card":        "#1a0505",
+        "input_bg":    "#200808",
+        "text":        "#fef2f2",
+        "sub":         "#7a3333",
+        "accent":      "#ef4444",
+        "border":      "#2a0808",
+        "user_bg":     "#150505",
+        "user_border": "#f87171",
+        "btn_bg":      "#200808",
+        "btn_text":    "#fef2f2",
+        "toolbar_bg":  "#070000",
+        "welcome_bg":  "#0a0000",
+        "grad1":       "#0a0000",
+        "grad2":       "#1a0505",
+        "grad3":       "#070000",
+        "aurora1":     "#ef4444",
+        "aurora2":     "#f87171",
+        "aurora3":     "#fca5a5",
+        "aurora4":     "#dc2626",
     },
     "light": {
-        # ── Espresso Cream ────────────────────────
-        "bg":          "#fdf8f0",
+        # ── Carbon Red Light ──────────────────────
+        "bg":          "#fff5f5",
         "card":        "#ffffff",
-        "input_bg":    "#fef3e2",
-        "text":        "#1a0e05",
-        "sub":         "#7a5c3a",
-        "accent":      "#b45309",
-        "border":      "#fde68a",
-        "user_bg":     "#fef3e2",
-        "user_border": "#d97706",
-        "btn_bg":      "#fef3e2",
-        "btn_text":    "#1a0e05",
-        "toolbar_bg":  "#fef3e2",
-        "welcome_bg":  "#fef3e2",
-        "grad1":       "#fdf8f0",
-        "grad2":       "#fef3e2",
-        "grad3":       "#fde68a",
-        "aurora1":     "#d97706",
-        "aurora2":     "#f59e0b",
-        "aurora3":     "#fde68a",
-        "aurora4":     "#b45309",
+        "input_bg":    "#fee2e2",
+        "text":        "#1a0000",
+        "sub":         "#7a3333",
+        "accent":      "#dc2626",
+        "border":      "#fecaca",
+        "user_bg":     "#fee2e2",
+        "user_border": "#ef4444",
+        "btn_bg":      "#fee2e2",
+        "btn_text":    "#1a0000",
+        "toolbar_bg":  "#fde8e8",
+        "welcome_bg":  "#fee2e2",
+        "grad1":       "#fff5f5",
+        "grad2":       "#fee2e2",
+        "grad3":       "#fde8e8",
+        "aurora1":     "#ef4444",
+        "aurora2":     "#f87171",
+        "aurora3":     "#fca5a5",
+        "aurora4":     "#dc2626",
     },
 }
 
@@ -294,26 +294,26 @@ BG_ANIMATION = """
   animation: auroraShift linear infinite;
   filter: blur(60px);
 }
-.aurora-stripe-1 { --clr: #b4530955; animation-duration: 14s; animation-delay: 0s;   top: 10%; }
-.aurora-stripe-2 { --clr: #d9770644; animation-duration: 18s; animation-delay: -5s;  top: 40%; }
-.aurora-stripe-3 { --clr: #f59e0b33; animation-duration: 22s; animation-delay: -10s; top: 70%; }
-.aurora-stripe-4 { --clr: #92400e44; animation-duration: 16s; animation-delay: -7s;  top: 25%; }
+.aurora-stripe-1 { --clr: #dc262655; animation-duration: 14s; animation-delay: 0s;   top: 10%; }
+.aurora-stripe-2 { --clr: #ef444444; animation-duration: 18s; animation-delay: -5s;  top: 40%; }
+.aurora-stripe-3 { --clr: #f8717133; animation-duration: 22s; animation-delay: -10s; top: 70%; }
+.aurora-stripe-4 { --clr: #b91c1c44; animation-duration: 16s; animation-delay: -7s;  top: 25%; }
 
 .aurora-glow-1 {
   position: fixed; width: 70vw; height: 40vh; left: -20vw; top: -10vh;
-  background: radial-gradient(ellipse, #b4530922 0%, transparent 70%);
+  background: radial-gradient(ellipse, #dc262622 0%, transparent 70%);
   animation: auroraPulse 8s ease-in-out infinite; filter: blur(80px);
   pointer-events: none; z-index: 0;
 }
 .aurora-glow-2 {
   position: fixed; width: 60vw; height: 50vh; right: -15vw; bottom: -10vh;
-  background: radial-gradient(ellipse, #d977061a 0%, transparent 70%);
+  background: radial-gradient(ellipse, #ef44441a 0%, transparent 70%);
   animation: auroraPulse 11s ease-in-out infinite reverse; filter: blur(100px);
   pointer-events: none; z-index: 0;
 }
 .aurora-glow-3 {
   position: fixed; width: 40vw; height: 30vh; left: 30vw; top: 30vh;
-  background: radial-gradient(ellipse, #f59e0b11 0%, transparent 70%);
+  background: radial-gradient(ellipse, #f8717111 0%, transparent 70%);
   animation: auroraPulse 14s ease-in-out infinite 3s; filter: blur(90px);
   pointer-events: none; z-index: 0;
 }
@@ -410,36 +410,47 @@ def apply_theme():
         display: grid; grid-template-columns: 1fr 1fr;
         gap: 0.5rem; margin: 0.8rem 0 1rem 0;
       }}
+
+      /* ── WhatsApp-style chat layout ── */
+      .msg-row-user {{
+        display: flex; justify-content: flex-end;
+        margin: 0.5rem 0; animation: msgSlideInRight 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+      }}
+      .msg-row-bot {{
+        display: flex; justify-content: flex-start;
+        margin: 0.5rem 0; animation: msgSlideInLeft 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+      }}
+      @keyframes msgSlideInRight {{
+        from {{ opacity:0; transform: translateX(20px) scale(0.97); }}
+        to   {{ opacity:1; transform: translateX(0)    scale(1); }}
+      }}
+      @keyframes msgSlideInLeft {{
+        from {{ opacity:0; transform: translateX(-20px) scale(0.97); }}
+        to   {{ opacity:1; transform: translateX(0)     scale(1); }}
+      }}
       .msg-user {{
-        background: linear-gradient(135deg,
-          {t['user_bg']}ee 0%,
-          {t['card']}cc 100%);
-        border: 1px solid {t['user_border']}33;
-        border-left: 3px solid {t['user_border']};
-        border-radius: 4px 16px 16px 16px;
-        padding: 0.85rem 1.2rem; margin: 0.6rem 0;
-        color:{t['text']}; font-size:0.95rem; line-height:1.65;
-        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-        box-shadow: 0 2px 20px rgba(0,0,0,0.3),
-                    inset 0 1px 0 rgba(255,255,255,0.05);
-        animation: msgSlideIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
-        position: relative; overflow: hidden;
+        background: linear-gradient(135deg, {t['accent']}dd 0%, {t['accent']}99 100%);
+        border: none;
+        border-radius: 18px 4px 18px 18px;
+        padding: 0.75rem 1.1rem;
+        color: #ffffff;
+        font-size: 0.93rem; line-height: 1.6;
+        max-width: 75%;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 2px 16px {t['accent']}44;
+        position: relative;
       }}
       .msg-bot {{
-        background: linear-gradient(135deg,
-          {t['card']}f0 0%,
-          {t['input_bg']}cc 100%);
-        border: 1px solid {t['accent']}22;
-        border-left: 3px solid {t['accent']};
-        border-radius: 16px 4px 16px 16px;
-        padding: 0.85rem 1.2rem; margin: 0.6rem 0;
-        color:{t['text']}; font-size:0.95rem; line-height:1.75;
-        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-        box-shadow: 0 2px 24px rgba(0,0,0,0.35),
-                    inset 0 1px 0 rgba(255,255,255,0.04),
-                    0 0 0 1px {t['accent']}11;
-        animation: msgSlideIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
-        position: relative; overflow: hidden;
+        background: linear-gradient(135deg, {t['card']}f5 0%, {t['input_bg']}ee 100%);
+        border: 1px solid {t['border']};
+        border-radius: 4px 18px 18px 18px;
+        padding: 0.75rem 1.1rem;
+        color: {t['text']}; font-size: 0.93rem; line-height: 1.75;
+        max-width: 80%;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        position: relative;
+      }}        position: relative; overflow: hidden;
       }}
       .msg-bot::before {{
         content: '';
@@ -489,7 +500,7 @@ def apply_theme():
         margin-top:-0.5rem; margin-bottom:0.4rem; opacity:0.7;
       }}
       .char-warn  {{ color:#f0a500 !important; opacity:1 !important; }}
-      .char-danger {{ color:#92400e !important; opacity:1 !important; }}
+      .char-danger {{ color:#b91c1c !important; opacity:1 !important; }}
       .stTextInput > div > div > input {{
         background-color:{t['input_bg']} !important; color:{t['text']} !important;
         border:1px solid {t['border']} !important; border-radius:10px !important;
@@ -867,8 +878,8 @@ def splash_screen():
         to   { opacity: 1; transform: translateY(0px) scale(1); }
       }
       @keyframes logoGlow {
-        0%, 100% { text-shadow: 0 0 20px #d9770680, 0 0 40px #d9770640; }
-        50%       { text-shadow: 0 0 40px #d97706cc, 0 0 80px #d9770660, 0 0 120px #92400e30; }
+        0%, 100% { text-shadow: 0 0 20px #ef444480, 0 0 40px #ef444440; }
+        50%       { text-shadow: 0 0 40px #ef4444cc, 0 0 80px #ef444460, 0 0 120px #b91c1c30; }
       }
       @keyframes barFill {
         0%   { width: 0%; }
@@ -918,21 +929,21 @@ def splash_screen():
       }
       .splash-orb-1 {
         position: fixed; width: 600px; height: 600px; border-radius: 50%;
-        background: radial-gradient(circle, #d9770640 0%, transparent 65%);
+        background: radial-gradient(circle, #ef444440 0%, transparent 65%);
         top: -200px; left: -200px; filter: blur(50px);
         animation: orbSplash1 6s ease-in-out infinite;
         pointer-events: none;
       }
       .splash-orb-2 {
         position: fixed; width: 500px; height: 500px; border-radius: 50%;
-        background: radial-gradient(circle, #92400e35 0%, transparent 65%);
+        background: radial-gradient(circle, #b91c1c35 0%, transparent 65%);
         bottom: -150px; right: -150px; filter: blur(60px);
         animation: orbSplash2 8s ease-in-out infinite;
         pointer-events: none;
       }
       .splash-orb-3 {
         position: fixed; width: 300px; height: 300px; border-radius: 50%;
-        background: radial-gradient(circle, #b4530930 0%, transparent 65%);
+        background: radial-gradient(circle, #dc262630 0%, transparent 65%);
         top: 50%; left: 60%; filter: blur(40px);
         animation: orbSplash1 10s ease-in-out infinite reverse;
         pointer-events: none;
@@ -944,16 +955,16 @@ def splash_screen():
       }
       .splash-logo-ring {
         width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 1.4rem;
-        background: linear-gradient(135deg, #d9770618, #0a0a0f);
-        border: 2px solid #d9770655;
+        background: linear-gradient(135deg, #ef444418, #0a0a0f);
+        border: 2px solid #ef444455;
         display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 0 40px #d9770630, inset 0 0 20px #d9770610;
+        box-shadow: 0 0 40px #ef444430, inset 0 0 20px #ef444410;
         animation: logoGlow 3s ease-in-out infinite;
         padding: 4px;
       }
       .splash-title {
         font-size: 3.2rem; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #e8e0d0 30%, #d97706 70%, #b45309 100%);
+        background: linear-gradient(135deg, #e8e0d0 30%, #ef4444 70%, #dc2626 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text; margin-bottom: 0.4rem;
         animation: logoGlow 3s ease-in-out infinite;
@@ -967,11 +978,11 @@ def splash_screen():
       .splash-bar-wrap {
         width: 100%; background: #e8e0d012; border-radius: 100px;
         height: 4px; overflow: hidden; margin-bottom: 1rem;
-        box-shadow: 0 0 10px #0a060340;
+        box-shadow: 0 0 10px #0a000040;
       }
       .splash-bar {
         height: 100%; border-radius: 100px;
-        background: linear-gradient(90deg, #d97706, #b45309, #92400e, #d97706);
+        background: linear-gradient(90deg, #ef4444, #dc2626, #b91c1c, #ef4444);
         background-size: 200% auto;
         animation: barFill 2.8s cubic-bezier(0.4,0,0.2,1) forwards,
                    barShimmer 1.5s linear infinite;
@@ -993,11 +1004,11 @@ def splash_screen():
         display: flex; justify-content: center; gap: 8px; margin-top: 0.8rem;
       }
       .splash-dot {
-        width: 8px; height: 8px; border-radius: 50%; background: #d97706;
+        width: 8px; height: 8px; border-radius: 50%; background: #ef4444;
         animation: dotPulse 1.2s ease-in-out infinite;
       }
-      .splash-dot:nth-child(2) { animation-delay: 0.2s; background: #b45309; }
-      .splash-dot:nth-child(3) { animation-delay: 0.4s; background: #92400e; }
+      .splash-dot:nth-child(2) { animation-delay: 0.2s; background: #dc2626; }
+      .splash-dot:nth-child(3) { animation-delay: 0.4s; background: #b91c1c; }
       .splash-byline {
         position: absolute; bottom: 1.5rem; left: 0; right: 0;
         font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
@@ -1023,8 +1034,8 @@ def splash_screen():
             <defs>
               <linearGradient id="splashGrad" x1="0" y1="0" x2="54" y2="0" gradientUnits="userSpaceOnUse">
                 <stop offset="0%" stop-color="#e8e0d0"/>
-                <stop offset="55%" stop-color="#d97706"/>
-                <stop offset="100%" stop-color="#b45309"/>
+                <stop offset="55%" stop-color="#ef4444"/>
+                <stop offset="100%" stop-color="#dc2626"/>
               </linearGradient>
             </defs>
           </svg>
@@ -1093,28 +1104,28 @@ def auth_page():
       /* ── Auth card ── */
       .auth-card {{
         background: linear-gradient(160deg, #12121add 0%, #070710dd 100%);
-        border: 1px solid #d9770633;
+        border: 1px solid #ef444433;
         border-radius: 20px;
         padding: 2.4rem 2.8rem 2rem;
         margin: 0 auto;
         max-width: 420px;
         backdrop-filter: blur(16px);
-        box-shadow: 0 8px 40px #0a060360, 0 0 60px #d9770610;
+        box-shadow: 0 8px 40px #0a000060, 0 0 60px #ef444410;
         animation: cardSlideUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
       }}
 
       /* ── Logo area ── */
       .auth-logo-ring {{
         width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 1rem;
-        background: linear-gradient(135deg, #d9770618, #0a0a0f);
-        border: 1.5px solid #d9770655;
+        background: linear-gradient(135deg, #ef444418, #0a0a0f);
+        border: 1.5px solid #ef444455;
         display: flex; align-items: center; justify-content: center;
         font-size: 2rem; line-height: 1;
-        box-shadow: 0 0 24px #d9770630;
+        box-shadow: 0 0 24px #ef444430;
       }}
       .auth-title {{
         font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #e8e0d0 30%, #d97706 100%);
+        background: linear-gradient(135deg, #e8e0d0 30%, #ef4444 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text; text-align: center; margin-bottom: 0.2rem;
       }}
@@ -1135,9 +1146,9 @@ def auth_page():
         color: #888899; background: transparent;
       }}
       .auth-tab-active {{
-        background: linear-gradient(135deg, #d9770622, #b4530918);
-        color: #d97706;
-        border-bottom: 2px solid #d97706;
+        background: linear-gradient(135deg, #ef444422, #dc262618);
+        color: #ef4444;
+        border-bottom: 2px solid #ef4444;
       }}
 
       /* ── Form field labels ── */
@@ -1160,16 +1171,16 @@ def auth_page():
 
       /* ── Submit button ── */
       .stFormSubmitButton > button {{
-        background: linear-gradient(135deg, #d97706, #b45309) !important;
+        background: linear-gradient(135deg, #ef4444, #dc2626) !important;
         color: #0a0a0f !important; border: none !important;
         border-radius: 10px !important; font-weight: 700 !important;
         font-size: 0.95rem !important; letter-spacing: 0.04em !important;
         padding: 0.65rem 1rem !important;
         transition: all 0.25s !important;
-        box-shadow: 0 4px 20px #d9770640 !important;
+        box-shadow: 0 4px 20px #ef444440 !important;
       }}
       .stFormSubmitButton > button:hover {{
-        box-shadow: 0 6px 28px #d9770670 !important;
+        box-shadow: 0 6px 28px #ef444470 !important;
         transform: translateY(-1px) !important;
       }}
 
@@ -1189,14 +1200,14 @@ def auth_page():
 
       /* ── Error / success ── */
       .auth-error {{
-        background: #92400e18; border: 1px solid #92400e66;
+        background: #b91c1c18; border: 1px solid #b91c1c66;
         border-radius: 8px; padding: 0.55rem 0.8rem;
         color: #e08080; font-size: 0.83rem; margin-bottom: 0.6rem;
       }}
       .auth-success {{
-        background: #d9770618; border: 1px solid #d9770666;
+        background: #ef444418; border: 1px solid #ef444466;
         border-radius: 8px; padding: 0.55rem 0.8rem;
-        color: #d97706; font-size: 0.83rem; margin-bottom: 0.6rem;
+        color: #ef4444; font-size: 0.83rem; margin-bottom: 0.6rem;
       }}
 
       /* ── Password strength bar ── */
@@ -1234,20 +1245,20 @@ def auth_page():
     st.markdown("""
     <div style="text-align:center; padding: 2.5rem 0 0.5rem;">
       <div class="auth-logo-ring" style="width:72px;height:72px;border-radius:50%;margin:0 auto 1rem;
-           background:linear-gradient(135deg,#d9770614,#0a0a0f);border:1.5px solid #d9770650;
+           background:linear-gradient(135deg,#ef444414,#0a0a0f);border:1.5px solid #ef444450;
            display:flex;align-items:center;justify-content:center;
-           box-shadow:0 0 28px #d9770630, inset 0 0 16px #d9770608;">
+           box-shadow:0 0 28px #ef444430, inset 0 0 16px #ef444408;">
         <svg width="46" height="46" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
           <text x="3" y="38" font-family="'Inter',sans-serif" font-weight="800" font-size="22"
                 fill="url(#authGrad)" letter-spacing="-1">PLM</text>
           <rect x="3" y="42" width="48" height="2.5" rx="1.25" fill="url(#authGrad)" opacity="0.6"/>
-          <circle cx="48" cy="7" r="3" fill="#d97706" opacity="0.9"/>
-          <circle cx="48" cy="7" r="5.5" fill="#d97706" opacity="0.2"/>
+          <circle cx="48" cy="7" r="3" fill="#ef4444" opacity="0.9"/>
+          <circle cx="48" cy="7" r="5.5" fill="#ef4444" opacity="0.2"/>
           <defs>
             <linearGradient id="authGrad" x1="0" y1="0" x2="54" y2="0" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stop-color="#e8e0d0"/>
-              <stop offset="55%" stop-color="#d97706"/>
-              <stop offset="100%" stop-color="#b45309"/>
+              <stop offset="55%" stop-color="#ef4444"/>
+              <stop offset="100%" stop-color="#dc2626"/>
             </linearGradient>
           </defs>
         </svg>
@@ -1277,7 +1288,7 @@ def auth_page():
     st.markdown(f"""
     <div style="position:relative;height:3px;background:#12121a;border-radius:100px;margin-bottom:1.4rem;">
       <div style="position:absolute;top:0;left:{bar_left};width:50%;height:100%;
-                  background:linear-gradient(90deg,#d97706,#b45309);border-radius:100px;
+                  background:linear-gradient(90deg,#ef4444,#dc2626);border-radius:100px;
                   transition:left 0.3s ease;"></div>
     </div>
     """, unsafe_allow_html=True)
@@ -1321,7 +1332,7 @@ def auth_page():
             st.markdown("""
             <div class="auth-divider">or</div>
             <div class="auth-switch">
-              Don't have an account? Click <strong style="color:#d97706">Sign Up</strong> above.
+              Don't have an account? Click <strong style="color:#ef4444">Sign Up</strong> above.
             </div>
             """, unsafe_allow_html=True)
 
@@ -1363,7 +1374,7 @@ def auth_page():
             st.markdown("""
             <div class="auth-divider">or</div>
             <div class="auth-switch">
-              Already have an account? Click <strong style="color:#d97706">Sign In</strong> above.
+              Already have an account? Click <strong style="color:#ef4444">Sign In</strong> above.
             </div>
             """, unsafe_allow_html=True)
 
@@ -1721,30 +1732,24 @@ def chat_page():
 
         if msg["role"] == "user":
             st.markdown(f"""
-            <div class="msg-with-avatar">
-              <div class="msg-avatar msg-avatar-user">{user_initial}</div>
-              <div class="msg-bubble">
+            <div class="msg-row-user">
+              <div>
                 <div class="msg-user">
-                  <div class="msg-header">
-                    <span class="msg-label">You</span>
-                    <span class="msg-time">{ts}</span>
-                  </div>
                   {msg['content']}
+                  <div style="font-size:0.62rem;opacity:0.6;margin-top:4px;text-align:right;">{ts}</div>
                 </div>
               </div>
+              <div class="msg-avatar msg-avatar-user" style="margin-left:8px;margin-top:4px;flex-shrink:0;">{user_initial}</div>
             </div>""", unsafe_allow_html=True)
         else:
             rendered = render_markdown(msg['content'], t)
             st.markdown(f"""
-            <div class="msg-with-avatar">
-              <div class="msg-avatar msg-avatar-bot">PLM</div>
-              <div class="msg-bubble">
+            <div class="msg-row-bot">
+              <div class="msg-avatar msg-avatar-bot" style="margin-right:8px;margin-top:4px;flex-shrink:0;">PLM</div>
+              <div>
                 <div class="msg-bot">
-                  <div class="msg-header">
-                    <span class="msg-label">PLM GPT</span>
-                    <span class="msg-time">{ts}</span>
-                  </div>
                   <div class="msg-body">{rendered}</div>
+                  <div style="font-size:0.62rem;opacity:0.5;margin-top:4px;">{ts}</div>
                 </div>
               </div>
             </div>""", unsafe_allow_html=True)
@@ -1781,9 +1786,9 @@ def chat_page():
                        transition:all 0.15s;">📋</button>
                 """, unsafe_allow_html=True)
             if feedback == "liked":
-                st.markdown(f"<p style='font-size:0.7rem; color:{t['accent']}; margin-top:-0.3rem;'>✓ Marked as helpful</p>", unsafe_allow_html=True)
+                st.markdown(f"<p style='font-size:0.7rem;color:{t['accent']};margin-top:-0.3rem;'>✓ Marked as helpful</p>", unsafe_allow_html=True)
             elif feedback == "disliked":
-                st.markdown(f"<p style='font-size:0.7rem; color:#92400e; margin-top:-0.3rem;'>✗ Marked as not helpful</p>", unsafe_allow_html=True)
+                st.markdown(f"<p style='font-size:0.7rem;color:#e05555;margin-top:-0.3rem;'>✗ Marked as not helpful</p>", unsafe_allow_html=True)
     st.markdown("<div style='margin-top:0.8rem;'></div>", unsafe_allow_html=True)
 
     # ── Input form ──
@@ -1826,7 +1831,7 @@ def chat_page():
                 st.markdown("""
                 <script>
                 (function(){
-                  const colors=['#d97706','#b45309','#faf8f5','#92400e','#99aab5'];
+                  const colors=['#ef4444','#dc2626','#faf8f5','#b91c1c','#99aab5'];
                   const count = 120;
                   for(let i=0;i<count;i++){
                     const el=document.createElement('div');
