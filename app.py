@@ -12,7 +12,7 @@ from groq import Groq
 st.set_page_config(
     page_title="PLM GPT",
     page_icon="🤖",
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="collapsed",
 )
 
@@ -217,42 +217,50 @@ for k, v in defaults.items():
 # ─────────────────────────────────────────
 THEMES = {
     "dark": {
-        # ── Blade Runner 2049 — Neon Cyberpunk ────
-        "bg":          "#0a0a0f",
-        "card":        "#12121a",
-        "input_bg":    "#1e1e2e",
-        "text":        "#e8e0d0",
-        "sub":         "#665544",
-        "accent":      "#ff6600",
-        "border":      "#1e1e2e",
-        "user_bg":     "#0f0f18",
-        "user_border": "#ff8833",
-        "btn_bg":      "#1e1e2e",
-        "btn_text":    "#e8e0d0",
-        "toolbar_bg":  "#070710",
-        "welcome_bg":  "#0a0a0f",
-        "grad1":       "#0a0a0f",
-        "grad2":       "#12121a",
-        "grad3":       "#070710",
+        # ── Cinematic Dark — Pure Black + Aurora ──
+        "bg":          "#000000",
+        "card":        "#0d0d0d",
+        "input_bg":    "#161616",
+        "text":        "#f0f0f0",
+        "sub":         "#666666",
+        "accent":      "#a78bfa",
+        "border":      "#222222",
+        "user_bg":     "#111111",
+        "user_border": "#6366f1",
+        "btn_bg":      "#161616",
+        "btn_text":    "#f0f0f0",
+        "toolbar_bg":  "#050505",
+        "welcome_bg":  "#080808",
+        "grad1":       "#000000",
+        "grad2":       "#050510",
+        "grad3":       "#000000",
+        "aurora1":     "#6366f1",
+        "aurora2":     "#a78bfa",
+        "aurora3":     "#22d3ee",
+        "aurora4":     "#818cf8",
     },
     "light": {
-        # ── Blade Runner Light ────────────────────
-        "bg":          "#f0ece8",
-        "card":        "#faf8f5",
-        "input_bg":    "#e8e0d8",
-        "text":        "#1a1520",
-        "sub":         "#6a6070",
-        "accent":      "#e05500",
-        "border":      "#d0ccc8",
-        "user_bg":     "#e4dcd4",
-        "user_border": "#ff6600",
-        "btn_bg":      "#e8e0d8",
-        "btn_text":    "#1a1520",
-        "toolbar_bg":  "#e4dcd4",
-        "welcome_bg":  "#e4dcd4",
-        "grad1":       "#f0ece8",
-        "grad2":       "#e4dcd4",
-        "grad3":       "#e8e0d8",
+        # ── Cinematic Light ───────────────────────
+        "bg":          "#fafafa",
+        "card":        "#ffffff",
+        "input_bg":    "#f4f4f5",
+        "text":        "#09090b",
+        "sub":         "#71717a",
+        "accent":      "#7c3aed",
+        "border":      "#e4e4e7",
+        "user_bg":     "#f4f4f5",
+        "user_border": "#6366f1",
+        "btn_bg":      "#f4f4f5",
+        "btn_text":    "#09090b",
+        "toolbar_bg":  "#ebebeb",
+        "welcome_bg":  "#f4f4f5",
+        "grad1":       "#fafafa",
+        "grad2":       "#f0f0ff",
+        "grad3":       "#fafafa",
+        "aurora1":     "#6366f1",
+        "aurora2":     "#a78bfa",
+        "aurora3":     "#22d3ee",
+        "aurora4":     "#818cf8",
     },
 }
 
@@ -261,105 +269,79 @@ THEMES = {
 # ─────────────────────────────────────────
 BG_ANIMATION = """
 <style>
-.plm-orb {
-  position: fixed;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
+/* ── Cinematic Aurora Stripes ── */
+@keyframes auroraShift {
+  0%   { transform: translateX(-100%) skewX(-15deg); opacity: 0; }
+  20%  { opacity: 0.06; }
+  80%  { opacity: 0.04; }
+  100% { transform: translateX(200%) skewX(-15deg); opacity: 0; }
 }
-.plm-orb-1 {
-  width: 500px; height: 500px;
-  background: radial-gradient(circle at center, #ff660040 0%, #ff660015 40%, transparent 70%);
-  top: -150px; left: -150px;
-  animation: orbMove1 20s ease-in-out infinite;
-  filter: blur(40px);
+@keyframes auroraPulse {
+  0%, 100% { opacity: 0.03; transform: scaleY(1); }
+  50%       { opacity: 0.07; transform: scaleY(1.1); }
 }
-.plm-orb-2 {
-  width: 400px; height: 400px;
-  background: radial-gradient(circle at center, #cc520035 0%, #cc520010 40%, transparent 70%);
-  bottom: -100px; right: -100px;
-  animation: orbMove2 25s ease-in-out infinite;
-  filter: blur(50px);
+@keyframes noiseMove {
+  0%   { background-position: 0 0; }
+  100% { background-position: 200px 200px; }
 }
-.plm-orb-3 {
-  width: 300px; height: 300px;
-  background: radial-gradient(circle at center, #ff883330 0%, #ff88330d 40%, transparent 70%);
-  top: 35%; left: 5%;
-  animation: orbMove3 30s ease-in-out infinite;
-  filter: blur(45px);
+
+.aurora-wrap {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
 }
-.plm-orb-4 {
-  width: 250px; height: 250px;
-  background: radial-gradient(circle at center, #ff660025 0%, transparent 70%);
-  top: 60%; right: 10%;
-  animation: orbMove4 22s ease-in-out infinite;
-  filter: blur(35px);
+.aurora-stripe {
+  position: absolute; left: -100%; width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, var(--clr) 40%, transparent);
+  animation: auroraShift linear infinite;
+  filter: blur(60px);
 }
-@keyframes orbMove1 {
-  0%,100% { transform: translate(0px, 0px) scale(1); }
-  33%      { transform: translate(60px, 40px) scale(1.08); }
-  66%      { transform: translate(20px, 80px) scale(0.95); }
+.aurora-stripe-1 { --clr: #6366f155; animation-duration: 14s; animation-delay: 0s;   top: 10%; }
+.aurora-stripe-2 { --clr: #a78bfa44; animation-duration: 18s; animation-delay: -5s;  top: 40%; }
+.aurora-stripe-3 { --clr: #22d3ee33; animation-duration: 22s; animation-delay: -10s; top: 70%; }
+.aurora-stripe-4 { --clr: #818cf844; animation-duration: 16s; animation-delay: -7s;  top: 25%; }
+
+.aurora-glow-1 {
+  position: fixed; width: 70vw; height: 40vh; left: -20vw; top: -10vh;
+  background: radial-gradient(ellipse, #6366f122 0%, transparent 70%);
+  animation: auroraPulse 8s ease-in-out infinite; filter: blur(80px);
+  pointer-events: none; z-index: 0;
 }
-@keyframes orbMove2 {
-  0%,100% { transform: translate(0px, 0px) scale(1); }
-  33%      { transform: translate(-50px, -40px) scale(1.1); }
-  66%      { transform: translate(-20px, -70px) scale(0.92); }
+.aurora-glow-2 {
+  position: fixed; width: 60vw; height: 50vh; right: -15vw; bottom: -10vh;
+  background: radial-gradient(ellipse, #a78bfa1a 0%, transparent 70%);
+  animation: auroraPulse 11s ease-in-out infinite reverse; filter: blur(100px);
+  pointer-events: none; z-index: 0;
 }
-@keyframes orbMove3 {
-  0%,100% { transform: translate(0px, 0px) scale(1); }
-  50%      { transform: translate(40px, -50px) scale(1.12); }
+.aurora-glow-3 {
+  position: fixed; width: 40vw; height: 30vh; left: 30vw; top: 30vh;
+  background: radial-gradient(ellipse, #22d3ee11 0%, transparent 70%);
+  animation: auroraPulse 14s ease-in-out infinite 3s; filter: blur(90px);
+  pointer-events: none; z-index: 0;
 }
-@keyframes orbMove4 {
-  0%,100% { transform: translate(0px, 0px) scale(1); }
-  40%      { transform: translate(-30px, 40px) scale(1.06); }
-  80%      { transform: translate(20px, -20px) scale(0.94); }
-}
-.plm-dot {
-  position: fixed;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-  animation: dotFloat linear infinite;
-}
-.plm-dot-1  { width:3px;  height:3px;  background:#ff6600; top:10%; left:15%; opacity:0.4; animation-duration:8s;  animation-delay:0s;   }
-.plm-dot-2  { width:2px;  height:2px;  background:#ff8833; top:25%; left:80%; opacity:0.3; animation-duration:12s; animation-delay:-3s;  }
-.plm-dot-3  { width:4px;  height:4px;  background:#cc5200; top:60%; left:25%; opacity:0.25;animation-duration:10s; animation-delay:-5s;  }
-.plm-dot-4  { width:2px;  height:2px;  background:#ff6600; top:75%; left:65%; opacity:0.35;animation-duration:15s; animation-delay:-7s;  }
-.plm-dot-5  { width:3px;  height:3px;  background:#ff8833; top:40%; left:45%; opacity:0.3; animation-duration:9s;  animation-delay:-2s;  }
-.plm-dot-6  { width:2px;  height:2px;  background:#ff6600; top:85%; left:10%; opacity:0.4; animation-duration:11s; animation-delay:-4s;  }
-.plm-dot-7  { width:4px;  height:4px;  background:#cc5200; top:15%; left:55%; opacity:0.2; animation-duration:14s; animation-delay:-9s;  }
-.plm-dot-8  { width:2px;  height:2px;  background:#ff8833; top:50%; left:90%; opacity:0.3; animation-duration:7s;  animation-delay:-1s;  }
-.plm-dot-9  { width:3px;  height:3px;  background:#ff6600; top:70%; left:40%; opacity:0.35;animation-duration:13s; animation-delay:-6s;  }
-.plm-dot-10 { width:2px;  height:2px;  background:#cc5200; top:30%; left:5%;  opacity:0.25;animation-duration:16s; animation-delay:-11s; }
-.plm-dot-11 { width:3px;  height:3px;  background:#ff6600; top:5%;  left:70%; opacity:0.3; animation-duration:10s; animation-delay:-8s;  }
-.plm-dot-12 { width:2px;  height:2px;  background:#ff8833; top:90%; left:50%; opacity:0.4; animation-duration:18s; animation-delay:-13s; }
-@keyframes dotFloat {
-  0%   { transform: translateY(0px)   translateX(0px);   opacity: 0.4; }
-  25%  { transform: translateY(-20px) translateX(10px);  opacity: 0.7; }
-  50%  { transform: translateY(-35px) translateX(-8px);  opacity: 0.3; }
-  75%  { transform: translateY(-15px) translateX(15px);  opacity: 0.6; }
-  100% { transform: translateY(0px)   translateX(0px);   opacity: 0.4; }
+.noise-overlay {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
 }
 [data-testid="stAppViewContainer"] > section,
 [data-testid="stAppViewBlockContainer"],
-.block-container { position: relative; z-index: 1; }
+.block-container {
+  position: relative; z-index: 1;
+  max-width: 900px !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+  margin: 0 auto !important;
+}
 </style>
-<div class="plm-orb plm-orb-1"></div>
-<div class="plm-orb plm-orb-2"></div>
-<div class="plm-orb plm-orb-3"></div>
-<div class="plm-orb plm-orb-4"></div>
-<div class="plm-dot plm-dot-1"></div>
-<div class="plm-dot plm-dot-2"></div>
-<div class="plm-dot plm-dot-3"></div>
-<div class="plm-dot plm-dot-4"></div>
-<div class="plm-dot plm-dot-5"></div>
-<div class="plm-dot plm-dot-6"></div>
-<div class="plm-dot plm-dot-7"></div>
-<div class="plm-dot plm-dot-8"></div>
-<div class="plm-dot plm-dot-9"></div>
-<div class="plm-dot plm-dot-10"></div>
-<div class="plm-dot plm-dot-11"></div>
-<div class="plm-dot plm-dot-12"></div>
+<div class="aurora-wrap">
+  <div class="aurora-stripe aurora-stripe-1"></div>
+  <div class="aurora-stripe aurora-stripe-2"></div>
+  <div class="aurora-stripe aurora-stripe-3"></div>
+  <div class="aurora-stripe aurora-stripe-4"></div>
+</div>
+<div class="aurora-glow-1"></div>
+<div class="aurora-glow-2"></div>
+<div class="aurora-glow-3"></div>
+<div class="noise-overlay"></div>
 """
 
 def apply_theme():
@@ -367,7 +349,7 @@ def apply_theme():
     st.markdown(BG_ANIMATION, unsafe_allow_html=True)
     st.markdown(f"""
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Inter:wght@400;500;600;700;800&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,500&family=Inter:wght@400;500;600;700;800&display=swap');
 
       @keyframes gradientShift {{
         0%   {{ background-position: 0% 50%; }}
@@ -375,10 +357,8 @@ def apply_theme():
         100% {{ background-position: 0% 50%; }}
       }}
       .stApp {{
-        background: linear-gradient(-45deg, {t['grad1']}, {t['grad2']}, {t['grad3']}, {t['bg']});
-        background-size: 400% 400%;
-        animation: gradientShift 12s ease infinite;
-        font-family: 'Inter', sans-serif;
+        background: {t['bg']};
+        font-family: 'Space Grotesk', 'Inter', sans-serif;
       }}
 
       .plm-toolbar {{
@@ -395,7 +375,7 @@ def apply_theme():
       .plm-title {{ text-align:center; padding:1.2rem 0 0.4rem; }}
       .plm-title h1 {{
         font-size:2.6rem; font-weight:800; color:{t['text']};
-        font-family:'Inter', sans-serif; margin-bottom:0.1rem;
+        font-family:'Space Grotesk', 'Inter', sans-serif; margin-bottom:0.1rem;
       }}
       .plm-title .byline {{ color:{t['sub']}; font-size:0.88rem; font-weight:500; }}
       .plm-title .caption {{ color:{t['sub']}; font-size:0.76rem; font-style:italic; opacity:0.6; }}
@@ -431,26 +411,40 @@ def apply_theme():
         gap: 0.5rem; margin: 0.8rem 0 1rem 0;
       }}
       .msg-user {{
-        background: {t['user_bg']}99;
-        border-left:4px solid {t['user_border']};
-        border-radius:12px; padding:0.8rem 1.1rem; margin:0.5rem 0;
-        color:{t['text']}; font-size:0.95rem; line-height:1.6;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
-        border-top: 1px solid rgba(255,255,255,0.07);
-        animation: msgSlideIn 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+        background: linear-gradient(135deg,
+          {t['user_bg']}ee 0%,
+          {t['card']}cc 100%);
+        border: 1px solid {t['user_border']}33;
+        border-left: 3px solid {t['user_border']};
+        border-radius: 4px 16px 16px 16px;
+        padding: 0.85rem 1.2rem; margin: 0.6rem 0;
+        color:{t['text']}; font-size:0.95rem; line-height:1.65;
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 2px 20px rgba(0,0,0,0.3),
+                    inset 0 1px 0 rgba(255,255,255,0.05);
+        animation: msgSlideIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+        position: relative; overflow: hidden;
       }}
       .msg-bot {{
-        background: {t['card']}8c;
-        border-left:4px solid {t['accent']};
-        border-radius:12px; padding:0.8rem 1.1rem; margin:0.5rem 0;
-        color:{t['text']}; font-size:0.95rem; line-height:1.7;
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        box-shadow: 0 4px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08);
-        border-top: 1px solid rgba(255,255,255,0.08);
-        animation: msgSlideIn 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+        background: linear-gradient(135deg,
+          {t['card']}f0 0%,
+          {t['input_bg']}cc 100%);
+        border: 1px solid {t['accent']}22;
+        border-left: 3px solid {t['accent']};
+        border-radius: 16px 4px 16px 16px;
+        padding: 0.85rem 1.2rem; margin: 0.6rem 0;
+        color:{t['text']}; font-size:0.95rem; line-height:1.75;
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 2px 24px rgba(0,0,0,0.35),
+                    inset 0 1px 0 rgba(255,255,255,0.04),
+                    0 0 0 1px {t['accent']}11;
+        animation: msgSlideIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+        position: relative; overflow: hidden;
+      }}
+      .msg-bot::before {{
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, {t['accent']}44, transparent);
       }}
       @keyframes msgSlideIn {{
         from {{ opacity: 0; transform: translateY(18px) scale(0.98); }}
@@ -1327,7 +1321,7 @@ def auth_page():
             st.markdown("""
             <div class="auth-divider">or</div>
             <div class="auth-switch">
-              Don't have an account? Click <strong style="color:#ff6600">Sign Up</strong> above.
+              Don't have an account? Click <strong style="color:#a78bfa">Sign Up</strong> above.
             </div>
             """, unsafe_allow_html=True)
 
@@ -1369,7 +1363,7 @@ def auth_page():
             st.markdown("""
             <div class="auth-divider">or</div>
             <div class="auth-switch">
-              Already have an account? Click <strong style="color:#ff6600">Sign In</strong> above.
+              Already have an account? Click <strong style="color:#a78bfa">Sign In</strong> above.
             </div>
             """, unsafe_allow_html=True)
 
