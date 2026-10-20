@@ -48,8 +48,7 @@ WINDOW_SECONDS  = 60
 SESSION_TIMEOUT = 30 * 60
 
 MODELS = {
-    "⚡ Fast  — Qwen 3.8 27B":  "qwen/qwen3.8-27b",
-    "🧠 Smart — Qwen 3.8 27B":  "qwen/qwen3.8-27b",
+    "Qwen 3.8 27B": "qwen/qwen3.8-27b",
 }
 
 CONVERSATION_MODES = {
@@ -198,7 +197,7 @@ defaults = {
     "req_timestamps":  [],
     "last_activity":   time.time(),
     "theme":           "dark",
-    "model":           "qwen/qwen3.8-27b",
+    "model":           "qwen/qwen3.8-27b",  # single model available
     "temperature":     0.7,
     "conv_mode":       "💼 Professional",
     "starred":         [],
@@ -589,14 +588,11 @@ def apply_theme():
         backdrop-filter: blur(12px);
       }}
 
-      /* ── Avatar in messages ── */
-      .msg-with-avatar {{
-        display: flex; gap: 0.65rem; align-items: flex-start; margin: 0.5rem 0;
-      }}
+      /* ── Avatars in WhatsApp layout ── */
       .msg-avatar {{
         width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
         display: flex; align-items: center; justify-content: center;
-        font-size: 0.78rem; font-weight: 800; margin-top: 2px;
+        font-size: 0.78rem; font-weight: 800;
       }}
       .msg-avatar-user {{
         background: linear-gradient(135deg, {t['user_border']}, {t['accent']});
@@ -606,11 +602,6 @@ def apply_theme():
         background: linear-gradient(135deg, {t['accent']}, {t['user_border']});
         color: {t['bg']}; font-size: 0.65rem; letter-spacing: -0.5px;
       }}
-      .msg-bubble {{ flex: 1; min-width: 0; }}
-      .msg-user {{ border-radius: 4px 12px 12px 12px !important; }}
-      .msg-bot  {{ border-radius: 12px 4px 12px 12px !important; border-left: none !important;
-                   border-top: none !important;
-                   border: 1px solid {t['accent']}44 !important; }}
 
 
       /* ── Typing bubble (F1) ── */
@@ -790,7 +781,17 @@ def stream_response(query: str):
             if delta:
                 yield delta
     except Exception as e:
-        yield f"⚠️ Error: {type(e).__name__}. Please try again."
+        err = type(e).__name__
+        if "RateLimit" in err:
+            yield "⏳ **Rate limit reached.** Groq free tier has a per-minute limit. Please wait 20-30 seconds and try again."
+        elif "AuthenticationError" in err or "Unauthorized" in err:
+            yield "🔑 **API key error.** Please check your Groq API key in settings."
+        elif "NotFound" in err:
+            yield "🔍 **Model not found.** The selected model is unavailable. Please try again."
+        elif "ConnectionError" in err or "Timeout" in err:
+            yield "🌐 **Connection error.** Check your internet connection and try again."
+        else:
+            yield f"⚠️ **Something went wrong** ({err}). Please try again in a moment."
 
 def get_summary() -> str:
     """Summarize the full conversation using Groq."""
@@ -1588,10 +1589,9 @@ def chat_page():
     # Row 1: selectors
     r1c1, r1c2, r1c3 = st.columns([3, 3, 3])
     with r1c1:
-        sel = st.selectbox("Model", list(MODELS.keys()),
-            index=list(MODELS.values()).index(st.session_state.model),
-            key="model_select")
-        st.session_state.model = MODELS[sel]
+        # Single model available — show as static label
+        st.markdown(f"<div style='padding:0.4rem 0;'><span style='font-size:0.72rem;color:{t["sub"]};text-transform:uppercase;letter-spacing:0.05em;'>Model</span><br><span style='font-size:0.9rem;color:{t["text"]};font-weight:600;'>Qwen 3.8 27B</span></div>", unsafe_allow_html=True)
+        st.session_state.model = "qwen/qwen3.8-27b"
     with r1c2:
         mode_sel = st.selectbox("Mode", list(CONVERSATION_MODES.keys()),
             index=list(CONVERSATION_MODES.keys()).index(st.session_state.conv_mode),
@@ -1654,7 +1654,7 @@ def chat_page():
     active_chat = st.session_state.sessions.get(st.session_state.active_session, {}).get("name", "Chat")
     st.markdown(f"""
     <div class="plm-title">
-      <h1>PLM GPT</h1>
+      <h1>PLM GPT<span class="title-cursor"></span></h1>
       <div class="byline" style="color:{t['sub']};font-size:0.8rem;">
         {active_chat} &nbsp;·&nbsp; {st.session_state.conv_mode}
       </div>
@@ -1872,10 +1872,15 @@ def chat_page():
         stream_placeholder = st.empty()
         for chunk in stream_response(pending):
             full_reply += chunk
-            stream_placeholder.markdown(
-                f'<div class="stream-box"><span class="msg-label" style="display:block;margin-bottom:0.3rem;opacity:0.5;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;">PLM GPT</span>{full_reply}▌</div>',
-                unsafe_allow_html=True
-            )
+            stream_placeholder.markdown(f"""
+            <div class="msg-row-bot">
+              <div class="msg-avatar msg-avatar-bot" style="margin-right:8px;margin-top:4px;flex-shrink:0;">PLM</div>
+              <div>
+                <div class="msg-bot" style="min-width:200px;">
+                  <div class="msg-body">{full_reply}<span style="opacity:0.5;animation:cursorBlink 0.8s step-end infinite;">▋</span></div>
+                </div>
+              </div>
+            </div>""", unsafe_allow_html=True)
         placeholder.empty()
         stream_placeholder.empty()
         st.session_state.messages.append({
@@ -1898,16 +1903,44 @@ def chat_page():
         user_initial = (st.session_state.display_name or "U")[0].upper()
 
         if msg["role"] == "user":
-            st.markdown(f"""
-            <div class="msg-row-user">
-              <div>
-                <div class="msg-user">
-                  {msg['content']}
-                  <div class="msg-ts">{ts}</div>
-                </div>
-              </div>
-              <div class="msg-avatar msg-avatar-user" style="margin-left:8px;margin-top:4px;flex-shrink:0;">{user_initial}</div>
-            </div>""", unsafe_allow_html=True)
+            # Check if this message is being edited
+            if st.session_state.get(f"editing_{i}"):
+                edit_col1, edit_col2 = st.columns([8, 1])
+                with edit_col1:
+                    edited = st.text_area("", value=msg["content"], key=f"edit_text_{i}",
+                                          label_visibility="collapsed", height=80)
+                with edit_col2:
+                    if st.button("✓", key=f"save_edit_{i}", help="Save"):
+                        if edited.strip():
+                            # Remove all messages after this one and resend
+                            st.session_state.messages = st.session_state.messages[:i]
+                            st.session_state.messages.append({
+                                "role": "user", "content": edited.strip(),
+                                "time": now_str(), "feedback": None, "starred": False,
+                            })
+                            st.session_state[f"editing_{i}"] = False
+                            st.session_state["_pending_query"] = edited.strip()
+                        st.rerun()
+                    if st.button("✕", key=f"cancel_edit_{i}", help="Cancel"):
+                        st.session_state[f"editing_{i}"] = False
+                        st.rerun()
+            else:
+                st.markdown(f"""
+                <div class="msg-row-user">
+                  <div>
+                    <div class="msg-user">
+                      {msg['content']}
+                      <div class="msg-ts">{ts}</div>
+                    </div>
+                  </div>
+                  <div class="msg-avatar msg-avatar-user" style="margin-left:8px;margin-top:4px;flex-shrink:0;">{user_initial}</div>
+                </div>""", unsafe_allow_html=True)
+                # Edit button (only for last user message)
+                is_last_user = (i == max(j for j,m in enumerate(st.session_state.messages) if m["role"]=="user"))
+                if is_last_user:
+                    if st.button("✏️ Edit", key=f"edit_btn_{i}", help="Edit message"):
+                        st.session_state[f"editing_{i}"] = True
+                        st.rerun()
         else:
             rendered = render_markdown(msg['content'], t)
             st.markdown(f"""
@@ -1943,16 +1976,11 @@ def chat_page():
                     save_active_session()
                     st.rerun()
             with fb_col4:
-                import json as _json
-                safe_js = _json.dumps(msg['content'])
-                st.markdown(f"""
-                <button onclick="navigator.clipboard.writeText({safe_js}).then(()=>{{
-                  this.innerText='✅'; setTimeout(()=>this.innerText='📋',1500);
-                }})" title="Copy"
-                style="background:transparent;border:1px solid {t['border']};border-radius:6px;
-                       padding:3px 8px;font-size:0.8rem;cursor:pointer;color:{t['sub']};
-                       transition:all 0.15s;">📋</button>
-                """, unsafe_allow_html=True)
+                if st.button("📋", key=f"copy_{i}", help="Copy response"):
+                    st.session_state[f"copied_{i}"] = True
+                    st.rerun()
+                if st.session_state.pop(f"copied_{i}", False):
+                    st.toast("Copied!", icon="📋")
             if feedback == "liked":
                 st.markdown(f"<p style='font-size:0.7rem;color:{t['accent']};margin-top:-0.3rem;'>✓ Marked as helpful</p>", unsafe_allow_html=True)
             elif feedback == "disliked":
@@ -2051,10 +2079,15 @@ def chat_page():
             stream_ph = st.empty()
             for chunk in stream_response(clean):
                 full_reply += chunk
-                stream_ph.markdown(
-                    f'<div class="stream-box"><span class="msg-label" style="display:block;margin-bottom:0.3rem;opacity:0.5;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;">PLM GPT</span>{full_reply}▌</div>',
-                    unsafe_allow_html=True
-                )
+                stream_ph.markdown(f"""
+                <div class="msg-row-bot">
+                  <div class="msg-avatar msg-avatar-bot" style="margin-right:8px;margin-top:4px;flex-shrink:0;">PLM</div>
+                  <div>
+                    <div class="msg-bot" style="min-width:200px;">
+                      <div class="msg-body">{full_reply}<span style="opacity:0.5;animation:cursorBlink 0.8s step-end infinite;">▋</span></div>
+                    </div>
+                  </div>
+                </div>""", unsafe_allow_html=True)
             typing_ph.empty()
             stream_ph.empty()
             st.session_state.messages.append({
