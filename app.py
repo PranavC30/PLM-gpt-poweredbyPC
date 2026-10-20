@@ -119,7 +119,7 @@ def _save_db(db: dict):
 def _hash(pw: str) -> str:
     """SHA-256 with a fixed app-level salt — better than bare SHA-256."""
     salt = "plmgpt_salt_2025"
-    return hashlib.sha256((salt + pw + salt).hexdigest().encode()).hexdigest()
+    return hashlib.sha256((salt + pw + salt).encode()).hexdigest()
 
 def _seed_admin(db: dict):
     """Ensure the default admin account always exists."""
