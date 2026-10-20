@@ -48,8 +48,8 @@ WINDOW_SECONDS  = 60
 SESSION_TIMEOUT = 30 * 60
 
 MODELS = {
-    "⚡ Fast  — Llama 3.1 8B":  "llama-3.1-8b-instant",
-    "🧠 Smart — Llama 3.3 70B": "llama-3.3-70b-versatile",
+    "⚡ Fast  — Qwen 3.8 27B":  "qwen/qwen3.8-27b",
+    "🧠 Smart — Qwen 3.8 27B":  "qwen/qwen3.8-27b",
 }
 
 CONVERSATION_MODES = {
@@ -198,7 +198,7 @@ defaults = {
     "req_timestamps":  [],
     "last_activity":   time.time(),
     "theme":           "dark",
-    "model":           "llama-3.3-70b-versatile",
+    "model":           "qwen/qwen3.8-27b",
     "temperature":     0.7,
     "conv_mode":       "💼 Professional",
     "starred":         [],
@@ -801,7 +801,7 @@ def get_summary() -> str:
             for m in st.session_state.messages
         )
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="qwen/qwen3.8-27b",
             messages=[
                 {"role": "system", "content": "Summarize the following conversation in 5-7 concise bullet points. Be precise and professional."},
                 {"role": "user", "content": convo},
@@ -876,7 +876,7 @@ def get_auto_title(first_message: str) -> str:
     try:
         client = Groq(api_key=st.secrets["GROQ_API_KEY"])
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="qwen/qwen3.8-27b",
             messages=[
                 {"role": "system", "content": "Generate a very short chat title (3-5 words max). Return ONLY the title, no quotes."},
                 {"role": "user", "content": first_message[:200]},
