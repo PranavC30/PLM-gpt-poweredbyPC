@@ -117,7 +117,9 @@ def _save_db(db: dict):
 
 # ── helpers ──────────────────────────────
 def _hash(pw: str) -> str:
-    return hashlib.sha256(pw.encode()).hexdigest()
+    """SHA-256 with a fixed app-level salt — better than bare SHA-256."""
+    salt = "plmgpt_salt_2025"
+    return hashlib.sha256((salt + pw + salt).hexdigest().encode()).hexdigest()
 
 def _seed_admin(db: dict):
     """Ensure the default admin account always exists."""
@@ -199,7 +201,6 @@ defaults = {
     "model":           "llama-3.3-70b-versatile",
     "temperature":     0.7,
     "conv_mode":       "💼 Professional",
-    "welcome_shown":   False,
     "starred":         [],
     "show_starred":    False,
     "sessions":        {},
@@ -450,7 +451,7 @@ def apply_theme():
         backdrop-filter: blur(20px);
         box-shadow: 0 2px 20px rgba(0,0,0,0.3);
         position: relative;
-      }}        position: relative; overflow: hidden;
+        overflow: hidden;
       }}
       .msg-bot::before {{
         content: '';
@@ -611,6 +612,96 @@ def apply_theme():
                    border-top: none !important;
                    border: 1px solid {t['accent']}44 !important; }}
 
+
+      /* ── Typing bubble (F1) ── */
+      .typing-bubble {{
+        background: linear-gradient(135deg, {t['card']}f5 0%, {t['input_bg']}ee 100%);
+        border: 1px solid {t['border']};
+        border-radius: 4px 18px 18px 18px;
+        padding: 0.7rem 1.1rem;
+        backdrop-filter: blur(20px);
+        display: flex; align-items: center; gap: 0.6rem;
+      }}
+      .typing-label {{
+        font-size: 0.72rem; color: {t['sub']}; font-style: italic;
+      }}
+      .typing-dots-row {{ display: flex; gap: 4px; align-items: center; }}
+      .typing-dot-new {{
+        width: 7px; height: 7px; border-radius: 50%;
+        background: {t['accent']};
+        animation: typingBounceNew 1.2s ease-in-out infinite;
+      }}
+      .typing-dot-new:nth-child(2) {{ animation-delay: 0.2s; }}
+      .typing-dot-new:nth-child(3) {{ animation-delay: 0.4s; }}
+      @keyframes typingBounceNew {{
+        0%,60%,100% {{ transform: translateY(0); opacity: 0.4; }}
+        30% {{ transform: translateY(-5px); opacity: 1; }}
+      }}
+
+      /* ── Hover timestamp (F2) ── */
+      .msg-ts {{
+        font-size: 0.6rem; opacity: 0; margin-top: 3px;
+        transition: opacity 0.2s ease;
+        color: rgba(255,255,255,0.5);
+      }}
+      .msg-ts-delivered {{ text-align: right; }}
+      .msg-user:hover .msg-ts,
+      .msg-bot:hover .msg-ts {{ opacity: 0.7; }}
+
+      /* ── Session card hover (F8) ── */
+      .session-card {{
+        background:{t['card']}; border:1px solid {t['border']};
+        border-radius:10px; padding:0.6rem 1rem; margin:0.3rem 0;
+        color:{t['text']}; font-size:0.88rem; cursor:pointer;
+        transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
+        display:flex; justify-content:space-between; align-items:center;
+      }}
+      .session-card:hover {{
+        border-color:{t['accent']};
+        background:{t['user_bg']};
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      }}
+      .session-active {{
+        border-color:{t['accent']} !important;
+        background:{t['user_bg']} !important;
+      }}
+
+      /* ── Character counter ring (F7) ── */
+      .char-ring-wrap {{
+        display: flex; align-items: center; justify-content: flex-end;
+        gap: 0.5rem; margin-top: -0.4rem; margin-bottom: 0.3rem;
+        opacity: 0.7;
+      }}
+      .char-ring-text {{
+        font-size: 0.68rem; color: {t['sub']};
+      }}
+      .char-ring-warn {{ color: #f59e0b !important; opacity: 1 !important; }}
+      .char-ring-danger {{ color: {t['accent']} !important; opacity: 1 !important; }}
+
+      /* ── Welcome stats (F9) ── */
+      .welcome-stats {{
+        display: flex; align-items: center; justify-content: center;
+        gap: 1rem; margin: 0.8rem 0 0.5rem;
+      }}
+      .welcome-stat {{ text-align: center; }}
+      .welcome-stat-num {{
+        font-size: 1.6rem; font-weight: 700; color: {t['accent']};
+        line-height: 1;
+      }}
+      .welcome-stat-label {{
+        font-size: 0.65rem; color: {t['sub']}; text-transform: uppercase;
+        letter-spacing: 0.1em; margin-top: 2px;
+      }}
+      .welcome-stat-divider {{
+        width: 1px; height: 30px; background: {t['border']};
+      }}
+
+      /* ── Prompt suggestions sparkle ── */
+      .prompt-sparkle {{
+        font-size: 0.72rem; color: {t['sub']}; text-align: center;
+        margin-bottom: 0.4rem; letter-spacing: 0.05em;
+      }}
       @media (max-width: 640px) {{
         .block-container {{ padding: 0.5rem 0.6rem 2rem 0.6rem !important; max-width: 100% !important; }}
         .plm-toolbar {{ flex-direction: column; align-items: stretch; gap: 0.5rem; padding: 0.6rem 0.7rem; border-radius: 10px; }}
@@ -735,15 +826,15 @@ def render_markdown(text: str, t: dict) -> str:
         lang = m.group(1).strip() if m.group(1) else ""
         code = m.group(2).replace('<','&lt;').replace('>','&gt;')
         return (
-            f'<div style="background:#070710;border:1px solid {t["border"]};border-radius:8px;margin:0.6rem 0;overflow:hidden;">' +
-            f'<div style="background:#0a0a0f;padding:0.3rem 0.8rem;font-size:0.72rem;color:{t["sub"]};">{lang if lang else "code"}</div>' +
-            f'<pre style="margin:0;padding:0.8rem;overflow-x:auto;font-size:0.88rem;line-height:1.6;color:#e8eaed;font-family:monospace;"><code>' +
+            f'<div style="background:{t["toolbar_bg"]};border:1px solid {t["border"]};border-radius:8px;margin:0.6rem 0;overflow:hidden;">' +
+            f'<div style="background:{t["card"]};padding:0.3rem 0.8rem;font-size:0.72rem;color:{t["sub"]};">{lang if lang else "code"}</div>' +
+            f'<pre style="margin:0;padding:0.8rem;overflow-x:auto;font-size:0.88rem;line-height:1.6;color:{t["text"]};font-family:monospace;"><code>' +
             code + '</code></pre></div>'
         )
     text = _re.sub(r'```(\w*)\n?([\s\S]*?)```', replace_codeblock, text)
     # Inline code
     text = _re.sub(r'`([^`]+)`',
-        lambda m: f'<code style="background:#0a0a0f;padding:1px 5px;border-radius:4px;font-size:0.88em;color:#e8eaed;font-family:monospace;">{m.group(1)}</code>', text)
+        lambda m: f'<code style="background:{t["toolbar_bg"]};border:1px solid {t["border"]};padding:1px 5px;border-radius:4px;font-size:0.88em;color:{t["text"]};font-family:monospace;">{m.group(1)}</code>', text)
     # Bold
     text = _re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     # Italic
@@ -860,260 +951,291 @@ def delete_session(sid: str):
     switch_session(first)
 
 # ─────────────────────────────────────────
-#  SPLASH SCREEN  (particle network)
+#  SPLASH SCREEN  (particle network — fullscreen)
 # ─────────────────────────────────────────
 def splash_screen():
-    """Cinematic particle network startup animation."""
+    """Cinematic fullscreen particle network animation."""
     import streamlit.components.v1 as components
+
+    # Hide Streamlit UI during splash
+    st.markdown("""
+    <style>
+      #MainMenu,header,footer,[data-testid="stToolbar"],
+      [data-testid="stDecoration"],[data-testid="stStatusWidget"],
+      .block-container { display:none !important; }
+      .stApp { background:#000 !important; }
+    </style>
+    """, unsafe_allow_html=True)
+
     components.html("""
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    background: #000000;
-    overflow: hidden;
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
-  }
-  canvas { display:block; position:fixed; inset:0; z-index:0; }
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;
+  font-family:'Space Grotesk','Inter',sans-serif;}
 
-  .center {
-    position: fixed; inset:0;
-    display:flex; flex-direction:column;
-    align-items:center; justify-content:center;
-    z-index: 10; pointer-events:none;
-  }
+canvas{position:fixed;inset:0;z-index:0;}
 
-  .logo-ring {
-    width: 100px; height: 100px;
-    border-radius: 50%;
-    border: 1.5px solid #ef444433;
-    border-top-color: #ef4444;
-    display:flex; align-items:center; justify-content:center;
-    animation: spin 3s linear infinite;
-    margin-bottom: 1.8rem;
-    box-shadow: 0 0 30px #ef444430, inset 0 0 20px #ef444410;
-    opacity: 0;
-    animation: spin 3s linear infinite, fadeIn 0.8s ease 0.5s forwards;
-  }
-  .logo-ring-inner {
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    border: 1px solid #ef444422;
-    border-bottom-color: #f87171;
-    display:flex; align-items:center; justify-content:center;
-    animation: spinRev 2s linear infinite;
-  }
-  .logo-text {
-    font-size: 1.1rem; font-weight: 700;
-    letter-spacing: 0.1em;
-    background: linear-gradient(135deg, #fff, #f87171, #ef4444);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+.ui{position:fixed;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;z-index:10;pointer-events:none;}
 
-  .title {
-    font-size: 3.8rem; font-weight: 700;
-    letter-spacing: -0.03em; line-height: 1;
-    background: linear-gradient(135deg, #ffffff 0%, #f87171 50%, #ef4444 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-    opacity: 0; transform: translateY(20px);
-    animation: slideUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.8s forwards;
-    margin-bottom: 0.5rem;
-  }
-  .tagline {
-    font-size: 0.68rem; letter-spacing: 0.3em;
-    text-transform: uppercase; color: #ffffff44;
-    opacity: 0;
-    animation: fadeIn 0.8s ease 1.4s forwards;
-    margin-bottom: 2.5rem;
-  }
-  .bar-track {
-    width: 240px; height: 2px;
-    background: #ffffff08; border-radius:100px;
-    overflow:hidden; margin-bottom: 0.8rem;
-    opacity:0; animation: fadeIn 0.5s ease 1.2s forwards;
-  }
-  .bar-fill {
-    height:100%; width:0%; border-radius:100px;
-    background: linear-gradient(90deg, #dc2626, #ef4444, #f87171, #ef4444);
-    background-size: 200% auto;
-    animation: barGrow 1.8s cubic-bezier(0.4,0,0.2,1) 1.3s forwards,
-               barShine 1.2s linear infinite;
-  }
-  .status {
-    font-size: 0.62rem; letter-spacing: 0.2em;
-    text-transform: uppercase; color: #ef444466;
-    height: 1rem; position:relative; width:200px; text-align:center;
-    opacity:0; animation: fadeIn 0.5s ease 1.3s forwards;
-  }
-  .status span {
-    position:absolute; left:50%; transform:translateX(-50%);
-    opacity:0; white-space:nowrap;
-    animation: statusCycle 0.6s ease both;
-  }
-  .status span:nth-child(1){ animation-delay:1.3s; }
-  .status span:nth-child(2){ animation-delay:1.9s; }
-  .status span:nth-child(3){ animation-delay:2.5s; }
-  .status span:nth-child(4){ animation-delay:3.0s; }
+/* ── Rings ── */
+.rings{position:relative;width:110px;height:110px;margin-bottom:2rem;}
+.ring{position:absolute;inset:0;border-radius:50%;}
+.ring-1{border:1.5px solid transparent;
+        border-top-color:#ef4444;
+        animation:spin 2.5s linear infinite;}
+.ring-1::before{content:'';position:absolute;inset:-1.5px;border-radius:50%;
+        border:1.5px solid #ef444415;}
+.ring-2{inset:12px;border:1px solid transparent;
+        border-bottom-color:#f87171;
+        animation:spinR 1.8s linear infinite;}
+.ring-3{inset:24px;border:1px solid transparent;
+        border-left-color:#fca5a5;
+        animation:spin 3.5s linear infinite;}
+.ring-core{position:absolute;inset:36px;border-radius:50%;
+  background:radial-gradient(circle,#1a000588,#00000099);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 20px #ef444430,inset 0 0 15px #ef444415;}
+.ring-svg{width:36px;height:36px;}
 
-  .dots {
-    display:flex; gap:7px; margin-top:0.9rem;
-    opacity:0; animation: fadeIn 0.5s ease 1.5s forwards;
-  }
-  .dot {
-    width:5px; height:5px; border-radius:50%;
-    animation: dotPulse 1.2s ease-in-out infinite;
-  }
-  .dot:nth-child(1){ background:#ef4444; animation-delay:0s; }
-  .dot:nth-child(2){ background:#f87171; animation-delay:0.15s; }
-  .dot:nth-child(3){ background:#fca5a5; animation-delay:0.3s; }
-  .dot:nth-child(4){ background:#f87171; animation-delay:0.45s; }
-  .dot:nth-child(5){ background:#ef4444; animation-delay:0.6s; }
+@keyframes spin {to{transform:rotate(360deg);}}
+@keyframes spinR{to{transform:rotate(-360deg);}}
 
-  .byline {
-    position:fixed; bottom:1.5rem; left:0; right:0;
-    text-align:center; font-size:0.55rem;
-    letter-spacing:0.2em; text-transform:uppercase;
-    color:#ffffff0d;
-    opacity:0; animation: fadeIn 1s ease 2s forwards;
-  }
+/* ── Title ── */
+.title{
+  font-size:clamp(2.4rem,6vw,4rem);font-weight:700;
+  letter-spacing:-0.03em;line-height:1;
+  background:linear-gradient(135deg,#fff 0%,#f87171 45%,#ef4444 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  opacity:0;transform:translateY(18px);
+  animation:slideUp 0.85s cubic-bezier(0.16,1,0.3,1) 0.6s forwards;
+  margin-bottom:0.4rem;
+}
+@keyframes slideUp{to{opacity:1;transform:translateY(0);}}
 
-  @keyframes spin    { to{ transform:rotate(360deg); } }
-  @keyframes spinRev { to{ transform:rotate(-360deg); } }
-  @keyframes fadeIn  { to{ opacity:1; } }
-  @keyframes slideUp {
-    to{ opacity:1; transform:translateY(0); }
-  }
-  @keyframes barGrow { to{ width:100%; } }
-  @keyframes barShine{
-    0%  { background-position:-200% center; }
-    100%{ background-position:200% center; }
-  }
-  @keyframes dotPulse{
-    0%,100%{ transform:scale(0.7); opacity:0.3; }
-    50%    { transform:scale(1.2); opacity:1; }
-  }
-  @keyframes statusCycle{
-    0%  { opacity:0; transform:translateX(-50%) translateY(4px); }
-    15% { opacity:1; transform:translateX(-50%) translateY(0); }
-    70% { opacity:1; transform:translateX(-50%) translateY(0); }
-    100%{ opacity:0; transform:translateX(-50%) translateY(-4px); }
-  }
+.tagline{
+  font-size:clamp(0.55rem,1.5vw,0.7rem);
+  letter-spacing:0.28em;text-transform:uppercase;
+  color:#ffffff33;
+  opacity:0;animation:fadeIn 0.8s ease 1.2s forwards;
+  margin-bottom:2.2rem;
+}
+@keyframes fadeIn{to{opacity:1;}}
+
+/* ── Bar ── */
+.bar-track{
+  width:min(260px,70vw);height:2px;
+  background:#ffffff06;border-radius:100px;overflow:hidden;
+  opacity:0;animation:fadeIn 0.4s ease 1s forwards;
+  margin-bottom:0.7rem;
+}
+.bar-fill{
+  height:100%;width:0%;border-radius:100px;
+  background:linear-gradient(90deg,#b91c1c,#ef4444,#f87171,#ef4444);
+  background-size:200% auto;
+  animation:barGrow 2s cubic-bezier(0.4,0,0.2,1) 1.1s forwards,
+             shine 1.2s linear infinite;
+}
+@keyframes barGrow{to{width:100%;}}
+@keyframes shine{0%{background-position:-200% center;}100%{background-position:200% center;}}
+
+/* ── Status ── */
+.status{
+  height:1.1rem;position:relative;width:220px;text-align:center;
+  font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:#ef444455;
+  opacity:0;animation:fadeIn 0.4s ease 1.1s forwards;
+}
+.status span{
+  position:absolute;left:50%;transform:translateX(-50%);
+  opacity:0;white-space:nowrap;
+  animation:sc 0.65s ease both;
+}
+.status span:nth-child(1){animation-delay:1.1s;}
+.status span:nth-child(2){animation-delay:1.75s;}
+.status span:nth-child(3){animation-delay:2.4s;}
+.status span:nth-child(4){animation-delay:2.95s;}
+@keyframes sc{
+  0%{opacity:0;transform:translateX(-50%) translateY(4px);}
+  15%{opacity:1;transform:translateX(-50%) translateY(0);}
+  70%{opacity:1;transform:translateX(-50%) translateY(0);}
+  100%{opacity:0;transform:translateX(-50%) translateY(-4px);}
+}
+
+/* ── Dots ── */
+.dots{display:flex;gap:6px;margin-top:1rem;
+  opacity:0;animation:fadeIn 0.4s ease 1.4s forwards;}
+.dot{width:5px;height:5px;border-radius:50%;
+     animation:dp 1.2s ease-in-out infinite;}
+.dot:nth-child(1){background:#ef4444;animation-delay:0s;}
+.dot:nth-child(2){background:#f87171;animation-delay:0.15s;}
+.dot:nth-child(3){background:#fca5a5;animation-delay:0.3s;}
+.dot:nth-child(4){background:#f87171;animation-delay:0.45s;}
+.dot:nth-child(5){background:#ef4444;animation-delay:0.6s;}
+@keyframes dp{
+  0%,100%{transform:scale(0.7);opacity:0.3;}
+  50%{transform:scale(1.2);opacity:1;}
+}
+
+/* ── Byline ── */
+.byline{
+  position:fixed;bottom:1.5rem;left:0;right:0;
+  text-align:center;font-size:0.52rem;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:#ffffff10;
+  opacity:0;animation:fadeIn 1s ease 2.2s forwards;
+}
+
+/* ── Vignette ── */
+.vignette{
+  position:fixed;inset:0;pointer-events:none;z-index:1;
+  background:radial-gradient(ellipse at center,transparent 40%,#000000aa 100%);
+}
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<canvas id="c"></canvas>
 
-<div class="center">
-  <div class="logo-ring">
-    <div class="logo-ring-inner">
-      <span class="logo-text">PLM</span>
+<canvas id="c"></canvas>
+<div class="vignette"></div>
+
+<div class="ui">
+  <!-- Rotating rings -->
+  <div class="rings">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+    <div class="ring-core">
+      <svg class="ring-svg" viewBox="0 0 54 40" fill="none">
+        <text x="1" y="32" font-family="'Space Grotesk',sans-serif"
+              font-weight="700" font-size="28" fill="url(#g)" letter-spacing="-1">PLM</text>
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="54" y2="0">
+            <stop offset="0%"  stop-color="#fff"/>
+            <stop offset="60%" stop-color="#f87171"/>
+            <stop offset="100%" stop-color="#ef4444"/>
+          </linearGradient>
+        </defs>
+      </svg>
     </div>
   </div>
+
   <div class="title">PLM GPT</div>
   <div class="tagline">Where curiosity meets intelligence</div>
+
   <div class="bar-track"><div class="bar-fill"></div></div>
+
   <div class="status">
     <span>Initializing engine...</span>
     <span>Loading models...</span>
     <span>Preparing workspace...</span>
     <span>Almost ready...</span>
   </div>
+
   <div class="dots">
     <div class="dot"></div><div class="dot"></div><div class="dot"></div>
     <div class="dot"></div><div class="dot"></div>
   </div>
 </div>
+
 <div class="byline">Crafted by Pranav Chakravorty &nbsp;·&nbsp; PLM GPT</div>
 
 <script>
-const canvas = document.getElementById('c');
-const ctx    = canvas.getContext('2d');
-
-let W, H, particles = [], mouse = {x:0, y:0};
-const COUNT   = 90;
-const MAX_DIST = 140;
-const RED     = '239,68,68';
+const C = document.getElementById('c');
+const X = C.getContext('2d');
+let W, H;
 
 function resize(){
-  W = canvas.width  = window.innerWidth;
-  H = canvas.height = window.innerHeight;
+  W = C.width  = window.innerWidth;
+  H = C.height = window.innerHeight;
 }
 resize();
 window.addEventListener('resize', resize);
-window.addEventListener('mousemove', e => { mouse.x=e.clientX; mouse.y=e.clientY; });
 
-// Create particles
-for(let i=0;i<COUNT;i++){
-  particles.push({
-    x: Math.random()*1400,
-    y: Math.random()*900,
-    vx: (Math.random()-0.5)*0.5,
-    vy: (Math.random()-0.5)*0.5,
-    r: Math.random()*2+1,
-    opacity: Math.random()*0.5+0.2
+// Mouse
+const M = {x: W/2, y: H/2};
+window.addEventListener('mousemove', e=>{M.x=e.clientX;M.y=e.clientY;});
+
+// Particles — spawn at actual window size
+const N = 100;
+const MAX = 130;
+const RED = '239,68,68';
+const pts = [];
+
+for(let i=0;i<N;i++){
+  pts.push({
+    x:  Math.random()*W,
+    y:  Math.random()*H,
+    vx: (Math.random()-0.5)*0.55,
+    vy: (Math.random()-0.5)*0.55,
+    r:  Math.random()*1.8+0.8,
+    o:  Math.random()*0.45+0.15,
   });
 }
 
+// Particle opacity fades in
+let alpha = 0;
+
 function draw(){
-  ctx.clearRect(0,0,W,H);
+  X.clearRect(0,0,W,H);
+  if(alpha < 1) alpha = Math.min(1, alpha+0.015);
 
-  // Subtle red vignette
-  const vg = ctx.createRadialGradient(W/2,H/2,H*0.1, W/2,H/2,H*0.8);
-  vg.addColorStop(0,'rgba(0,0,0,0)');
-  vg.addColorStop(1,'rgba(10,0,0,0.6)');
-  ctx.fillStyle = vg;
-  ctx.fillRect(0,0,W,H);
-
-  // Update + draw particles
-  for(let i=0;i<particles.length;i++){
-    const p = particles[i];
+  for(let i=0;i<N;i++){
+    const p = pts[i];
     p.x += p.vx; p.y += p.vy;
+
+    // Bounce off walls
     if(p.x<0||p.x>W) p.vx*=-1;
     if(p.y<0||p.y>H) p.vy*=-1;
 
-    // Mouse repel (subtle)
-    const dx=p.x-mouse.x, dy=p.y-mouse.y;
-    const md=Math.sqrt(dx*dx+dy*dy);
-    if(md<100){ p.vx+=dx/md*0.05; p.vy+=dy/md*0.05; }
+    // Gentle mouse repulsion
+    const dx=p.x-M.x, dy=p.y-M.y;
+    const d=Math.sqrt(dx*dx+dy*dy);
+    if(d<120 && d>0){
+      const f = (120-d)/120*0.04;
+      p.vx += dx/d*f;
+      p.vy += dy/d*f;
+    }
+    // Speed cap
+    const spd = Math.sqrt(p.vx*p.vx+p.vy*p.vy);
+    if(spd>1.2){p.vx=p.vx/spd*1.2;p.vy=p.vy/spd*1.2;}
 
     // Draw dot
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(${RED},${p.opacity})`;
-    ctx.fill();
+    X.beginPath();
+    X.arc(p.x,p.y,p.r,0,Math.PI*2);
+    X.fillStyle=`rgba(${RED},${p.o*alpha})`;
+    X.fill();
 
-    // Draw connections
-    for(let j=i+1;j<particles.length;j++){
-      const q=particles[j];
+    // Connections
+    for(let j=i+1;j<N;j++){
+      const q=pts[j];
       const ex=p.x-q.x, ey=p.y-q.y;
       const dist=Math.sqrt(ex*ex+ey*ey);
-      if(dist<MAX_DIST){
-        const alpha = (1-dist/MAX_DIST)*0.25;
-        ctx.beginPath();
-        ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
-        ctx.strokeStyle=`rgba(${RED},${alpha})`;
-        ctx.lineWidth=0.8;
-        ctx.stroke();
+      if(dist<MAX){
+        const a=(1-dist/MAX)*0.22*alpha;
+        X.beginPath();
+        X.moveTo(p.x,p.y); X.lineTo(q.x,q.y);
+        X.strokeStyle=`rgba(${RED},${a})`;
+        X.lineWidth=0.7;
+        X.stroke();
       }
     }
   }
   requestAnimationFrame(draw);
 }
-
 draw();
 </script>
 </body>
 </html>
 """, height=700, scrolling=False)
 
-    import time
-    time.sleep(3.5)
+    time.sleep(3.2)
     st.session_state.splash_done = True
     st.rerun()
 
@@ -1320,12 +1442,10 @@ def auth_page():
     # ─── Tab buttons ───
     col_l, col_r = st.columns(2)
     with col_l:
-        login_active = "auth-tab auth-tab-active" if st.session_state.auth_tab == "login" else "auth-tab"
         if st.button("Sign In", use_container_width=True, key="tab_login"):
             st.session_state.auth_tab = "login"
             st.rerun()
     with col_r:
-        signup_active = "auth-tab auth-tab-active" if st.session_state.auth_tab == "signup" else "auth-tab"
         if st.button("Sign Up", use_container_width=True, key="tab_signup"):
             st.session_state.auth_tab = "signup"
             st.rerun()
@@ -1368,7 +1488,6 @@ def auth_page():
                         st.session_state.current_user   = username.strip().lower()
                         st.session_state.display_name   = result
                         st.session_state.last_activity  = time.time()
-                        st.session_state.welcome_shown  = False
                         # Clear sessions so init_sessions() loads from DB fresh
                         st.session_state.sessions       = {}
                         st.session_state.messages       = []
@@ -1455,9 +1574,25 @@ def render_welcome():
       <div class="welcome-sub" style="font-size:0.88rem; opacity:0.75;">
         Choose a conversation mode, or pick a suggestion below to get started.
       </div>
+      <div class="welcome-stats">
+        <div class="welcome-stat">
+          <div class="welcome-stat-num">{len(st.session_state.sessions)}</div>
+          <div class="welcome-stat-label">Chats</div>
+        </div>
+        <div class="welcome-stat-divider"></div>
+        <div class="welcome-stat">
+          <div class="welcome-stat-num">{sum(len(s.get('messages',[])) for s in st.session_state.sessions.values())}</div>
+          <div class="welcome-stat-label">Messages</div>
+        </div>
+        <div class="welcome-stat-divider"></div>
+        <div class="welcome-stat">
+          <div class="welcome-stat-num">{len(st.session_state.starred)}</div>
+          <div class="welcome-stat-label">Starred</div>
+        </div>
+      </div>
       <div class="welcome-dev">
         <span class="welcome-dot"></span>
-        Crafted with precision by &nbsp;<strong style="color:{t['text']}; letter-spacing:0.05em;">Pranav Chakravorty</strong>
+        Crafted by &nbsp;<strong style="color:{t['text']}; letter-spacing:0.05em;">Pranav Chakravorty</strong>
         <span class="welcome-dot"></span>
       </div>
     </div>
@@ -1538,6 +1673,17 @@ def chat_page():
                 st.session_state[k] = v
             st.rerun()
     st.markdown("<div style='margin-bottom:0.3rem'></div>", unsafe_allow_html=True)
+
+    # ── Mode description ──
+    _mode_descs = {
+        "💼 Professional": "Formal, precise responses with structured formatting",
+        "👨‍💻 Code Helper":  "Clean code with examples and explanations",
+        "✍️ Creative Writer": "Imaginative, expressive and engaging content",
+        "📚 Study Buddy":  "Simple explanations with examples and analogies",
+    }
+    _mode_desc = _mode_descs.get(st.session_state.conv_mode, "")
+    if _mode_desc:
+        st.markdown(f"<p style='text-align:center;font-size:0.72rem;color:{t['sub']};margin:-0.3rem 0 0.4rem;font-style:italic;'>{_mode_desc}</p>", unsafe_allow_html=True)
 
     # ── Title ──
     active_chat = st.session_state.sessions.get(st.session_state.active_session, {}).get("name", "Chat")
@@ -1689,7 +1835,12 @@ def chat_page():
             for s in st.session_state.starred:
                 st.markdown(f"<div class='starred-card'>{s}</div>", unsafe_allow_html=True)
         else:
-            st.info("No starred messages yet. Click ⭐ on any response to save it.")
+            st.markdown(f"""
+            <div style="text-align:center;padding:1.5rem;color:{t['sub']};">
+              <div style="font-size:2rem;margin-bottom:0.5rem;">☆</div>
+              <div style="font-size:0.88rem;font-weight:600;">No starred messages yet</div>
+              <div style="font-size:0.75rem;opacity:0.6;margin-top:0.3rem;">Click ☆ on any bot response to save it here</div>
+            </div>""", unsafe_allow_html=True)
         st.markdown("---")
 
     # ── Summary + Export ──
@@ -1741,13 +1892,14 @@ def chat_page():
     if pending:
         placeholder = st.empty()
         placeholder.markdown(f"""
-        <div class="msg-with-avatar">
-          <div class="msg-avatar msg-avatar-bot">PLM</div>
-          <div class="msg-bubble">
-            <div class="skeleton-wrap">
-              <div class="skeleton skeleton-wide"></div>
-              <div class="skeleton skeleton-med"></div>
-              <div class="skeleton skeleton-short"></div>
+        <div class="msg-row-bot">
+          <div class="msg-avatar msg-avatar-bot" style="margin-right:8px;margin-top:4px;flex-shrink:0;">PLM</div>
+          <div class="typing-bubble">
+            <span class="typing-label">PLM GPT is typing</span>
+            <div class="typing-dots-row">
+              <div class="typing-dot-new"></div>
+              <div class="typing-dot-new"></div>
+              <div class="typing-dot-new"></div>
             </div>
           </div>
         </div>""", unsafe_allow_html=True)
@@ -1786,7 +1938,7 @@ def chat_page():
               <div>
                 <div class="msg-user">
                   {msg['content']}
-                  <div style="font-size:0.62rem;opacity:0.6;margin-top:4px;text-align:right;">{ts}</div>
+                  <div class="msg-ts">{ts}</div>
                 </div>
               </div>
               <div class="msg-avatar msg-avatar-user" style="margin-left:8px;margin-top:4px;flex-shrink:0;">{user_initial}</div>
@@ -1799,7 +1951,7 @@ def chat_page():
               <div>
                 <div class="msg-bot">
                   <div class="msg-body">{rendered}</div>
-                  <div style="font-size:0.62rem;opacity:0.5;margin-top:4px;">{ts}</div>
+                  <div class="msg-ts">{ts}</div>
                 </div>
               </div>
             </div>""", unsafe_allow_html=True)
@@ -1826,9 +1978,10 @@ def chat_page():
                     save_active_session()
                     st.rerun()
             with fb_col4:
-                safe_content = msg['content'].replace('`','\\`').replace('\n','\\n').replace('\r','')
+                import json as _json
+                safe_js = _json.dumps(msg['content'])
                 st.markdown(f"""
-                <button onclick="navigator.clipboard.writeText(`{safe_content}`).then(()=>{{
+                <button onclick="navigator.clipboard.writeText({safe_js}).then(()=>{{
                   this.innerText='✅'; setTimeout(()=>this.innerText='📋',1500);
                 }})" title="Copy"
                 style="background:transparent;border:1px solid {t['border']};border-radius:6px;
@@ -1851,11 +2004,24 @@ def chat_page():
 
     char_count = len(user_input) if user_input else 0
     words      = len(user_input.split()) if user_input and user_input.strip() else 0
-    warn_class = "char-danger" if char_count > 2700 else ("char-warn" if char_count > 2000 else "")
-    st.markdown(
-        f"<div class='char-counter {warn_class}'>{words} words &nbsp;·&nbsp; {char_count} / 3000 chars</div>",
-        unsafe_allow_html=True
-    )
+    pct        = char_count / 3000
+    ring_color = t['accent'] if char_count > 2700 else ("#f59e0b" if char_count > 2000 else t['sub'])
+    circumf    = 2 * 3.14159 * 10
+    dash       = circumf * pct
+    gap        = circumf - dash
+    warn_cls   = "char-ring-danger" if char_count > 2700 else ("char-ring-warn" if char_count > 2000 else "")
+    st.markdown(f"""
+    <div class="char-ring-wrap">
+      <span class="char-ring-text {warn_cls}">{words}w &nbsp;·&nbsp; {char_count}/3000</span>
+      <svg width="22" height="22" viewBox="0 0 22 22">
+        <circle cx="11" cy="11" r="10" fill="none" stroke="{t['border']}" stroke-width="2"/>
+        <circle cx="11" cy="11" r="10" fill="none" stroke="{ring_color}" stroke-width="2"
+          stroke-dasharray="{dash:.1f} {gap:.1f}"
+          stroke-linecap="round"
+          transform="rotate(-90 11 11)"
+          style="transition: stroke-dasharray 0.3s ease;"/>
+      </svg>
+    </div>""", unsafe_allow_html=True)
 
     if submit:
         if is_session_expired():
@@ -1904,15 +2070,15 @@ def chat_page():
                 """, unsafe_allow_html=True)
 
             typing_ph = st.empty()
-            # ── Skeleton loading ──
             typing_ph.markdown(f"""
-            <div class="msg-with-avatar">
-              <div class="msg-avatar msg-avatar-bot">PLM</div>
-              <div class="msg-bubble">
-                <div class="skeleton-wrap">
-                  <div class="skeleton skeleton-wide"></div>
-                  <div class="skeleton skeleton-med"></div>
-                  <div class="skeleton skeleton-short"></div>
+            <div class="msg-row-bot">
+              <div class="msg-avatar msg-avatar-bot" style="margin-right:8px;margin-top:4px;flex-shrink:0;">PLM</div>
+              <div class="typing-bubble">
+                <span class="typing-label">PLM GPT is typing</span>
+                <div class="typing-dots-row">
+                  <div class="typing-dot-new"></div>
+                  <div class="typing-dot-new"></div>
+                  <div class="typing-dot-new"></div>
                 </div>
               </div>
             </div>""", unsafe_allow_html=True)
@@ -1937,11 +2103,13 @@ def chat_page():
                 new_title = get_auto_title(clean)
                 st.session_state.sessions[sid]["name"] = new_title
             save_active_session()
+            st.toast("Chat saved", icon="✓")
             st.rerun()
 
     st.markdown("""
     <script>
     (function() {
+      // Auto-scroll to bottom
       function scrollToBottom() {
         const doc = window.parent.document;
         const scrollable = doc.querySelector('[data-testid="stAppViewBlockContainer"]')
@@ -1951,6 +2119,24 @@ def chat_page():
         window.parent.scrollTo(0, window.parent.document.body.scrollHeight);
       }
       setTimeout(scrollToBottom, 200);
+      // Auto-focus input
+      setTimeout(() => {
+        const doc = window.parent.document;
+        const inp = doc.querySelector('input[data-testid="stTextInput"]')
+                 || doc.querySelector('.stTextInput input');
+        if (inp) inp.focus();
+      }, 400);
+      // Enter key to submit (mobile)
+      const doc = window.parent.document;
+      doc.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          const btn = doc.querySelector('button[kind="primaryFormSubmit"]')
+                   || doc.querySelector('.stFormSubmitButton button');
+          if (btn && doc.activeElement && doc.activeElement.tagName === 'INPUT') {
+            btn.click();
+          }
+        }
+      }, {once: false});
     })();
     </script>
     """, unsafe_allow_html=True)
