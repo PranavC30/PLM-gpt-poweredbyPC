@@ -951,289 +951,254 @@ def delete_session(sid: str):
     switch_session(first)
 
 # ─────────────────────────────────────────
-#  SPLASH SCREEN  (particle network — fullscreen)
+#  SPLASH SCREEN  (pure CSS — no iframe)
 # ─────────────────────────────────────────
 def splash_screen():
-    """Cinematic fullscreen particle network animation."""
-    import streamlit.components.v1 as components
-
-    # Hide Streamlit UI during splash
+    """Cinematic fullscreen splash — pure Streamlit markdown, no iframe."""
     st.markdown("""
-    <style>
-      #MainMenu,header,footer,[data-testid="stToolbar"],
-      [data-testid="stDecoration"],[data-testid="stStatusWidget"],
-      .block-container { display:none !important; }
-      .stApp { background:#000 !important; }
-    </style>
-    """, unsafe_allow_html=True)
-
-    components.html("""
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;background:#000;overflow:hidden;
-  font-family:'Space Grotesk','Inter',sans-serif;}
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap');
 
-canvas{position:fixed;inset:0;z-index:0;}
+  /* Hide ALL Streamlit chrome */
+  #MainMenu,header,footer,
+  [data-testid="stToolbar"],
+  [data-testid="stDecoration"],
+  [data-testid="stStatusWidget"],
+  [data-testid="stSidebarNav"],
+  [data-testid="collapsedControl"],
+  .stDeployButton { display:none !important; }
 
-.ui{position:fixed;inset:0;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;z-index:10;pointer-events:none;}
+  /* Fullscreen black background */
+  .stApp {
+    background: #000000 !important;
+    font-family: 'Space Grotesk', sans-serif !important;
+  }
+  .block-container {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
 
-/* ── Rings ── */
-.rings{position:relative;width:110px;height:110px;margin-bottom:2rem;}
-.ring{position:absolute;inset:0;border-radius:50%;}
-.ring-1{border:1.5px solid transparent;
-        border-top-color:#ef4444;
-        animation:spin 2.5s linear infinite;}
-.ring-1::before{content:'';position:absolute;inset:-1.5px;border-radius:50%;
-        border:1.5px solid #ef444415;}
-.ring-2{inset:12px;border:1px solid transparent;
-        border-bottom-color:#f87171;
-        animation:spinR 1.8s linear infinite;}
-.ring-3{inset:24px;border:1px solid transparent;
-        border-left-color:#fca5a5;
-        animation:spin 3.5s linear infinite;}
-.ring-core{position:absolute;inset:36px;border-radius:50%;
-  background:radial-gradient(circle,#1a000588,#00000099);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 20px #ef444430,inset 0 0 15px #ef444415;}
-.ring-svg{width:36px;height:36px;}
+  /* ── Keyframes ── */
+  @keyframes spin    { to { transform: rotate(360deg); } }
+  @keyframes spinR   { to { transform: rotate(-360deg); } }
+  @keyframes fadeIn  { to { opacity: 1; } }
+  @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+  @keyframes barGrow { to { width: 100%; } }
+  @keyframes barShine {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
+  @keyframes dotPop {
+    0%,100% { transform: scale(0.7); opacity: 0.3; }
+    50%     { transform: scale(1.25); opacity: 1; }
+  }
+  @keyframes statusCycle {
+    0%   { opacity: 0; transform: translateX(-50%) translateY(5px); }
+    15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+    75%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-5px); }
+  }
+  @keyframes particleFloat {
+    0%   { transform: translate(0,0) scale(1); opacity: 0.4; }
+    25%  { transform: translate(var(--dx1),var(--dy1)) scale(1.1); opacity: 0.7; }
+    50%  { transform: translate(var(--dx2),var(--dy2)) scale(0.9); opacity: 0.3; }
+    75%  { transform: translate(var(--dx3),var(--dy3)) scale(1.05); opacity: 0.6; }
+    100% { transform: translate(0,0) scale(1); opacity: 0.4; }
+  }
+  @keyframes pulseGlow {
+    0%,100% { box-shadow: 0 0 30px #ef444428, 0 0 60px #ef444410; }
+    50%     { box-shadow: 0 0 50px #ef444445, 0 0 100px #ef444420; }
+  }
+  @keyframes gradBg {
+    0%,100% { background-position: 0% 50%; }
+    50%     { background-position: 100% 50%; }
+  }
 
-@keyframes spin {to{transform:rotate(360deg);}}
-@keyframes spinR{to{transform:rotate(-360deg);}}
+  /* ── Splash wrapper — true fullscreen ── */
+  .splash-full {
+    position: fixed; inset: 0; z-index: 9999;
+    background: radial-gradient(ellipse at 30% 20%, #1a000522 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, #2a000833 0%, transparent 60%),
+                #000000;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 100vh;
+  }
 
-/* ── Title ── */
-.title{
-  font-size:clamp(2.4rem,6vw,4rem);font-weight:700;
-  letter-spacing:-0.03em;line-height:1;
-  background:linear-gradient(135deg,#fff 0%,#f87171 45%,#ef4444 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-  opacity:0;transform:translateY(18px);
-  animation:slideUp 0.85s cubic-bezier(0.16,1,0.3,1) 0.6s forwards;
-  margin-bottom:0.4rem;
-}
-@keyframes slideUp{to{opacity:1;transform:translateY(0);}}
+  /* ── Floating particles (CSS only) ── */
+  .sp { position: absolute; border-radius: 50%; pointer-events: none; }
+  .sp-1  { width:3px;height:3px;background:#ef4444;top:8%;left:12%;opacity:0.5;
+            --dx1:15px;--dy1:-20px;--dx2:-8px;--dy2:-35px;--dx3:12px;--dy3:-15px;
+            animation:particleFloat 8s ease-in-out infinite 0s; }
+  .sp-2  { width:2px;height:2px;background:#f87171;top:20%;left:85%;opacity:0.4;
+            --dx1:-12px;--dy1:18px;--dx2:8px;--dy2:25px;--dx3:-5px;--dy3:10px;
+            animation:particleFloat 11s ease-in-out infinite -3s; }
+  .sp-3  { width:4px;height:4px;background:#ef4444;top:65%;left:8%;opacity:0.35;
+            --dx1:20px;--dy1:-15px;--dx2:35px;--dy2:-30px;--dx3:15px;--dy3:-20px;
+            animation:particleFloat 9s ease-in-out infinite -5s; }
+  .sp-4  { width:2px;height:2px;background:#fca5a5;top:75%;left:90%;opacity:0.4;
+            --dx1:-18px;--dy1:10px;--dx2:-30px;--dy2:20px;--dx3:-12px;--dy3:8px;
+            animation:particleFloat 14s ease-in-out infinite -7s; }
+  .sp-5  { width:3px;height:3px;background:#f87171;top:45%;left:5%;opacity:0.3;
+            --dx1:10px;--dy1:-25px;--dx2:20px;--dy2:-15px;--dx3:8px;--dy3:-20px;
+            animation:particleFloat 10s ease-in-out infinite -2s; }
+  .sp-6  { width:2px;height:2px;background:#ef4444;top:88%;left:25%;opacity:0.45;
+            --dx1:-8px;--dy1:-18px;--dx2:12px;--dy2:-25px;--dx3:-5px;--dy3:-15px;
+            animation:particleFloat 12s ease-in-out infinite -4s; }
+  .sp-7  { width:4px;height:4px;background:#ef4444;top:15%;left:60%;opacity:0.25;
+            --dx1:22px;--dy1:15px;--dx2:-10px;--dy2:28px;--dx3:15px;--dy3:10px;
+            animation:particleFloat 13s ease-in-out infinite -9s; }
+  .sp-8  { width:2px;height:2px;background:#f87171;top:55%;left:92%;opacity:0.35;
+            --dx1:-20px;--dy1:-10px;--dx2:-35px;--dy2:8px;--dx3:-15px;--dy3:-5px;
+            animation:particleFloat 7s ease-in-out infinite -1s; }
+  .sp-9  { width:3px;height:3px;background:#ef4444;top:78%;left:48%;opacity:0.4;
+            --dx1:8px;--dy1:-22px;--dx2:-12px;--dy2:-35px;--dx3:5px;--dy3:-18px;
+            animation:particleFloat 11s ease-in-out infinite -6s; }
+  .sp-10 { width:2px;height:2px;background:#fca5a5;top:32%;left:18%;opacity:0.3;
+            --dx1:-15px;--dy1:20px;--dx2:10px;--dy2:30px;--dx3:-8px;--dy3:15px;
+            animation:particleFloat 15s ease-in-out infinite -11s; }
+  .sp-11 { width:3px;height:3px;background:#ef4444;top:5%;left:75%;opacity:0.35;
+            --dx1:12px;--dy1:18px;--dx2:-8px;--dy2:28px;--dx3:5px;--dy3:12px;
+            animation:particleFloat 9s ease-in-out infinite -8s; }
+  .sp-12 { width:2px;height:2px;background:#f87171;top:92%;left:68%;opacity:0.4;
+            --dx1:-10px;--dy1:-15px;--dx2:8px;--dy2:-22px;--dx3:-5px;--dy3:-10px;
+            animation:particleFloat 16s ease-in-out infinite -13s; }
+  .sp-13 { width:3px;height:3px;background:#ef4444;top:38%;left:72%;opacity:0.3;
+            --dx1:18px;--dy1:-12px;--dx2:28px;--dy2:8px;--dx3:12px;--dy3:-8px;
+            animation:particleFloat 10s ease-in-out infinite -4s; }
+  .sp-14 { width:2px;height:2px;background:#fca5a5;top:60%;left:35%;opacity:0.35;
+            --dx1:-22px;--dy1:15px;--dx2:-15px;--dy2:25px;--dx3:-10px;--dy3:8px;
+            animation:particleFloat 8s ease-in-out infinite -2s; }
+  .sp-15 { width:4px;height:4px;background:#ef4444;top:25%;left:42%;opacity:0.2;
+            --dx1:8px;--dy1:-18px;--dx2:-5px;--dy2:-28px;--dx3:6px;--dy3:-12px;
+            animation:particleFloat 12s ease-in-out infinite -7s; }
 
-.tagline{
-  font-size:clamp(0.55rem,1.5vw,0.7rem);
-  letter-spacing:0.28em;text-transform:uppercase;
-  color:#ffffff33;
-  opacity:0;animation:fadeIn 0.8s ease 1.2s forwards;
-  margin-bottom:2.2rem;
-}
-@keyframes fadeIn{to{opacity:1;}}
+  /* ── Rings ── */
+  .sp-rings { position:relative; width:110px; height:110px; margin-bottom:2rem;
+              opacity:0; animation:fadeIn 0.6s ease 0.3s forwards; }
+  .sp-ring  { position:absolute; inset:0; border-radius:50%; }
+  .sp-r1 { border:1.5px solid #ef444422; border-top-color:#ef4444;
+            animation:spin 2.5s linear infinite;
+            box-shadow:0 0 20px #ef444420; }
+  .sp-r2 { inset:12px; border:1px solid #f8717118; border-bottom-color:#f87171;
+            animation:spinR 1.8s linear infinite; }
+  .sp-r3 { inset:24px; border:1px solid #fca5a515; border-left-color:#fca5a5;
+            animation:spin 3.5s linear infinite; }
+  .sp-core { position:absolute; inset:36px; border-radius:50%;
+             background:radial-gradient(circle,#1a000580,#00000099);
+             display:flex; align-items:center; justify-content:center;
+             animation:pulseGlow 3s ease-in-out infinite; }
+  .sp-plm  { font-size:0.85rem; font-weight:700; letter-spacing:0.05em;
+             background:linear-gradient(135deg,#fff,#f87171,#ef4444);
+             -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+             background-clip:text; }
 
-/* ── Bar ── */
-.bar-track{
-  width:min(260px,70vw);height:2px;
-  background:#ffffff06;border-radius:100px;overflow:hidden;
-  opacity:0;animation:fadeIn 0.4s ease 1s forwards;
-  margin-bottom:0.7rem;
-}
-.bar-fill{
-  height:100%;width:0%;border-radius:100px;
-  background:linear-gradient(90deg,#b91c1c,#ef4444,#f87171,#ef4444);
-  background-size:200% auto;
-  animation:barGrow 2s cubic-bezier(0.4,0,0.2,1) 1.1s forwards,
-             shine 1.2s linear infinite;
-}
-@keyframes barGrow{to{width:100%;}}
-@keyframes shine{0%{background-position:-200% center;}100%{background-position:200% center;}}
+  /* ── Title ── */
+  .sp-title {
+    font-size: clamp(2.5rem,8vw,4rem); font-weight:700;
+    letter-spacing:-0.03em; line-height:1;
+    background:linear-gradient(135deg,#ffffff 0%,#f87171 45%,#ef4444 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text;
+    margin-bottom:0.5rem;
+    opacity:0; transform:translateY(18px);
+    animation:slideUp 0.85s cubic-bezier(0.16,1,0.3,1) 0.7s forwards;
+  }
+  .sp-tagline {
+    font-size:clamp(0.55rem,1.8vw,0.7rem); letter-spacing:0.28em;
+    text-transform:uppercase; color:#ffffff33;
+    margin-bottom:2.2rem;
+    opacity:0; animation:fadeIn 0.8s ease 1.3s forwards;
+  }
 
-/* ── Status ── */
-.status{
-  height:1.1rem;position:relative;width:220px;text-align:center;
-  font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;
-  color:#ef444455;
-  opacity:0;animation:fadeIn 0.4s ease 1.1s forwards;
-}
-.status span{
-  position:absolute;left:50%;transform:translateX(-50%);
-  opacity:0;white-space:nowrap;
-  animation:sc 0.65s ease both;
-}
-.status span:nth-child(1){animation-delay:1.1s;}
-.status span:nth-child(2){animation-delay:1.75s;}
-.status span:nth-child(3){animation-delay:2.4s;}
-.status span:nth-child(4){animation-delay:2.95s;}
-@keyframes sc{
-  0%{opacity:0;transform:translateX(-50%) translateY(4px);}
-  15%{opacity:1;transform:translateX(-50%) translateY(0);}
-  70%{opacity:1;transform:translateX(-50%) translateY(0);}
-  100%{opacity:0;transform:translateX(-50%) translateY(-4px);}
-}
+  /* ── Bar ── */
+  .sp-bar-track {
+    width:min(260px,70vw); height:2px;
+    background:#ffffff06; border-radius:100px; overflow:hidden;
+    margin-bottom:0.8rem;
+    opacity:0; animation:fadeIn 0.4s ease 1.1s forwards;
+  }
+  .sp-bar-fill {
+    height:100%; width:0%; border-radius:100px;
+    background:linear-gradient(90deg,#b91c1c,#ef4444,#f87171,#ef4444);
+    background-size:200% auto;
+    animation:barGrow 2s cubic-bezier(0.4,0,0.2,1) 1.2s forwards,
+               barShine 1.2s linear infinite;
+  }
 
-/* ── Dots ── */
-.dots{display:flex;gap:6px;margin-top:1rem;
-  opacity:0;animation:fadeIn 0.4s ease 1.4s forwards;}
-.dot{width:5px;height:5px;border-radius:50%;
-     animation:dp 1.2s ease-in-out infinite;}
-.dot:nth-child(1){background:#ef4444;animation-delay:0s;}
-.dot:nth-child(2){background:#f87171;animation-delay:0.15s;}
-.dot:nth-child(3){background:#fca5a5;animation-delay:0.3s;}
-.dot:nth-child(4){background:#f87171;animation-delay:0.45s;}
-.dot:nth-child(5){background:#ef4444;animation-delay:0.6s;}
-@keyframes dp{
-  0%,100%{transform:scale(0.7);opacity:0.3;}
-  50%{transform:scale(1.2);opacity:1;}
-}
+  /* ── Status ── */
+  .sp-status {
+    height:1.1rem; position:relative; width:220px; text-align:center;
+    font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase;
+    color:#ef444455;
+    opacity:0; animation:fadeIn 0.4s ease 1.2s forwards;
+  }
+  .sp-status span {
+    position:absolute; left:50%; transform:translateX(-50%);
+    opacity:0; white-space:nowrap;
+    animation:statusCycle 0.65s ease both;
+  }
+  .sp-status span:nth-child(1) { animation-delay:1.2s; }
+  .sp-status span:nth-child(2) { animation-delay:1.85s; }
+  .sp-status span:nth-child(3) { animation-delay:2.5s; }
+  .sp-status span:nth-child(4) { animation-delay:3.05s; }
 
-/* ── Byline ── */
-.byline{
-  position:fixed;bottom:1.5rem;left:0;right:0;
-  text-align:center;font-size:0.52rem;
-  letter-spacing:0.22em;text-transform:uppercase;
-  color:#ffffff10;
-  opacity:0;animation:fadeIn 1s ease 2.2s forwards;
-}
+  /* ── Dots ── */
+  .sp-dots { display:flex; gap:7px; margin-top:1rem;
+             opacity:0; animation:fadeIn 0.4s ease 1.5s forwards; }
+  .sp-dot  { width:5px; height:5px; border-radius:50%;
+             animation:dotPop 1.2s ease-in-out infinite; }
+  .sp-dot:nth-child(1){background:#ef4444;animation-delay:0s;}
+  .sp-dot:nth-child(2){background:#f87171;animation-delay:0.15s;}
+  .sp-dot:nth-child(3){background:#fca5a5;animation-delay:0.3s;}
+  .sp-dot:nth-child(4){background:#f87171;animation-delay:0.45s;}
+  .sp-dot:nth-child(5){background:#ef4444;animation-delay:0.6s;}
 
-/* ── Vignette ── */
-.vignette{
-  position:fixed;inset:0;pointer-events:none;z-index:1;
-  background:radial-gradient(ellipse at center,transparent 40%,#000000aa 100%);
-}
+  /* ── Byline ── */
+  .sp-byline {
+    position:absolute; bottom:1.5rem; left:0; right:0;
+    text-align:center; font-size:0.52rem;
+    letter-spacing:0.2em; text-transform:uppercase; color:#ffffff12;
+    opacity:0; animation:fadeIn 1s ease 2.2s forwards;
+  }
 </style>
-</head>
-<body>
 
-<canvas id="c"></canvas>
-<div class="vignette"></div>
+<div class="splash-full">
+  <!-- Floating particles -->
+  <div class="sp sp-1"></div><div class="sp sp-2"></div><div class="sp sp-3"></div>
+  <div class="sp sp-4"></div><div class="sp sp-5"></div><div class="sp sp-6"></div>
+  <div class="sp sp-7"></div><div class="sp sp-8"></div><div class="sp sp-9"></div>
+  <div class="sp sp-10"></div><div class="sp sp-11"></div><div class="sp sp-12"></div>
+  <div class="sp sp-13"></div><div class="sp sp-14"></div><div class="sp sp-15"></div>
 
-<div class="ui">
-  <!-- Rotating rings -->
-  <div class="rings">
-    <div class="ring ring-1"></div>
-    <div class="ring ring-2"></div>
-    <div class="ring ring-3"></div>
-    <div class="ring-core">
-      <svg class="ring-svg" viewBox="0 0 54 40" fill="none">
-        <text x="1" y="32" font-family="'Space Grotesk',sans-serif"
-              font-weight="700" font-size="28" fill="url(#g)" letter-spacing="-1">PLM</text>
-        <defs>
-          <linearGradient id="g" x1="0" y1="0" x2="54" y2="0">
-            <stop offset="0%"  stop-color="#fff"/>
-            <stop offset="60%" stop-color="#f87171"/>
-            <stop offset="100%" stop-color="#ef4444"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
+  <!-- Rings -->
+  <div class="sp-rings">
+    <div class="sp-ring sp-r1"></div>
+    <div class="sp-ring sp-r2"></div>
+    <div class="sp-ring sp-r3"></div>
+    <div class="sp-core"><span class="sp-plm">PLM</span></div>
   </div>
 
-  <div class="title">PLM GPT</div>
-  <div class="tagline">Where curiosity meets intelligence</div>
+  <div class="sp-title">PLM GPT</div>
+  <div class="sp-tagline">Where curiosity meets intelligence</div>
 
-  <div class="bar-track"><div class="bar-fill"></div></div>
+  <div class="sp-bar-track"><div class="sp-bar-fill"></div></div>
 
-  <div class="status">
+  <div class="sp-status">
     <span>Initializing engine...</span>
     <span>Loading models...</span>
     <span>Preparing workspace...</span>
     <span>Almost ready...</span>
   </div>
 
-  <div class="dots">
-    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-    <div class="dot"></div><div class="dot"></div>
+  <div class="sp-dots">
+    <div class="sp-dot"></div><div class="sp-dot"></div><div class="sp-dot"></div>
+    <div class="sp-dot"></div><div class="sp-dot"></div>
   </div>
+
+  <div class="sp-byline">Crafted by Pranav Chakravorty &nbsp;·&nbsp; PLM GPT</div>
 </div>
-
-<div class="byline">Crafted by Pranav Chakravorty &nbsp;·&nbsp; PLM GPT</div>
-
-<script>
-const C = document.getElementById('c');
-const X = C.getContext('2d');
-let W, H;
-
-function resize(){
-  W = C.width  = window.innerWidth;
-  H = C.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
-
-// Mouse
-const M = {x: W/2, y: H/2};
-window.addEventListener('mousemove', e=>{M.x=e.clientX;M.y=e.clientY;});
-
-// Particles — spawn at actual window size
-const N = 100;
-const MAX = 130;
-const RED = '239,68,68';
-const pts = [];
-
-for(let i=0;i<N;i++){
-  pts.push({
-    x:  Math.random()*W,
-    y:  Math.random()*H,
-    vx: (Math.random()-0.5)*0.55,
-    vy: (Math.random()-0.5)*0.55,
-    r:  Math.random()*1.8+0.8,
-    o:  Math.random()*0.45+0.15,
-  });
-}
-
-// Particle opacity fades in
-let alpha = 0;
-
-function draw(){
-  X.clearRect(0,0,W,H);
-  if(alpha < 1) alpha = Math.min(1, alpha+0.015);
-
-  for(let i=0;i<N;i++){
-    const p = pts[i];
-    p.x += p.vx; p.y += p.vy;
-
-    // Bounce off walls
-    if(p.x<0||p.x>W) p.vx*=-1;
-    if(p.y<0||p.y>H) p.vy*=-1;
-
-    // Gentle mouse repulsion
-    const dx=p.x-M.x, dy=p.y-M.y;
-    const d=Math.sqrt(dx*dx+dy*dy);
-    if(d<120 && d>0){
-      const f = (120-d)/120*0.04;
-      p.vx += dx/d*f;
-      p.vy += dy/d*f;
-    }
-    // Speed cap
-    const spd = Math.sqrt(p.vx*p.vx+p.vy*p.vy);
-    if(spd>1.2){p.vx=p.vx/spd*1.2;p.vy=p.vy/spd*1.2;}
-
-    // Draw dot
-    X.beginPath();
-    X.arc(p.x,p.y,p.r,0,Math.PI*2);
-    X.fillStyle=`rgba(${RED},${p.o*alpha})`;
-    X.fill();
-
-    // Connections
-    for(let j=i+1;j<N;j++){
-      const q=pts[j];
-      const ex=p.x-q.x, ey=p.y-q.y;
-      const dist=Math.sqrt(ex*ex+ey*ey);
-      if(dist<MAX){
-        const a=(1-dist/MAX)*0.22*alpha;
-        X.beginPath();
-        X.moveTo(p.x,p.y); X.lineTo(q.x,q.y);
-        X.strokeStyle=`rgba(${RED},${a})`;
-        X.lineWidth=0.7;
-        X.stroke();
-      }
-    }
-  }
-  requestAnimationFrame(draw);
-}
-draw();
-</script>
-</body>
-</html>
-""", height=700, scrolling=False)
+""", unsafe_allow_html=True)
 
     time.sleep(3.2)
     st.session_state.splash_done = True
@@ -2103,7 +2068,7 @@ def chat_page():
                 new_title = get_auto_title(clean)
                 st.session_state.sessions[sid]["name"] = new_title
             save_active_session()
-            st.toast("Chat saved", icon="✓")
+            st.toast("Chat saved", icon="✅")
             st.rerun()
 
     st.markdown("""
